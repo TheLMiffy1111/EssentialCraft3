@@ -124,7 +124,7 @@ public class RenderHandlerEC3 {
 	public static boolean isNightVisionKeyDown;
 	public static boolean isNightVisionActive;
 
-	//public static final IModelCustom board = AdvancedModelLoader.loadModel(new ResourceLocation("essentialcraft","models/item/board.obj"));
+	public static final IModelCustom board = AdvancedModelLoader.loadModel(new ResourceLocation("essentialcraft","models/item/board.obj"));
 	public static final ResourceLocation boardTextures = new ResourceLocation("essentialcraft","textures/models/board.png");
 
 	public static Hashtable<IInventory, Hashtable<Integer,List<EnumFacing>>> slotsTable = new Hashtable<IInventory, Hashtable<Integer, List<EnumFacing>>>();

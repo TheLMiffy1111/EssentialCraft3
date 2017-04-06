@@ -596,7 +596,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new RenderHandlerEC3());
 
 		kbArmorBoost = new KeyBinding("ComputerArmorBoost", Keyboard.KEY_Z, "key.categories.gameplay");
-		ClientFRegistry.registerKeyBinding(kbArmorBoost);
+		ClientRegistry.registerKeyBinding(kbArmorBoost);
 		kbArmorVision = new KeyBinding("ComputerArmorNightVision", Keyboard.KEY_X, "key.categories.gameplay");
 		ClientRegistry.registerKeyBinding(kbArmorVision);
 	}
