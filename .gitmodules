@@ -1,0 +1,4 @@
+[submodule "DummyCoreUnofficial"]
+	path = DummyCoreUnofficial
+	url = git://github.com/TheLMiffy1111/DummyCoreUnofficial
+	branch = 1.10
