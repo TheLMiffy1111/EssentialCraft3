@@ -1,0 +1,4 @@
+[submodule "DummyCoreUnofficial"]
+	path = DummyCoreUnofficial
+	url = git://github.com/mrAppleXZ/DummyCoreUnofficial
+	branch = gradle-1.10
