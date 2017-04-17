@@ -40,6 +40,8 @@ minecraft {
 }
 
 dependencies {
+  compile project(':DummyCoreUnofficial')
+
   compile "MineTweaker3:MineTweaker3-API:3.0.24.81"
   deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.24.82"
   deobfCompile "com.blamejared:MTLib:1.0.2.10"
@@ -47,7 +49,6 @@ dependencies {
   runtime "mezz.jei:jei_1.10.2:3.14.7.417"
   deobfCompile "slimeknights.mantle:Mantle:1.10.2-1.1.5.205"
   deobfCompile "slimeknights:TConstruct:1.10.2-2.6.3.501"
-  compile project(':DummyCoreUnofficial')
   deobfCompile "mcp.mobius.waila:Hwyla:1.8.12-B26_1.10.2"
   deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.10.2-2.1.9-78"
   runtime "info.amerifrance.guideapi:Guide-API:1.10.2-2.0.3-46"
