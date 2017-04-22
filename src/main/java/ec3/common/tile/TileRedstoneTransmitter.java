@@ -16,7 +16,7 @@ public class TileRedstoneTransmitter extends TileMRUGeneric {
 		setMaxMRU(0);
 	}
 	
-	public int  getRedstonePower() {
+	public int getRedstonePower() {
 		if(getStackInSlot(0) != null && getStackInSlot(0).getItem() instanceof ItemBoundGem) {
 			int[] c = ItemBoundGem.getCoords(getStackInSlot(0));
 
