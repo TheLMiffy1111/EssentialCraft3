@@ -117,10 +117,6 @@ public class GuiNewMIMScreen extends GuiContainer{
 	public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_)
 	{
 		super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
-		GlStateManager.disableLighting();
-		GlStateManager.disableBlend();
-		this.search.drawTextBox();
-		this.stackSize.drawTextBox();
 	}
 
 	public static class GuiRequestButton extends GuiButton
@@ -296,6 +292,9 @@ public class GuiNewMIMScreen extends GuiContainer{
 		int l = (this.height - this.ySize)/2;
 		Minecraft.getMinecraft().renderEngine.bindTexture(textures);
 		this.drawTexturedModalRect(k, l, 0, 0, xSize, ySize);
+		
+		this.search.drawTextBox();
+		this.stackSize.drawTextBox();
 
 		GuiButton.class.cast(this.buttonList.get(26)).enabled = selectedStack != null && packetArrived;
 
@@ -428,7 +427,7 @@ public class GuiNewMIMScreen extends GuiContainer{
 						this.drawGradientRect(x+17, y, x+18, y+18, 0xff990099, 0xff110011);
 						this.drawGradientRect(x, y, x+18, y+1, 0xff660066, 0xff990099);
 						y += 1;
-						x += 1; 
+						x += 1;
 					}
 				}
 
