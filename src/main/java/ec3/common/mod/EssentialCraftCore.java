@@ -42,7 +42,7 @@ import ec3.integration.rotarycraft.RCLoadingHandler;
 import ec3.integration.tconstruct.TConstructRegistry;
 import ec3.integration.versionChecker.Check;
 import ec3.integration.waila.WailaInitializer;
-import ec3.network.proxy.CommonProxy;
+import ec3.proxy.CommonProxy;
 import ec3.utils.cfg.Config;
 import ec3.utils.commands.CommandClearCorruptionEffects;
 import ec3.utils.commands.CommandCreateMRUCU;
@@ -65,7 +65,7 @@ public class EssentialCraftCore {
 	//============================================CORE VARS==================================================//
 	@Instance(EssentialCraftCore.modid)
 	public static EssentialCraftCore core;
-	@SidedProxy(clientSide = "ec3.network.proxy.ClientProxy", serverSide = "ec3.network.proxy.CommonProxy", modId = EssentialCraftCore.modid)
+	@SidedProxy(clientSide = "ec3.proxy.ClientProxy", serverSide = "ec3.proxy.CommonProxy", modId = EssentialCraftCore.modid)
 	public static CommonProxy proxy;
 	public static Config cfg = new Config();
 	public static final String version = "4.7.1102.6";

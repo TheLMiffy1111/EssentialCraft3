@@ -1,4 +1,4 @@
-package ec3.network.proxy;
+package ec3.proxy;
 
 import java.util.ArrayList;
 import java.util.List;

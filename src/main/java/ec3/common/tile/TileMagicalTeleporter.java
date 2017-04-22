@@ -89,7 +89,7 @@ public class TileMagicalTeleporter extends TileMRUGeneric {
 				getWorld().getBlockState(pos.add(-2, 2, 1)).getBlock() == BlocksCore.voidStone &&
 				getWorld().getBlockState(pos.add(-1, 1, 2)).getBlock() == BlocksCore.voidStone &&
 				getWorld().getBlockState(pos.add(-1, 2, 2)).getBlock() == BlocksCore.voidStone &&
-				getWorld().getBlockState(pos.add(2, 1, -2)).getBlock() == BlocksCore.voidStone &&
+				getWorld().getBlockState(pos.add(2, 1, -1)).getBlock() == BlocksCore.voidStone &&
 				getWorld().getBlockState(pos.add(2, 2, -1)).getBlock() == BlocksCore.voidStone &&
 				getWorld().getBlockState(pos.add(1, 1, -2)).getBlock() == BlocksCore.voidStone &&
 				getWorld().getBlockState(pos.add(1, 2, -2)).getBlock() == BlocksCore.voidStone &&

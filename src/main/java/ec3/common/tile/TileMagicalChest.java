@@ -30,26 +30,46 @@ public class TileMagicalChest extends TileEntity implements IInventory, ISidedIn
 
 	private ItemStack[] inventory;
 
-	public String ownerName = "no name";
+	public String ownerName = "none";
 	public int syncTick = 10;
 	public int rotation;
 	private TileStatTracker tracker;
 	public boolean requestSync = true;
+	public int metadata;
 
 	public TileMagicalChest(int metaData) {
 		this();
-
-		if(metaData == 0) {
-			inventory = new ItemStack[54];
-		}
-		else if (metaData == 1) {
-			inventory = new ItemStack[117];
-		}
+		metadata = metaData;
+		setSlotsNum(metadata);
 	}
 
 	public TileMagicalChest() {
 		super();
 		tracker = new TileStatTracker(this);
+	}
+	
+	public void setSlotsNum(int meta) {
+		inventory = new ItemStack[meta == 0 ? 54 : 117];
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound i) {
+		super.readFromNBT(i);
+		metadata = i.getInteger("metadata");
+		setSlotsNum(metadata);
+		rotation = i.getInteger("rotation");
+		ownerName = i.getString("ownerName");
+		MiscUtils.loadInventory(this, i);
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound i) {
+		super.writeToNBT(i);
+		i.setInteger("metadata", metadata);
+		i.setInteger("rotation", rotation);
+		i.setString("ownerName", ownerName);
+		MiscUtils.saveInventory(this, i);
+		return i;
 	}
 
 	@Override
@@ -201,39 +221,16 @@ public class TileMagicalChest extends TileEntity implements IInventory, ISidedIn
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound i) {
-		super.readFromNBT(i);
-		MiscUtils.loadInventory(this, i);
-		rotation = i.getInteger("0");
-		ownerName = i.getString("1");
-	}
-
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound i) {
-		super.writeToNBT(i);
-		MiscUtils.saveInventory(this, i);
-		i.setInteger("0", rotation);
-		i.setString("1", ownerName);
-		return i;
-	}
-
-	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound nbttagcompound = new NBTTagCompound();
-		nbttagcompound.setInteger("x", pos.getX());
-		nbttagcompound.setInteger("y", pos.getY());
-		nbttagcompound.setInteger("z", pos.getZ());
-		nbttagcompound.setInteger("0", rotation);
-		nbttagcompound.setString("1", ownerName);
+		writeToNBT(nbttagcompound);
 		return new SPacketUpdateTileEntity(pos, -10, nbttagcompound);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		if(pkt.getTileEntityType() == -10 && pkt.getNbtCompound().hasKey("0")) {
-			rotation = pkt.getNbtCompound().getInteger("0");
-			ownerName = pkt.getNbtCompound().getString("1");
-		}
+		if(pkt.getTileEntityType() == -10)
+			readFromNBT(pkt.getNbtCompound());
 	}
 
 	@Override

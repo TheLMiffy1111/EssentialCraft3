@@ -8,6 +8,7 @@ import com.mojang.authlib.GameProfile;
 
 import DummyCore.Client.IModelRegisterer;
 import DummyCore.Utils.MathUtils;
+import DummyCore.Utils.MiscUtils;
 import ec3.common.mod.EssentialCraftCore;
 import ec3.common.tile.TileAnimalSeparator;
 import ec3.common.tile.TileCrafter;
@@ -28,6 +29,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBlockSpecial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -65,7 +67,7 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 	{
 		return EnumBlockRenderType.MODEL;
 	}
-	
+
 	public void getSubBlocks(Item p_149666_1_, CreativeTabs p_149666_2_, List<ItemStack> p_149666_3_)
 	{
 		for(int i = 0; i < names.length; ++i)
@@ -126,20 +128,14 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 		}
 	}
 
-	public void plant(EntityItem e)
-	{
+	public void plant(EntityItem e) {
 		BlockPos p = e.getPosition();
-		if(e.getEntityItem() != null && !e.getEntityWorld().isRemote)
-		{
+		if(e.getEntityItem() != null && !e.getEntityWorld().isRemote) {
 			ItemStack stk = e.getEntityItem();
-			//Blocks - tallgrass, bushes, cacti, etc
-			if(stk.getItem() instanceof ItemBlock)
-			{
+			if(stk.getItem() instanceof ItemBlock) {//cacti, grass
 				Block b = Block.getBlockFromItem(stk.getItem());
-				if(b instanceof IPlantable)
-				{
-					if(e.getEntityWorld().isAirBlock(p) && e.getEntityWorld().getBlockState(p.down()).getBlock().canSustainPlant(e.getEntityWorld().getBlockState(p), e.getEntityWorld(), p, EnumFacing.UP, IPlantable.class.cast(b)))
-					{
+				if(b instanceof IPlantable) {
+					if(e.getEntityWorld().isAirBlock(p) && e.getEntityWorld().getBlockState(p.down()).getBlock().canSustainPlant(e.getEntityWorld().getBlockState(p.down()), e.getEntityWorld(), p.down(), EnumFacing.UP, IPlantable.class.cast(b))) {
 						FakePlayer user = new FakePlayer((WorldServer)e.getEntityWorld(),planterFakePlayerProfile);
 
 						stk.getItem().onItemUse(stk, user, e.getEntityWorld(), p.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
@@ -149,13 +145,23 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 						user = null;
 					}
 				}
-			}else //Items - seeds, reeds, cake?
-			{
-				if(stk.getItem() instanceof IPlantable)
-				{
-					if(e.getEntityWorld().isAirBlock(p) && e.getEntityWorld().getBlockState(p.down()).getBlock().canSustainPlant(e.getEntityWorld().getBlockState(p), e.getEntityWorld(), p, EnumFacing.UP, IPlantable.class.cast(stk.getItem())))
-					{
-						FakePlayer user = new FakePlayer((WorldServer) e.getEntityWorld(),planterFakePlayerProfile);
+			}
+			else if(stk.getItem() instanceof IPlantable) {//seeds
+				if(e.getEntityWorld().isAirBlock(p) && e.getEntityWorld().getBlockState(p.down()).getBlock().canSustainPlant(e.getEntityWorld().getBlockState(p.down()), e.getEntityWorld(), p.down(), EnumFacing.UP, IPlantable.class.cast(stk.getItem()))) {
+					FakePlayer user = new FakePlayer((WorldServer) e.getEntityWorld(),planterFakePlayerProfile);
+
+					stk.getItem().onItemUse(stk, user, e.getEntityWorld(), p.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
+
+					invalidate(e);
+
+					user = null;
+				}
+			}
+			else if(stk.getItem() instanceof ItemBlockSpecial) {//reeds
+				Block b = ItemBlockSpecial.class.cast(stk.getItem()).getBlock();
+				if(b instanceof IPlantable) {
+					if(e.getEntityWorld().isAirBlock(p) && e.getEntityWorld().getBlockState(p.down()).getBlock().canSustainPlant(e.getEntityWorld().getBlockState(p.down()), e.getEntityWorld(), p.down(), EnumFacing.UP, IPlantable.class.cast(b))) {
+						FakePlayer user = new FakePlayer((WorldServer)e.getEntityWorld(),planterFakePlayerProfile);
 
 						stk.getItem().onItemUse(stk, user, e.getEntityWorld(), p.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
 
@@ -292,12 +298,19 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 	}
 
 	@Override
+	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
+		if(par1World.getTileEntity(par2Pos) != null)
+			MiscUtils.dropItemsOnBlockBreak(par1World, par2Pos.getX(), par2Pos.getY(), par2Pos.getZ(), par3State.getBlock(), 0);
+		super.breakBlock(par1World, par2Pos, par3State);
+	}
+
+	@Override
 	public void registerModels() {
 		for(int i = 0; i < DeviceType.values().length; i++) {
 			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation("essentialcraft:device", "type=" + DeviceType.fromIndex(i).getName()));
 		}
 	}
-	
+
 	public static enum DeviceType implements IStringSerializable {
 		REPLANTER("replanter"),
 		ITEMSHUFFLER("item_shuffler"),
@@ -307,27 +320,27 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 		SHEARINGSTATION("shearing_station"),
 		CHILDSEPARATOR("child_separator"),
 		ADULTSEPARATOR("adult_separator");
-		
+
 		private int index;
 		private String name;
-		
+
 		private DeviceType(String s) {
 			index = ordinal();
 			name = s;
 		}
-		
+
 		public String getName() {
 			return name;
 		}
-		
+
 		public String toString() {
 			return name;
 		}
-		
+
 		public int getIndex() {
 			return index;
 		}
-		
+
 		public static DeviceType fromIndex(int i) {
 			return values()[i];
 		}

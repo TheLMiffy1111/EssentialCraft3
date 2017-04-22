@@ -88,7 +88,7 @@ public class ItemBiomeWand extends ItemStoresMRUInNBT implements IModelRegistere
 	{
 		if(isBiomeSaved(par1ItemStack))
 			return Biome.getBiome(getBiomeID(par1ItemStack)).getFoliageColorAtPos(BlockPos.ORIGIN);
-		return 0x00ffff;
+		return 0xffffff;
 	}
 
 	@Override

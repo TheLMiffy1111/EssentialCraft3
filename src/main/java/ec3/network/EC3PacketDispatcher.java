@@ -1,4 +1,4 @@
-package ec3.network.proxy;
+package ec3.network;
 
 import io.netty.channel.ChannelHandler;
 import net.minecraft.client.Minecraft;
@@ -22,7 +22,6 @@ import ec3.common.tile.TileMagicalQuarry;
 import ec3.common.tile.TileNewMIM;
 import ec3.common.tile.TileNewMIMInventoryStorage;
 import ec3.common.tile.TileNewMIMScreen;
-import ec3.network.PacketNBT;
 import ec3.utils.common.ECUtils;
 
 @ChannelHandler.Sharable

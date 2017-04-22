@@ -20,7 +20,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 
 public class GuiMRUGenerated extends GuiTextField{
 
@@ -127,10 +130,11 @@ public class GuiMRUGenerated extends GuiTextField{
 				RenderItem renderitem = Minecraft.getMinecraft().getRenderItem();
 				if(furnace.burnedFlower != null)
 				{
-					IBlockState b = furnace.getWorld().getBlockState(new BlockPos((int)furnace.burnedFlower.x,(int)furnace.burnedFlower.y, (int)furnace.burnedFlower.z));
+					BlockPos pos = new BlockPos((int)furnace.burnedFlower.x,(int)furnace.burnedFlower.y, (int)furnace.burnedFlower.z);
+					IBlockState b = furnace.getWorld().getBlockState(pos);
 					if(b != null && Item.getItemFromBlock(b.getBlock()) != null)
 					{
-						renderitem.renderItemIntoGUI(new ItemStack(b.getBlock(), 1, b.getBlock().damageDropped(b)), posX+83, posY+1);
+						renderitem.renderItemIntoGUI(b.getBlock().getPickBlock(b, new RayTraceResult(Vec3d.ZERO, EnumFacing.DOWN, pos), furnace.getWorld(), new BlockPos((int)furnace.burnedFlower.x,(int)furnace.burnedFlower.y, (int)furnace.burnedFlower.z), Minecraft.getMinecraft().player), posX+83, posY+1);
 					}
 				}
 				DrawUtils.bindTexture("minecraft", "textures/gui/container/furnace.png");
@@ -153,10 +157,11 @@ public class GuiMRUGenerated extends GuiTextField{
 				RenderItem renderitem = Minecraft.getMinecraft().getRenderItem();
 				if(furnace.burnedFlower != null)
 				{
-					IBlockState b = furnace.getWorld().getBlockState(new BlockPos((int)furnace.burnedFlower.x,(int)furnace.burnedFlower.y, (int)furnace.burnedFlower.z));
+					BlockPos pos = new BlockPos((int)furnace.burnedFlower.x,(int)furnace.burnedFlower.y, (int)furnace.burnedFlower.z);
+					IBlockState b = furnace.getWorld().getBlockState(pos);
 					if(b != null && Item.getItemFromBlock(b.getBlock()) != null)
 					{
-						renderitem.renderItemIntoGUI(new ItemStack(b.getBlock(), 1, b.getBlock().damageDropped(b)), posX+83, posY+1);
+						renderitem.renderItemIntoGUI(b.getBlock().getPickBlock(b, new RayTraceResult(Vec3d.ZERO, EnumFacing.DOWN, pos), furnace.getWorld(), new BlockPos((int)furnace.burnedFlower.x,(int)furnace.burnedFlower.y, (int)furnace.burnedFlower.z), Minecraft.getMinecraft().player), posX+83, posY+1);
 					}
 				}
 				DrawUtils.bindTexture("minecraft", "textures/gui/container/furnace.png");

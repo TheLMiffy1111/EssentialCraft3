@@ -46,7 +46,7 @@ public class TileecRedstoneController extends TileEntity implements IStructurePi
 		++tickTimer;
 		if(tickTimer >= 20) {
 			tickTimer = 0;
-			getWorld().notifyBlockOfStateChange(pos, getWorld().getBlockState(pos).getBlock());
+			getWorld().notifyNeighborsOfStateChange(pos, getWorld().getBlockState(pos).getBlock());
 		}
 	}
 	

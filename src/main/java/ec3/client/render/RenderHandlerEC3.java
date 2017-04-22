@@ -45,7 +45,7 @@ import ec3.common.mod.EssentialCraftCore;
 import ec3.common.registry.PotionRegistry;
 import ec3.common.registry.SoundRegistry;
 import ec3.common.tile.TileWindRune;
-import ec3.network.proxy.ClientProxy;
+import ec3.proxy.ClientProxy;
 import ec3.utils.common.ECUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;

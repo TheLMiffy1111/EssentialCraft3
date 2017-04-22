@@ -67,7 +67,7 @@ public class TilePotionSpreader extends TileMRUGeneric {
 					for(int i = 0; i < lst.size(); ++i) {
 						EntityLivingBase base = lst.get(i);
 						boolean shouldUsePotion = false;
-						PotionEffect effect = new PotionEffect(actualPotion,potionDuration,potionAmplifier);
+						PotionEffect effect = new PotionEffect(actualPotion,potionDuration,potionAmplifier,true,true);
 						if(actualPotion == MobEffects.INSTANT_HEALTH) {
 							float healAmount = (float)Math.max(4 << effect.getAmplifier(), 0);
 							shouldUsePotion = (!base.isEntityUndead() && base.getHealth()+healAmount <= base.getMaxHealth()) || (base.isEntityUndead() && base.hurtResistantTime == 0 && base.hurtTime == 0);

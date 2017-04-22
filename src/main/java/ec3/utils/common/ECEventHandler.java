@@ -46,7 +46,7 @@ import ec3.common.tile.TileWeaponMaker;
 import ec3.common.world.biome.BiomeGenCorruption_Chaos;
 import ec3.common.world.biome.BiomeGenCorruption_Frozen;
 import ec3.common.world.biome.BiomeGenCorruption_Magic;
-import ec3.network.proxy.ClientProxy;
+import ec3.proxy.ClientProxy;
 import ec3.utils.cfg.Config;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.TextureMap;
