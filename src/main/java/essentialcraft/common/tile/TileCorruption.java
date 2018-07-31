@@ -2,8 +2,6 @@ package essentialcraft.common.tile;
 
 import java.util.List;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MiscUtils;
 import essentialcraft.common.block.BlockCorruption;
 import essentialcraft.common.block.BlocksCore;
@@ -100,7 +98,7 @@ public class TileCorruption extends TileEntity implements ITickable {
 				getWorld().setBlockToAir(pos);
 			}
 		}
-		catch (Exception e) {
+		catch(Exception e) {
 			e.printStackTrace();
 			return;
 		}
@@ -108,20 +106,9 @@ public class TileCorruption extends TileEntity implements ITickable {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("CorruptionSettings", "tileentities", new String[] {
-					"Change Biome:true",
-					"Destroy Blocks if grown:true"
-			}, "Settings of the given Device.");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-			canChangeBiome = Boolean.parseBoolean(data[0].fieldValue);
-			canDestroyBlocks = Boolean.parseBoolean(data[1].fieldValue);
-			cfg.save();
+			String category = "tileentities.corruption";
+			canChangeBiome = cfg.get(category, "ChangeBiome", true).getBoolean();
+			canDestroyBlocks = cfg.get(category, "DestroyBlocks", true, "Destroy blocks if grown").getBoolean();
 		}
 		catch(Exception e) {
 			return;

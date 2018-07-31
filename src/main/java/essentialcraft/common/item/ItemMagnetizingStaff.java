@@ -37,7 +37,7 @@ public class ItemMagnetizingStaff extends ItemMRUGeneric implements IModelRegist
 		if(count % 8 == 0 && player instanceof EntityPlayer && ECUtils.playerUseMRU((EntityPlayer)player, stack, 50))
 		{
 			player.swingArm(EnumHand.MAIN_HAND);
-			List<EntityItem> items = player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(player.posX-0.5D, player.posY, player.posZ-0.5D, player.posX+0.5D, player.posY+1, player.posZ+0.5D).expand(12D, 6D, 12D));
+			List<EntityItem> items = player.getEntityWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(player.posX-0.5D, player.posY, player.posZ-0.5D, player.posX+0.5D, player.posY+1, player.posZ+0.5D).grow(12D, 6D, 12D));
 			for(EntityItem item : items)
 			{
 				if(player.posX < item.posX)

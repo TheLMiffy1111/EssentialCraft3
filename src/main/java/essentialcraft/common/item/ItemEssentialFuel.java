@@ -24,11 +24,11 @@ public class ItemEssentialFuel extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List) {
+	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> list) {
 		if(this.isInCreativeTab(par2CreativeTabs))
 			for(int var4 = 0; var4 < 4; ++var4) {
 				ItemStack min = new ItemStack(this, 1, var4);
-				par3List.add(min);
+				list.add(min);
 			}
 	}
 
@@ -38,7 +38,7 @@ public class ItemEssentialFuel extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public EnumRarity getRarity(ItemStack par1ItemStack) {
+	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.RARE;
 	}
 

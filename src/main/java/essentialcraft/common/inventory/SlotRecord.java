@@ -11,7 +11,7 @@ public class SlotRecord extends Slot {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack par1ItemStack) {
-		return par1ItemStack.getItem() instanceof ItemRecord;
+	public boolean isItemValid(ItemStack stack) {
+		return stack.getItem() instanceof ItemRecord;
 	}
 }

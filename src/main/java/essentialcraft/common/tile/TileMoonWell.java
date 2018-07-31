@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import net.minecraftforge.common.config.Configuration;
 
@@ -9,19 +7,17 @@ public class TileMoonWell extends TileMRUGeneric {
 
 	public static int cfgMaxMRU = ApiCore.GENERATOR_MAX_MRU_GENERIC;
 	public static float cfgBalance = 1F;
-	public static float mruGenerated = 60;
+	public static int maxHeight = 80;
+	public static double mruGenerated = 60;
 
 	public TileMoonWell() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		mruStorage.setBalance(cfgBalance);
 		slot0IsBoundGem = false;
 	}
 
 	public boolean canGenerateMRU() {
-		int moonPhase = getWorld().provider.getMoonPhase(getWorld().getWorldTime());
-		boolean night = !getWorld().isDaytime();
-		return moonPhase != 4 && night && getWorld().canBlockSeeSky(pos.up());
+		return getWorld().provider.getMoonPhase(getWorld().getWorldTime()) != 4 && !getWorld().isDaytime() && getWorld().canBlockSeeSky(pos.up());
 	}
 
 	@Override
@@ -29,76 +25,29 @@ public class TileMoonWell extends TileMRUGeneric {
 		super.update();
 		if(getWorld().isBlockIndirectlyGettingPowered(pos) == 0) {
 			int moonPhase = getWorld().provider.getMoonPhase(getWorld().getWorldTime());
-			float moonFactor = 1.0F;
-			switch(moonPhase) {
-			case 0: {
-				moonFactor = 1.0F;
-				break;
-			}
-			case 1: {
-				moonFactor = 0.75F;
-				break;
-			}
-			case 7: {
-				moonFactor = 0.75F;
-				break;
-			}
-			case 2: {
-				moonFactor = 0.5F;
-				break;
-			}
-			case 6: {
-				moonFactor = 0.5F;
-				break;
-			}
-			case 3: {
-				moonFactor = 0.25F;
-				break;
-			}
-			case 5: {
-				moonFactor = 0.25F;
-				break;
-			}
-			case 4: {
-				moonFactor = 0.0F;
-				break;
-			}
-			}
-			float mruGenerated = TileMoonWell.mruGenerated;
-			mruGenerated *= moonFactor;
-			float heightFactor = 1.0F;
-			if(pos.getY() > 80)
-				heightFactor = 0F;
+			double moonFactor = Math.abs(1D-moonPhase*0.25D);
+			double mruGen = mruGenerated;
+			mruGen *= moonFactor;
+			double heightFactor = 1D;
+			if(pos.getY() > maxHeight)
+				heightFactor = 0D;
 			else {
-				heightFactor = 1.0F - pos.getY()/80F;
-				mruGenerated *= heightFactor;
+				heightFactor = 1D - (double)pos.getY()/maxHeight;
+				mruGen *= heightFactor;
 			}
-			if(mruGenerated > 0 && canGenerateMRU()) {
-				mruStorage.addMRU((int)mruGenerated, true);
+			if((int)mruGen > 0 && canGenerateMRU()) {
+				mruStorage.addMRU((int)mruGen, true);
 			}
 		}
 	}
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MoonWellSettings", "tileentities", new String[] {
-					"Max MRU:"+ApiCore.GENERATOR_MAX_MRU_GENERIC,
-					"Default balance:1.0",
-					"Max MRU generated per tick:60"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			cfgBalance = Float.parseFloat(data[1].fieldValue);
-			mruGenerated = Float.parseFloat(data[2].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.moonwell";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			cfgBalance = (float)cfg.get(category, "Balance", 1D).setMinValue(0D).setMaxValue(2D).getDouble();
+			mruGenerated = cfg.get(category, "MaxMRUGenerated", 60D).setMinValue(0D).getDouble();
+			maxHeight = cfg.get(category, "MaxHeight", 80).setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;

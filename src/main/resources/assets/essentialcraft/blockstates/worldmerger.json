@@ -1,0 +1,14 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "minecraft:cube_top",
+        "textures": {
+            "top": "essentialcraft:blocks/worldmerger_top",
+            "side": "essentialcraft:blocks/worldmerger_side"
+        }
+    },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{}]
+    }
+}

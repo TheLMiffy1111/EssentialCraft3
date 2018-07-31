@@ -2,8 +2,6 @@ package essentialcraft.common.tile;
 
 import java.util.List;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.util.DamageSource;
@@ -21,15 +19,19 @@ public class TileEnderGenerator extends TileMRUGeneric {
 	private boolean firstTick = true;
 
 	public TileEnderGenerator() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		slot0IsBoundGem = false;
 	}
 
 	@Override
 	public void update() {
-		if(!getWorld().isRemote && cfgBalance == -1F && firstTick) {
-			mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+		if(firstTick) {
+			if(cfgBalance < 0) {
+				mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+			}
+			else {
+				mruStorage.setBalance(cfgBalance);
+			}
 		}
 		super.update();
 		firstTick = false;
@@ -79,26 +81,11 @@ public class TileEnderGenerator extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("EnderGeneratorSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.GENERATOR_MAX_MRU_GENERIC,
-					"Default balance(-1 is random):-1.0",
-					"MRU generated per hit:500",
-					"Radius of Endermen detection:8"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			cfgBalance = Float.parseFloat(data[1].fieldValue);
-			mruGenerated = Integer.parseInt(data[2].fieldValue);
-			endermenCatchRadius = Integer.parseInt(data[3].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.endergenerator";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			cfgBalance = (float)cfg.get(category, "Balance", -1D, "Default balance, -1 is random").setMinValue(-1D).setMaxValue(2D).getDouble();
+			mruGenerated = cfg.get(category, "MRUGenerated", 500, "MRU generated per hit").setMinValue(0).getInt();
+			endermenCatchRadius = cfg.get(category, "Radius", 8, "Radius of Endermen detection").setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;

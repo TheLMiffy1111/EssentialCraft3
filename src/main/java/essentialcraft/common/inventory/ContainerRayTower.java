@@ -12,7 +12,7 @@ public class ContainerRayTower extends ContainerInventory {
 
 	@Override
 	public void setupSlots() {
-		addSlotToContainer(new SlotBoundEssence(inv, 0, 29, 32));
+		addSlotToContainer(new SlotBoundEssence(inv, 0, 108, 23));
 		this.setupPlayerInventory();
 	}
 }

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import DummyCore.Utils.BlockPosition;
-import DummyCore.Utils.DataStorage;
 import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MiscUtils;
 import essentialcraft.api.EnumStructureType;
@@ -333,22 +332,9 @@ public class TileMRUCUECController extends TileEntity implements IMRUDisplay, IT
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("EnrichmentChamberSettings", "tileentities", new String[] {
-					"Default Max MRU:60000",
-					"MRU Increasement per Storage:100000"
-			},"");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			cfgMRUPerStorage = Integer.parseInt(data[1].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.enrichmentchamber";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", 60000).setMinValue(1).getInt();
+			cfgMRUPerStorage = cfg.get(category, "MRUPerStorage", 100000).setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;

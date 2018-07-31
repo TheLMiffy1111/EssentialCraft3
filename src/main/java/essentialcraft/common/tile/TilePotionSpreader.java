@@ -2,8 +2,6 @@ package essentialcraft.common.tile;
 
 import java.util.List;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MathUtils;
 import DummyCore.Utils.MiscUtils;
 import essentialcraft.api.ApiCore;
@@ -33,8 +31,7 @@ public class TilePotionSpreader extends TileMRUGeneric {
 	public static int potionGenUseTime = 16;
 
 	public TilePotionSpreader() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(9);
 	}
 
@@ -94,7 +91,7 @@ public class TilePotionSpreader extends TileMRUGeneric {
 								MiscUtils.spawnParticlesOnServer("spell_mob", (float)(base.posX + MathUtils.randomFloat(getWorld().rand)), (float)(base.posY+1 + MathUtils.randomFloat(getWorld().rand)), (float)(base.posZ + MathUtils.randomFloat(getWorld().rand)), f, f1, f2);
 						}
 						if(generatesCorruption)
-							ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+							ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, (genCorruption));
 					}
 					if(haveUsedPotion)
 						--potionUseTime;
@@ -138,28 +135,12 @@ public class TilePotionSpreader extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("PotionSpreaderSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage Per Mob:250",
-					"Can this device actually generate corruption:false",
-					"The amount of corruption generated each tick(do not set to 0!):5",
-					"Amount of times one potion can be spreaded:16"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[2].fieldValue);
-			genCorruption = Integer.parseInt(data[3].fieldValue);
-			potionGenUseTime = Integer.parseInt(data[4].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.potionspreader";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 250, "MRU Usage Per Mob").setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", false).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 5, "Max amount of corruption generated per tick").setMinValue(0).getInt();
+			potionGenUseTime = cfg.get(category, "MaxSpreadAmount", 16, "Amount of times one potion can be spreaded").setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;
@@ -172,7 +153,7 @@ public class TilePotionSpreader extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_1_ == 0 ? isBoundGem(p_94041_2_) : p_94041_2_.getItem() instanceof ItemPotion;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot == 0 ? isBoundGem(stack) : stack.getItem() instanceof ItemPotion;
 	}
 }

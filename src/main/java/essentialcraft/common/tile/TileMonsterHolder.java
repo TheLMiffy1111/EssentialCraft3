@@ -3,8 +3,6 @@ package essentialcraft.common.tile;
 import java.util.List;
 
 import DummyCore.Utils.Coord3D;
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.DummyDistance;
 import essentialcraft.api.ApiCore;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,15 +12,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.config.Configuration;
 
 public class TileMonsterHolder extends TileMRUGeneric {
-	public static float rad = 12F;
+	public static double rad = 12D;
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
 	public static boolean generatesCorruption = false;
 	public static int genCorruption = 1;
 	public static int mruUsage = 1;
 
 	public TileMonsterHolder() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(1);
 	}
 
@@ -55,34 +52,17 @@ public class TileMonsterHolder extends TileMRUGeneric {
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-		return bb;
+		return INFINITE_EXTENT_AABB;
 	}
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MonsterHolderSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage Per Mob:1",
-					"Can this device actually generate corruption:false",
-					"The amount of corruption generated each tick(do not set to 0!):1",
-					"Radius to hold mobs within:12.0"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[2].fieldValue);
-			genCorruption = Integer.parseInt(data[3].fieldValue);
-			rad = Float.parseFloat(data[4].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.monsterholder";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 1, "MRU Usage Per Mob").setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", false).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 1, "Max amount of corruption generated per tick").setMinValue(0).getInt();
+			rad = cfg.get(category, "Radius", 12D).setMinValue(0D).getDouble();
 		}
 		catch(Exception e) {
 			return;

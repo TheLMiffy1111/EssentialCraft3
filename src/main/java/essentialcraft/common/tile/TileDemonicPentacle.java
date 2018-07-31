@@ -21,6 +21,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class TileDemonicPentacle extends TileEntity implements ITickable {
+
 	public int tier = -1;
 	public int sCheckTick = 0;
 	protected static Vec3i[] coords = {

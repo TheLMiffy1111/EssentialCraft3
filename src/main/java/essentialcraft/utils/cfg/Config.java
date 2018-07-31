@@ -16,21 +16,15 @@ public class Config implements IDummyConfig {
 
 	//GUIs
 	public void loadGUIs() {
-		guiID[0] = config.get("gui","Generic GUI ID", 7321).getInt();
-		guiID[1] = config.get("gui","Demon GUI ID", 7322).getInt();
+		guiID[0] = config.get("gui", "GenericGUIID", 7321).getInt();
+		guiID[1] = config.get("gui", "DemonGUIID", 7322).getInt();
 	}
 
 	public void loadMisc() {
-		biomeID[0] = config.get("biomes", "ChaosCorruptionID", 91).getInt();
-		biomeID[1] = config.get("biomes", "FrozenCorruptionID", 92).getInt();
-		biomeID[2] = config.get("biomes", "ShadowCorruptionID", 93).getInt();
-		biomeID[3] = config.get("biomes", "MagicCorruptionID", 94).getInt();
-		biomeID[4] = config.get("biomes", "DesertID", 95).getInt();
-		biomeID[5] = config.get("biomes", "DreadlandsID", 96).getInt();
-		enablePersonalityShatter = config.getBoolean("EnablePersonalityShatter", "misc", true, "");
-		renderStructuresFromAbove = config.getBoolean("renderStructuresFromAbove", "misc", true, "");
-		dimensionID = config.getInt("Hoanna ID", "misc", 53, Integer.MIN_VALUE, Integer.MAX_VALUE, "");
-		String[] cfgCustomOreParsing = config.getStringList("CustomMagmaticAlloys", "misc", new String[]{}, "Allows to add custom ores to Magmatic Alloys, where this is an array list, where first part is the ore name in OreDictionary, int after : is the color, int after | is the amount of drops you get from the ore and String after ? is the OreDictionary name of the result.");
+		enablePersonalityShatter = config.get("misc", "EnablePersonalityShatter", true).getBoolean();
+		renderStructuresFromAbove = config.get("misc", "RenderStructuresFromAbove", true).getBoolean();
+		dimensionID = config.get("misc", "HoannaID", 53).getInt();
+		String[] cfgCustomOreParsing = config.get("misc", "CustomMagmaticAlloys", new String[0], "Allows to add custom ores to Magmatic Alloys, where this is an array list, where first part is the ore name in OreDictionary, int after : is the color, int after | is the amount of drops you get from the ore and String after ? is the OreDictionary name of the result.").getStringList();
 		for(String s : cfgCustomOreParsing) {
 			int index_0 = s.indexOf(":");
 			int index_1 = s.indexOf("|");
@@ -44,10 +38,10 @@ public class Config implements IDummyConfig {
 
 			OreSmeltingRecipe.addRecipe(oredOreName,oredResultName,oreColor,oreOutput);
 		}
-		oreGenAttempts = config.getInt("oreGenAttempts", "misc", 4, 0, Integer.MAX_VALUE, "The amount of tries to generate the elemental ore cluster in a chunk. Set to 0 to disable worldgen.");
-		eMRUCUGenAttempts = config.getInt("eMRUCUGenAttempts", "misc", 1, 0, Integer.MAX_VALUE, "The amount of tries to generate the Elder MRUCU Structure in a chunk. Set to 0 to disable worldgen.");
-		allowPaleItemsInOtherRecipes = config.getBoolean("AllowPaleItemsInOtherRecipes", "misc", true, "");
-		allowHologramInOtherDimensions = config.getBoolean("allowHologramInOtherDimensions", "mobs", false, "Is the hologram boss allowed to spawn in the overworld/nether/anything or only Hoanna");
+		oreGenAttempts = config.get("misc", "OreGenAttempts", 4, "The amount of tries to generate the elemental ore cluster in a chunk. Set to 0 to disable worldgen.").setMinValue(0).getInt();
+		eMRUCUGenAttempts = config.get("misc", "ElderMRUCUGenAttempts", 1, "The amount of tries to generate the Elder MRUCU Structure in a chunk. Set to 0 to disable worldgen.").setMinValue(0).getInt();
+		allowPaleItemsInOtherRecipes = config.get("misc", "AllowPaleItemsInOtherRecipes", true).getBoolean();
+		allowHologramInOtherDimensions = config.get("mobs", "AllowHologramInOtherDimensions", false, "Is the hologram boss allowed to spawn in the overworld/nether/anything or only Hoanna").getBoolean();
 	}
 
 	public static int genericBlockIDS = 1200;
@@ -56,9 +50,6 @@ public class Config implements IDummyConfig {
 	public static int itemsCount = 0;
 	public static int dimensionID = 53;
 	public static int[] guiID = new int[48];
-	public static int[] mobID = new int[16];
-	public static int[] enchantID = new int[4];
-	public static int[] biomeID = new int[8];
 	public static boolean isCorruptionAllowed;
 	public static boolean renderMRUPresenceWithoutMonocle;
 	public static boolean enableHardcoreCrafts;
@@ -81,7 +72,6 @@ public class Config implements IDummyConfig {
 	@Override
 	public void load(Configuration config) {
 		Config.config = config;
-		config.load();
 		this.loadGUIs();
 		this.loadMisc();
 		this.loadTiles();

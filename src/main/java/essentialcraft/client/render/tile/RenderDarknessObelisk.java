@@ -22,16 +22,16 @@ public class RenderDarknessObelisk extends TileEntitySpecialRenderer<TileDarknes
 
 	public RenderDarknessObelisk() {}
 
-	public void doRender(TileEntity tile, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_) {
+	public void doRender(TileEntity tile, double x, double y, double z, float partialTicks) {
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.pushMatrix();
 		float lightLevel = tile.getWorld().getLightBrightness(tile.getPos());
 		GlStateManager.enableBlend();
 		GlStateManager.color(1, 1, 1, 1-lightLevel/15F);
 		Minecraft.getMinecraft().renderEngine.bindTexture(rune);
-		GlStateManager.translate(p_76986_2_+0.5F, p_76986_4_, p_76986_6_+0.5F);
+		GlStateManager.translate(x+0.5F, y, z+0.5F);
 
-		float upperRotationIndex = (tile.getWorld().getWorldTime()+p_76986_8_)%100;
+		float upperRotationIndex = (tile.getWorld().getWorldTime()+partialTicks)%100;
 		if(upperRotationIndex > 50)
 			upperRotationIndex = 50-upperRotationIndex+50;
 
@@ -44,7 +44,7 @@ public class RenderDarknessObelisk extends TileEntitySpecialRenderer<TileDarknes
 	}
 
 	@Override
-	public void render(TileDarknessObelisk p_147500_1_, double p_147500_2_, double p_147500_4_, double p_147500_6_, float p_147500_8_, int destroyStage, float alpha) {
-		this.doRender(p_147500_1_, p_147500_2_, p_147500_4_, p_147500_6_, p_147500_8_, 0);
+	public void render(TileDarknessObelisk tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		this.doRender(tile, x, y, z, partialTicks);
 	}
 }

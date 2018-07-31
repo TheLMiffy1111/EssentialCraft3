@@ -133,7 +133,7 @@ public class ECEventHandler {
 
 	@SubscribeEvent
 	public void lootTableEvent(LootTableLoadEvent event) {
-		if(shouldLoadLoot && event.getName() == LootTableList.CHESTS_SIMPLE_DUNGEON) {
+		if(shouldLoadLoot && event.getName().equals(LootTableList.CHESTS_SIMPLE_DUNGEON)) {
 			LootPool main = event.getTable().getPool("main");
 			for(int i = 0; i < ItemBaublesSpecial.names.length-1; ++i) {
 				main.addEntry(new LootEntryItem(ItemsCore.baublesCore, 3, 0, new LootFunction[] {new SetMetadata(new LootCondition[0], new RandomValueRange(i))}, new LootCondition[0], "essentialcraft:baublesCore"+i));
@@ -214,7 +214,7 @@ public class ECEventHandler {
 					}
 				}
 				if(changeTarget) {
-					List<EntityLivingBase> entities = event.getEntityLiving().getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(event.getEntityLiving().posX-0.5D, event.getEntityLiving().posY-0.5D, event.getEntityLiving().posZ-0.5D, event.getEntityLiving().posX+0.5D, event.getEntityLiving().posY+0.5D, event.getEntityLiving().posZ+0.5D).expand(6, 3, 6));
+					List<EntityLivingBase> entities = event.getEntityLiving().getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(event.getEntityLiving().posX-0.5D, event.getEntityLiving().posY-0.5D, event.getEntityLiving().posZ-0.5D, event.getEntityLiving().posX+0.5D, event.getEntityLiving().posY+0.5D, event.getEntityLiving().posZ+0.5D).grow(6, 3, 6));
 					for(int i = 0; i < entities.size(); ++i) {
 						EntityLivingBase base = entities.get(i);
 						if(base == event.getEntityLiving() || base == event.getTarget()) {
@@ -542,10 +542,8 @@ public class ECEventHandler {
 	}
 
 	@SubscribeEvent
-	public void configSync(ConfigChangedEvent.OnConfigChangedEvent event)
-	{
-		if(event.getModID().equals("essentialcraft"))
-		{
+	public void configSync(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if(event.getModID().equals("essentialcraft")) {
 			Config.config.save();
 			Config.instance.load(Config.config);
 		}

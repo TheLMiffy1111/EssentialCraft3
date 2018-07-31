@@ -12,80 +12,88 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraftforge.common.config.Configuration;
 
 public class TileUltraHeatGenerator extends TileMRUGeneric {
 
-	public int currentBurnTime, currentMaxBurnTime;
-	public float heat;
+	public static int cfgMaxMRU = ApiCore.GENERATOR_MAX_MRU_GENERIC;
+	public static float cfgBalance = -1F;
 
+	public int currentBurnTime, currentMaxBurnTime;
 	private boolean firstTick = true;
+	public double heat;
 
 	public TileUltraHeatGenerator() {
-		super();
-		mruStorage.setMaxMRU(ApiCore.GENERATOR_MAX_MRU_GENERIC*10);
+		super(ApiCore.GENERATOR_MAX_MRU_GENERIC*10);
 		slot0IsBoundGem = false;
 		setSlotsNum(2);
 	}
 
 	@Override
 	public void update() {
-		if(!getWorld().isRemote && firstTick) {
-			mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+		if(firstTick) {
+			if(cfgBalance < 0) {
+				mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+			}
+			else {
+				mruStorage.setBalance(cfgBalance);
+			}
 		}
 		super.update();
 		firstTick = false;
 		if(getWorld().isBlockIndirectlyGettingPowered(pos) == 0) {
 			if(currentBurnTime > 0) {
-				float mruGenerated = 20;
-				float mruFactor = 1.0F;
+				double mruFactor = 1.0F;
 				Block[] b = new Block[4];
 				b[0] = getWorld().getBlockState(pos.east(2)).getBlock();
 				b[1] = getWorld().getBlockState(pos.west(2)).getBlock();
 				b[2] = getWorld().getBlockState(pos.south(2)).getBlock();
 				b[3] = getWorld().getBlockState(pos.north(2)).getBlock();
-				int[] ox = {2, -2, 0, 0};
-				int[] oz = {0, 0, 2, -2};
+				int[] ox = {2,-2, 0, 0};
+				int[] oz = {0, 0, 2,-2};
 				for(int i = 0; i < 4; ++i) {
 					if(b[i] == Blocks.AIR)
 						mruFactor*=0;
 					else if(b[i] == Blocks.NETHERRACK)
-						mruFactor*=0.75F;
+						mruFactor*=0.75D;
 					else if(b[i] == Blocks.LAVA)
-						mruFactor*=0.95F;
+						mruFactor*=0.95D;
 					else if(b[i] == Blocks.FIRE)
-						mruFactor*=0.7F;
+						mruFactor*=0.7D;
 					else if(b[i] instanceof IHotBlock)
 						mruFactor*=((IHotBlock)b[i]).getHeatModifier(getWorld(), pos.add(ox[i], 0, oz[i]));
 					else
-						mruFactor*=0.5F;
-
+						mruFactor*=0.5D;
 				}
 
-				float scaledHeatFactor = 0F;
+				double scaledHeatFactor = 0F;
 				if(heat < 1000) {
-					scaledHeatFactor = 0.1F + heat/1000F;
+					scaledHeatFactor = 0.1D + heat/1000;
 					currentBurnTime -= 2.5F/scaledHeatFactor;
 				}
 				else if(heat > 10000) {
-					scaledHeatFactor = 0.001F + 10000/heat;
+					scaledHeatFactor = 0.001D + 10000/heat;
 					currentBurnTime -= 1F*scaledHeatFactor;
 				}
 				else {
-					scaledHeatFactor = 1F;
+					scaledHeatFactor = 1D;
 					--currentBurnTime;
 				}
 				heat += mruFactor*scaledHeatFactor;
-				if(heat < 1000)
+				double mruGenerated;
+				if(heat < 1000) {
 					mruGenerated = heat/100;
-				else if(heat > 10000)
+				}
+				else if(heat > 10000) {
 					mruGenerated = 80 + heat/1000;
-				else
+				}
+				else {
 					mruGenerated = heat/124;
+				}
 				if(mruGenerated >= 1) {
 					mruStorage.addMRU((int)mruGenerated, true);
 				}
 			}
-
 
 			if(!getStackInSlot(0).isEmpty()) {
 				if(currentBurnTime <= 0 && mruStorage.getMRU() < mruStorage.getMaxMRU()) {
@@ -139,7 +147,7 @@ public class TileUltraHeatGenerator extends TileMRUGeneric {
 	public void readFromNBT(NBTTagCompound i) {
 		currentBurnTime = i.getInteger("burn");
 		currentMaxBurnTime = i.getInteger("burnMax");
-		heat = i.getFloat("heat");
+		heat = i.getDouble("heat");
 		super.readFromNBT(i);
 	}
 
@@ -147,7 +155,7 @@ public class TileUltraHeatGenerator extends TileMRUGeneric {
 	public NBTTagCompound writeToNBT(NBTTagCompound i) {
 		i.setInteger("burn", currentBurnTime);
 		i.setInteger("burnMax", currentMaxBurnTime);
-		i.setFloat("heat", heat);
+		i.setDouble("heat", heat);
 		return super.writeToNBT(i);
 	}
 
@@ -157,7 +165,18 @@ public class TileUltraHeatGenerator extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_1_ == 0;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot == 0;
+	}
+
+	public static void setupConfig(Configuration cfg) {
+		try {
+			String category = "tileentities.ultraheatgenerator";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			cfgBalance = (float)cfg.get(category, "Balance", -1D, "Default balance (-1 is random)").setMinValue(-1D).setMinValue(2D).getDouble();
+		}
+		catch(Exception e) {
+			return;
+		}
 	}
 }

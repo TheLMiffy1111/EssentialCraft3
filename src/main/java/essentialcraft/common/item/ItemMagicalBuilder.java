@@ -44,51 +44,51 @@ public class ItemMagicalBuilder extends ItemMRUGeneric implements IModelRegister
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4)
 	{
-		switch(par1ItemStack.getItemDamage())
+		switch(stack.getItemDamage())
 		{
 		case 0:
 		{
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.fillMode.normal"));
+			list.add(I18n.translateToLocal("essentialcraft.txt.fillMode.normal"));
 			break;
 		}
 		case 1:
 		{
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.fillMode.air"));
+			list.add(I18n.translateToLocal("essentialcraft.txt.fillMode.air"));
 			break;
 		}
 		case 2:
 		{
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.fillMode.replaceSelected"));
+			list.add(I18n.translateToLocal("essentialcraft.txt.fillMode.replaceSelected"));
 			break;
 		}
 		case 3:
 		{
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.fillMode.replaceButSelected"));
+			list.add(I18n.translateToLocal("essentialcraft.txt.fillMode.replaceButSelected"));
 			break;
 		}
 		case 4:
 		{
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.fillMode.replaceAll"));
+			list.add(I18n.translateToLocal("essentialcraft.txt.fillMode.replaceAll"));
 			break;
 		}
 		}
 
-		if(this.hasFirstPoint(par1ItemStack))
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.p1")+"| X:"+this.getFirstPoint(par1ItemStack).x+", Y:"+this.getFirstPoint(par1ItemStack).y+", Z:"+this.getFirstPoint(par1ItemStack).z);
-		if(this.hasSecondPoint(par1ItemStack))
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.p2")+"| X:"+this.getSecondPoint(par1ItemStack).x+", Y:"+this.getSecondPoint(par1ItemStack).y+", Z:"+this.getSecondPoint(par1ItemStack).z);
-		if(this.hasStoredBlock(par1ItemStack) && !this.retrieveStackFromNBT(par1ItemStack).isEmpty())
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.storedStack")+": "+this.retrieveStackFromNBT(par1ItemStack).getDisplayName());
+		if(this.hasFirstPoint(stack))
+			list.add(I18n.translateToLocal("essentialcraft.txt.p1")+"| X:"+this.getFirstPoint(stack).x+", Y:"+this.getFirstPoint(stack).y+", Z:"+this.getFirstPoint(stack).z);
+		if(this.hasSecondPoint(stack))
+			list.add(I18n.translateToLocal("essentialcraft.txt.p2")+"| X:"+this.getSecondPoint(stack).x+", Y:"+this.getSecondPoint(stack).y+", Z:"+this.getSecondPoint(stack).z);
+		if(this.hasStoredBlock(stack) && !this.retrieveStackFromNBT(stack).isEmpty())
+			list.add(I18n.translateToLocal("essentialcraft.txt.storedStack")+": "+this.retrieveStackFromNBT(stack).getDisplayName());
 
-		par3List.add(" ");
+		list.add(" ");
 
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
+		super.addInformation(stack, player, list, par4);
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List)
+	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(par2CreativeTabs))
 			for(int i = 0; i < 5; ++i)
@@ -97,8 +97,8 @@ public class ItemMagicalBuilder extends ItemMRUGeneric implements IModelRegister
 				ItemStack max = new ItemStack(this, 1, i);
 				min.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(0);
 				max.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(maxMRU);
-				par3List.add(min);
-				par3List.add(max);
+				list.add(min);
+				list.add(max);
 			}
 	}
 

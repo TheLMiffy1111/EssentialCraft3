@@ -23,8 +23,7 @@ public class TileCorruptionCleaner extends TileMRUGeneric {
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
 
 	public TileCorruptionCleaner() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(1);
 	}
 
@@ -97,28 +96,12 @@ public class TileCorruptionCleaner extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("CorruptionCleanerSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage per Tick:20",
-					"Required time to destroy corruption:200",
-					"Should remove corruption blocks instead of reducing their growth:false",
-					"A radius in which the device will detect corruption blocks:8"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			maxRadius = Integer.parseInt(data[4].fieldValue);
-			removeBlock = Boolean.parseBoolean(data[3].fieldValue);
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			ticksRequired = Integer.parseInt(data[2].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.corruptioncleaner";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 20, "Usage per tick").setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			ticksRequired = cfg.get(category, "TicksRequired", 200, "Time required to destroy corruption").setMinValue(0).getInt();
+			removeBlock = cfg.get(category, "RemoveBlock", false, "Should remove corruption blocks instead of reducing their growth").getBoolean();
+			maxRadius = cfg.get(category, "MaxRadius", 8).setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;
@@ -127,8 +110,7 @@ public class TileCorruptionCleaner extends TileMRUGeneric {
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-		return bb;
+		return new AxisAlignedBB(-maxRadius, -maxRadius, -maxRadius, 1+maxRadius, 1+maxRadius, 1+maxRadius);
 	}
 
 	@Override

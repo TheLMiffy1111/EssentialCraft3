@@ -34,7 +34,7 @@ public class RenderPlayerClone extends RenderBiped<EntityPlayerClone> {
 	}
 
 	@Override
-	protected void preRenderCallback(EntityPlayerClone p_77041_1_, float p_77041_2_) {
+	protected void preRenderCallback(EntityPlayerClone entity, float partialTicks) {
 		float s = 1.0F;
 		GlStateManager.scale(s, s, s);
 
@@ -46,19 +46,19 @@ public class RenderPlayerClone extends RenderBiped<EntityPlayerClone> {
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityPlayerClone p_110775_1_) {
+	protected ResourceLocation getEntityTexture(EntityPlayerClone entity) {
 		return textures;
 	}
 
 	@Override
-	public void doRender(EntityPlayerClone p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_) {
+	public void doRender(EntityPlayerClone entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		textures = DefaultPlayerSkin.getDefaultSkinLegacy();
-		UUID playerId = p_76986_1_.getClonedPlayer();
+		UUID playerId = entity.getClonedPlayer();
 		if(playerId != null) {
 			textures = Minecraft.getMinecraft().getConnection().getPlayerInfo(playerId).getLocationSkin();
 		}
 
-		super.doRender(p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
+		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	}
 
 	public static class Factory implements IRenderFactory<EntityPlayerClone> {

@@ -34,7 +34,7 @@ public class ModelGunHandler implements IBakedModel {
 
 	public static IBakedModel blankItem;
 
-	private IBakedModel baseModel;
+	private final IBakedModel baseModel;
 
 	public ModelGunHandler(IBakedModel baseModel) {
 		this.baseModel = baseModel;

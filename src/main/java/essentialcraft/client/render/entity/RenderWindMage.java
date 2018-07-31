@@ -33,8 +33,8 @@ public class RenderWindMage extends RenderLiving<EntityWindMage> {
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityWindMage p_110775_1_) {
-		switch (p_110775_1_.getType()) {
+	protected ResourceLocation getEntityTexture(EntityWindMage entity) {
+		switch (entity.getType()) {
 		case 1:
 			return normalTextures;
 		case 2:
@@ -45,7 +45,7 @@ public class RenderWindMage extends RenderLiving<EntityWindMage> {
 	}
 
 	@Override
-	protected void preRenderCallback(EntityWindMage p_77041_1_, float p_77041_2_) {
+	protected void preRenderCallback(EntityWindMage entity, float partialTicks) {
 		float f1 = 0.9375F;
 
 		GlStateManager.scale(f1, f1, f1);

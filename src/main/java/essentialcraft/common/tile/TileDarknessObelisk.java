@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MathUtils;
 import DummyCore.Utils.MiscUtils;
 import essentialcraft.api.ApiCore;
@@ -39,7 +37,7 @@ public class TileDarknessObelisk extends TileMRUGeneric {
 	public static boolean generatesCorruption = false;
 	public static int genCorruption = 30;
 	public static int mruUsage = 500;
-	public static float worldSpawnChance = 0.1F;
+	public static double worldSpawnChance = 0.1D;
 	public static int mobSpanwerDelay = 100;
 	public static boolean enableMobSpawners = true;
 	public static int mobSpawnerRadius = 3, worldSpawnerRadius = 8;
@@ -48,8 +46,7 @@ public class TileDarknessObelisk extends TileMRUGeneric {
 	private List<WeightedSpawnerEntity> potentialSpawns = Lists.<WeightedSpawnerEntity>newArrayList();
 
 	public TileDarknessObelisk() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(2);
 	}
 
@@ -60,7 +57,7 @@ public class TileDarknessObelisk extends TileMRUGeneric {
 			if(getStackInSlot(1).isEmpty() || !(getStackInSlot(1).getItem() instanceof ItemCollectedMonsterSpawner)) {
 				Biome biome = getWorld().getBiome(getPos());
 				List<Biome.SpawnListEntry> l = biome.getSpawnableList(EnumCreatureType.MONSTER);
-				if(l != null && !l.isEmpty() && getWorld().rand.nextFloat() < worldSpawnChance && mruStorage.getMRU() >= mruUsage) {
+				if(l != null && !l.isEmpty() && getWorld().rand.nextDouble() < worldSpawnChance && mruStorage.getMRU() >= mruUsage) {
 					if(!getWorld().isRemote) {
 						Biome.SpawnListEntry spawnlistentry = null;
 						IEntityLivingData ientitylivingdata = null;
@@ -82,7 +79,7 @@ public class TileDarknessObelisk extends TileMRUGeneric {
 										wrld.spawnEntity(entityliving);
 										mruStorage.extractMRU(mruUsage, true);
 										if(generatesCorruption)
-											ECUtils.increaseCorruptionAt(getWorld(), getPos(), getWorld().rand.nextInt(genCorruption));
+											ECUtils.randomIncreaseCorruptionAt(getWorld(), getPos(), getWorld().rand, genCorruption);
 										if(!ForgeEventFactory.doSpecialSpawn(entityliving, wrld, rndOffsetX+0.5F, rndOffsetY, rndOffsetZ+0.5F)) {
 											ientitylivingdata = entityliving.onInitialSpawn(getWorld().getDifficultyForLocation(rndPos), ientitylivingdata);
 										}
@@ -98,7 +95,7 @@ public class TileDarknessObelisk extends TileMRUGeneric {
 				}
 			}
 			else if(getStackInSlot(1).getItem() instanceof ItemCollectedMonsterSpawner && enableMobSpawners) {
-				if(innerRotation % mobSpanwerDelay > mobSpanwerDelay && mruStorage.getMRU() >= mruUsage) {
+				if(innerRotation % mobSpanwerDelay == 0 && mruStorage.getMRU() >= mruUsage) {
 					NBTTagCompound tag = MiscUtils.getStackTag(getStackInSlot(1));
 					if(tag.hasKey("monsterSpawner")) {
 						NBTTagCompound spTag = tag.getCompoundTag("monsterSpawner");
@@ -124,7 +121,7 @@ public class TileDarknessObelisk extends TileMRUGeneric {
 										entityliving.spawnExplosionParticle();
 									mruStorage.extractMRU(mruUsage, true);
 									if(generatesCorruption)
-										ECUtils.increaseCorruptionAt(getWorld(), getPos(), getWorld().rand.nextInt(genCorruption));
+										ECUtils.randomIncreaseCorruptionAt(getWorld(), getPos(), getWorld().rand, genCorruption);
 								}
 							}
 						}
@@ -168,36 +165,16 @@ public class TileDarknessObelisk extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("DarknessObeliskSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage:500",
-					"Ticks required to try to create an entity:100",
-					"Can this device actually generate corruption:false",
-					"The amount of corruption generated each tick(do not set to 0!):30",
-					"A chance per tick to try spawning a mob without a spawner:0.1",
-					"Enable mob spawning using spawner:true",
-					"Radius for a spawner:3",
-					"Radius for no spawner:8"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			mobSpanwerDelay = Integer.parseInt(data[2].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[3].fieldValue);
-			genCorruption = Integer.parseInt(data[4].fieldValue);
-			worldSpawnChance = Float.parseFloat(data[5].fieldValue);
-			enableMobSpawners = Boolean.parseBoolean(data[6].fieldValue);
-			mobSpawnerRadius = Integer.parseInt(data[7].fieldValue);
-			worldSpawnerRadius = Integer.parseInt(data[8].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.darknessobelisk";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 500).setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			mobSpanwerDelay = cfg.get(category, "SpawnerDelay", 100).setMinValue(1).getInt();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", false).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 30, "Max amount of corruption generated per tick").setMinValue(0).getInt();
+			worldSpawnChance = cfg.get(category, "SpawnChance", 0.1D, "Chance per tick to try spawning a mob without a spawner").setMinValue(0D).setMaxValue(1D).getDouble();
+			enableMobSpawners = cfg.get(category, "EnableSpawners", true).getBoolean();
+			mobSpawnerRadius = cfg.get(category, "SpawnerRadius", 3).setMinValue(0).getInt();
+			worldSpawnerRadius = cfg.get(category, "NoSpawnerRadius", 8).setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;

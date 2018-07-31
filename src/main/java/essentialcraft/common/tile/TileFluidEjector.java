@@ -11,9 +11,8 @@ public class TileFluidEjector extends TileMRUGeneric {
 	}
 
 	public TileFluidEjector() {
-		super();
+		super(0);
 		setSlotsNum(0);
-		mruStorage.setMaxMRU(0);
 	}
 
 	@Override

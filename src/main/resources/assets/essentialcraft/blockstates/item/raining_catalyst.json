@@ -1,0 +1,10 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "essentialcraft:item",
+        "textures": { "layer0": "essentialcraft:items/misc/raining_catalyst" }
+    },
+    "variants": {
+        "inventory": [{}]
+    }
+}

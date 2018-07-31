@@ -2,8 +2,6 @@ package essentialcraft.common.tile;
 
 import java.util.List;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.api.IColdBlock;
 import net.minecraft.block.Block;
@@ -20,11 +18,11 @@ public class TileColdDistillator extends TileMRUGeneric {
 
 	public static float balanceProduced = 0F;
 	public static int cfgMaxMRU = ApiCore.GENERATOR_MAX_MRU_GENERIC*10;
+	public static double mruGenModifier = 1;
 	public static boolean harmEntities = true;
 
 	public TileColdDistillator() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		slot0IsBoundGem = false;
 	}
 
@@ -37,16 +35,16 @@ public class TileColdDistillator extends TileMRUGeneric {
 		super.update();
 		mruStorage.setBalance(balanceProduced);
 		if(getWorld().isBlockIndirectlyGettingPowered(pos) == 0) {
-			int mruGenerated = CgetMru();
+			int mruGenerated = (int)(getMRU()*mruGenModifier);
 			mruStorage.addMRU(mruGenerated, true);
 			if(mruGenerated > 0 && !getWorld().isRemote && harmEntities) {
-				CdamageAround();
+				damageAround();
 			}
 		}
 	}
 
-	public void CdamageAround() {
-		List<EntityLivingBase> l = getWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos).expand(3D, 3D, 3D));
+	public void damageAround() {
+		List<EntityLivingBase> l = getWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos).grow(3D, 3D, 3D));
 		if(!l.isEmpty()) {
 			EntityLivingBase e = l.get(getWorld().rand.nextInt(l.size()));
 			if(e instanceof EntityPlayer && !((EntityPlayer)e).capabilities.isCreativeMode) {
@@ -68,26 +66,26 @@ public class TileColdDistillator extends TileMRUGeneric {
 		}
 	}
 
-	public int CgetMru() {
-		float i = 0;
+	public int getMRU() {
+		double i = 0;
 		for(int x = -3; x <= 3; ++x) {
 			for(int z = -3; z <= 3; ++z) {
 				for(int y = -3; y <= 3; ++y) {
-					if(getWorld().getBlockState(pos.add(x, y, z)) == Blocks.ICE) {
-						i += 0.15F;
+					if(getWorld().getBlockState(pos.add(x, y, z)).getBlock() == Blocks.ICE) {
+						i += 0.15D;
 					}
-					if(getWorld().getBlockState(pos.add(x, y, z)) == Blocks.SNOW) {
-						i += 0.2F;
+					if(getWorld().getBlockState(pos.add(x, y, z)).getBlock() == Blocks.SNOW) {
+						i += 0.2D;
 					}
-					if(getWorld().getBlockState(pos.add(x, y, z)) == Blocks.SNOW_LAYER) {
-						i += 0.05F;
+					if(getWorld().getBlockState(pos.add(x, y, z)).getBlock() == Blocks.SNOW_LAYER) {
+						i += 0.05D;
 					}
-					if(getWorld().getBlockState(pos.add(x, y, z)) == Blocks.PACKED_ICE) {
-						i += 0.3F;
+					if(getWorld().getBlockState(pos.add(x, y, z)).getBlock() == Blocks.PACKED_ICE) {
+						i += 0.3D;
 					}
 					Block b = getWorld().getBlockState(pos.add(x, y, z)).getBlock();
 					if(b != null && b instanceof IColdBlock) {
-						i += ((IColdBlock)b).getColdModifier(getWorld(), pos);
+						i += ((IColdBlock)b).getColdModifier(getWorld(), pos.add(x, y, z));
 					}
 				}
 			}
@@ -97,24 +95,11 @@ public class TileColdDistillator extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-
-			String[] cfgArrayString = cfg.getStringList("ColdDistillatorSettings", "tileentities", new String[]{
-					"Produced Balance:0.0",
-					"Max MRU:" + ApiCore.GENERATOR_MAX_MRU_GENERIC*10,
-					"Damage Entities Around:true"
-			}, "Settings of the given Device.");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-			balanceProduced = Float.parseFloat(data[0].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[1].fieldValue);
-			harmEntities = Boolean.parseBoolean(data[2].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.colddistillator";
+			balanceProduced = (float)cfg.get(category, "Balance", 0D).setMinValue(0D).setMaxValue(2D).getDouble();
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC*10).setMinValue(1).getInt();
+			mruGenModifier = cfg.get(category, "MRUGenModifier", 1D).setMinValue(0D).getDouble();
+			harmEntities = cfg.get(category, "DamageEntitiesAround", true).getBoolean();
 		}
 		catch(Exception e) {
 			return;

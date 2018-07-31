@@ -2,7 +2,7 @@ package essentialcraft.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class MagicianTableRecipes {
 
-	public static final Hashtable<List<UnformedItemStack>,MagicianTableRecipe> RECIPES = new Hashtable<List<UnformedItemStack>,MagicianTableRecipe>();
+	public static final HashMap<List<UnformedItemStack>,MagicianTableRecipe> RECIPES = new HashMap<List<UnformedItemStack>,MagicianTableRecipe>();
 	public static final List<List<UnformedItemStack>> CRAFT_MATRIX_LIST = new ArrayList<List<UnformedItemStack>>();
 
 	public static List<MagicianTableRecipe> getRecipesByComponent(ItemStack component) {

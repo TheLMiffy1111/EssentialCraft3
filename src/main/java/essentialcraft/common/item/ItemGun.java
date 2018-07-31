@@ -95,25 +95,25 @@ public class ItemGun extends ItemMRUGeneric implements IModelRegisterer {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4)
 	{
-		if(MiscUtils.getStackTag(par1ItemStack).hasKey("stats") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		if(MiscUtils.getStackTag(stack).hasKey("stats") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			NBTTagCompound stats = MiscUtils.getStackTag(par1ItemStack).getCompoundTag("stats");
-			par3List.add(I18n.translateToLocal("essentialcraft.gun.txt.damage")+" "+MathHelper.floor(stats.getFloat("damage")));
-			par3List.add(I18n.translateToLocal("essentialcraft.gun.txt.durability")+" "+MathHelper.floor(stats.getFloat("durability")));
-			par3List.add(I18n.translateToLocal("essentialcraft.gun.txt.reload")+" "+MathHelper.floor(stats.getFloat("reload")));
-			par3List.add(I18n.translateToLocal("essentialcraft.gun.txt.knockback")+" "+MathHelper.floor(stats.getFloat("knockback")));
-			par3List.add(I18n.translateToLocal("essentialcraft.gun.txt.speed")+" "+MathHelper.floor(stats.getFloat("speed")));
-			par3List.add(I18n.translateToLocal("essentialcraft.gun.txt.spread")+" "+MathHelper.floor(stats.getFloat("spread")));
-			par3List.add(I18n.translateToLocal("essentialcraft.gun.txt.shots")+" "+MathHelper.floor(stats.getFloat("shots")));
-			par3List.add(I18n.translateToLocal("essentialcraft.gun.txt.zoom")+" "+MathHelper.floor(stats.getFloat("zoom")));
-			par3List.add(I18n.translateToLocal("essentialcraft.gun.txt.balance_"+""+MathHelper.floor(stats.getFloat("balance"))));
-		}else if(MiscUtils.getStackTag(par1ItemStack).hasKey("stats"))
+			NBTTagCompound stats = MiscUtils.getStackTag(stack).getCompoundTag("stats");
+			list.add(I18n.translateToLocal("essentialcraft.gun.txt.damage")+" "+MathHelper.floor(stats.getFloat("damage")));
+			list.add(I18n.translateToLocal("essentialcraft.gun.txt.durability")+" "+MathHelper.floor(stats.getFloat("durability")));
+			list.add(I18n.translateToLocal("essentialcraft.gun.txt.reload")+" "+MathHelper.floor(stats.getFloat("reload")));
+			list.add(I18n.translateToLocal("essentialcraft.gun.txt.knockback")+" "+MathHelper.floor(stats.getFloat("knockback")));
+			list.add(I18n.translateToLocal("essentialcraft.gun.txt.speed")+" "+MathHelper.floor(stats.getFloat("speed")));
+			list.add(I18n.translateToLocal("essentialcraft.gun.txt.spread")+" "+MathHelper.floor(stats.getFloat("spread")));
+			list.add(I18n.translateToLocal("essentialcraft.gun.txt.shots")+" "+MathHelper.floor(stats.getFloat("shots")));
+			list.add(I18n.translateToLocal("essentialcraft.gun.txt.zoom")+" "+MathHelper.floor(stats.getFloat("zoom")));
+			list.add(I18n.translateToLocal("essentialcraft.gun.txt.balance_"+""+MathHelper.floor(stats.getFloat("balance"))));
+		}else if(MiscUtils.getStackTag(stack).hasKey("stats"))
 		{
-			par3List.add(TextFormatting.BLUE+""+TextFormatting.ITALIC+I18n.translateToLocal("essentialcraft.txt.viewInfoHotkey"));
+			list.add(TextFormatting.BLUE+""+TextFormatting.ITALIC+I18n.translateToLocal("essentialcraft.txt.viewInfoHotkey"));
 		}
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
+		super.addInformation(stack, player, list, par4);
 	}
 
 	@Override

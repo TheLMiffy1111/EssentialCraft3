@@ -1,7 +1,7 @@
 package essentialcraft.common.tile;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -22,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileMIMInventoryStorage extends TileMRUGeneric {
 
@@ -34,7 +35,7 @@ public class TileMIMInventoryStorage extends TileMRUGeneric {
 	final Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 	public TileMIMInventoryStorage() {
-		mruStorage.setMaxMRU(0);
+		super(0);
 		setSlotsNum(54);
 		slot0IsBoundGem = false;
 	}
@@ -45,8 +46,8 @@ public class TileMIMInventoryStorage extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_2_.getItem() == ItemsCore.inventoryGem;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return stack.getItem() == ItemsCore.inventoryGem;
 	}
 
 	/**
@@ -149,7 +150,7 @@ public class TileMIMInventoryStorage extends TileMRUGeneric {
 	/**
 	 * Tries to add a given ItemStack to all linked inventories. Will not try to increase sizes first - sadly optimization is more important here.
 	 * @param is - the itemstack to insert. Can be null, will return false then.
-	 * @return true if the ItemStack was inserted, false if not, or particaly not.
+	 * @return true if the ItemStack was inserted, false if not, or practically not.
 	 */
 	public boolean insertItemStack(ItemStack is) {
 		if(is.isEmpty())
@@ -168,7 +169,7 @@ public class TileMIMInventoryStorage extends TileMRUGeneric {
 			for(int j = 0; j < inv.getSlots(); ++j) {
 				ItemStack stk = inv.getStackInSlot(j);
 				if(!stk.isEmpty()) {
-					if(stk.isItemEqual(is) && ItemStack.areItemStackTagsEqual(stk, is)) {
+					if(ItemHandlerHelper.canItemStacksStack(stk, is)) {
 						if(stk.getCount() < stk.getMaxStackSize()) {
 							if(stk.getCount()+is.getCount() <= stk.getMaxStackSize()) {
 								inv.insertItem(j, is.copy(), false);
@@ -198,8 +199,8 @@ public class TileMIMInventoryStorage extends TileMRUGeneric {
 	 * Re-calculates all the items there are. I wish there would be a better way to do this. Especially, if I didn't have to do this every tick, since it is pretty resource-intensive. However, if I do not do this every tick then dupes are possible.
 	 */
 	public void rebuildItems() {
-		Hashtable<String,Integer> found = new Hashtable<String,Integer>();
-		Hashtable<String,ItemStack> foundByID = new Hashtable<String,ItemStack>();
+		HashMap<String,Integer> found = new HashMap<String,Integer>();
+		HashMap<String,ItemStack> foundByID = new HashMap<String,ItemStack>();
 		ArrayList<String> ids = new ArrayList<String>();
 		ArrayList<ItemStack> oldCopy = new ArrayList<ItemStack>();
 		oldCopy.addAll(items);
@@ -350,8 +351,8 @@ public class TileMIMInventoryStorage extends TileMRUGeneric {
 	}
 
 	@Override
-	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		super.setInventorySlotContents(par1, par2ItemStack);
+	public void setInventorySlotContents(int par1, ItemStack stack) {
+		super.setInventorySlotContents(par1, stack);
 		updateTime = 0;
 		requireSync = true;
 	}

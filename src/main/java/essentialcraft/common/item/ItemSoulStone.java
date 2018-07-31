@@ -36,46 +36,40 @@ public class ItemSoulStone extends Item implements IItemColor, IModelRegisterer 
 	}
 
 	@Override
-	public void onUpdate(ItemStack stk, World w, Entity e, int slotnum, boolean held)
-	{
-		if(stk.getTagCompound() != null && stk.getItemDamage() == 0 && stk.getTagCompound().hasKey("bloodInfused"))
-		{
+	public void onUpdate(ItemStack stk, World w, Entity e, int slotnum, boolean held) {
+		if(stk.getTagCompound() != null && stk.getItemDamage() == 0 && stk.getTagCompound().hasKey("bloodInfused")) {
 			stk.getTagCompound().removeTag("bloodInfused");
 			stk.setItemDamage(1);
 		}
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World par2World, EntityPlayer par3EntityPlayer, EnumHand hand)
-	{
-		ItemStack par1ItemStack = par3EntityPlayer.getHeldItem(hand);
-		if(!par2World.isRemote && !par3EntityPlayer.isSneaking())
-		{
-			NBTTagCompound playerTag = MiscUtils.getStackTag(par1ItemStack);
-			playerTag.setString("playerName", MiscUtils.getUUIDFromPlayer(par3EntityPlayer).toString());
-			par1ItemStack.setTagCompound(playerTag);
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+		if(!world.isRemote && !player.isSneaking()) {
+			NBTTagCompound playerTag = MiscUtils.getStackTag(stack);
+			playerTag.setString("playerName", MiscUtils.getUUIDFromPlayer(player).toString());
+			stack.setTagCompound(playerTag);
 		}
-		if(par1ItemStack.getTagCompound() != null && !par2World.isRemote && par3EntityPlayer.isSneaking())
-		{
-			MiscUtils.getStackTag(par1ItemStack).removeTag("playerName");
+		if(stack.getTagCompound() != null && !world.isRemote && player.isSneaking()) {
+			MiscUtils.getStackTag(stack).removeTag("playerName");
 		}
-		return super.onItemRightClick(par2World, par3EntityPlayer, hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
-	{
-		if(par1ItemStack.getTagCompound() != null) {
-			String username = par1ItemStack.getTagCompound().getString("playerName");
+	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag par4) {
+		if(stack.getTagCompound() != null) {
+			String username = stack.getTagCompound().getString("playerName");
 			EntityPlayer player = Minecraft.getMinecraft().player;
 			if(player != null) {
 				if(ECUtils.playerDataExists(username)) {
 					IPlayerData data = ECUtils.getData(player);
 					int currentEnergy = data.getPlayerUBMRU();
 					int att = data.getMatrixTypeID();
-					par3List.add(TextFormatting.DARK_GRAY+"Tracking MRU Matrix of "+TextFormatting.GOLD+MiscUtils.getUsernameFromUUID(username));
-					par3List.add(TextFormatting.DARK_GRAY+"Detected "+TextFormatting.GREEN+currentEnergy+TextFormatting.DARK_GRAY+" UBMRU Energy");
+					list.add(TextFormatting.DARK_GRAY+"Tracking MRU Matrix of "+TextFormatting.GOLD+MiscUtils.getUsernameFromUUID(username));
+					list.add(TextFormatting.DARK_GRAY+"Detected "+TextFormatting.GREEN+currentEnergy+TextFormatting.DARK_GRAY+" UBMRU Energy");
 
 					String at = "Neutral";
 					switch(att) {
@@ -104,14 +98,14 @@ public class ItemSoulStone extends Item implements IItemColor, IModelRegisterer 
 						break;
 					}
 					}
-					par3List.add(TextFormatting.DARK_GRAY+"MRU Matrix twists with "+at+TextFormatting.DARK_GRAY+" Energies");
+					list.add(TextFormatting.DARK_GRAY+"MRU Matrix twists with "+at+TextFormatting.DARK_GRAY+" Energies");
 					if(data.isWindbound()) {
-						par3List.add(TextFormatting.DARK_GRAY+"The player is "+TextFormatting.GREEN+"Windbound"+TextFormatting.DARK_GRAY);
+						list.add(TextFormatting.DARK_GRAY+"The player is "+TextFormatting.GREEN+"Windbound"+TextFormatting.DARK_GRAY);
 					}
 				}
 			}
 			else {
-				par3List.add(TextFormatting.DARK_GRAY+"The MRU Matrix of the owner is too weak to track...");
+				list.add(TextFormatting.DARK_GRAY+"The MRU Matrix of the owner is too weak to track");
 				if(clientTimer == 0) {
 					NBTTagCompound sTag = new NBTTagCompound();
 					sTag.setString("syncplayer", username);
@@ -123,32 +117,46 @@ public class ItemSoulStone extends Item implements IItemColor, IModelRegisterer 
 					--clientTimer;
 				}
 			}
-			this.addBloodMagicDescription(par1ItemStack, player, par3List, par4);
+			this.addBloodMagicDescription(stack, player, list, par4);
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void addBloodMagicDescription(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List, ITooltipFlag par4) {
+	public void addBloodMagicDescription(ItemStack stack, EntityPlayer player, List<String> list, ITooltipFlag par4) {
 		if(Loader.isModLoaded("bloodmagic")) {
-			if(par1ItemStack.getItemDamage() == 1) {
-				String username = par1ItemStack.getTagCompound().getString("playerName");
+			if(stack.getItemDamage() == 1) {
+				String username = stack.getTagCompound().getString("playerName");
 
-				try {
-					Class<?> classNetworkHelper = Class.forName("WayofTime.bloodmagic.api.util.helper.NetworkHelper");
-					Method getSoulNetwork = classNetworkHelper.getMethod("getSoulNetwork", EntityPlayer.class);
-					Class<?> classSoulNetwork = Class.forName("WayofTime.bloodmagic.api.saving.SoulNetwork");
-					Method getCurrentEssence = classSoulNetwork.getMethod("getCurrentEssence");
+				if(EssentialCraftCore.clazzExists("WayofTime.bloodmagic.api.BloodMagicAPI")) {
+					try {
+						Class<?> classNetworkHelper = Class.forName("WayofTime.bloodmagic.api.util.helper.NetworkHelper");
+						Method getSoulNetwork = classNetworkHelper.getMethod("getSoulNetwork", EntityPlayer.class);
+						Class<?> classSoulNetwork = Class.forName("WayofTime.bloodmagic.api.saving.SoulNetwork");
+						Method getCurrentEssence = classSoulNetwork.getMethod("getCurrentEssence");
 
-					int currentEssence = (Integer)getCurrentEssence.invoke(getSoulNetwork.invoke(null, par2EntityPlayer));
-					par3List.add(TextFormatting.DARK_GRAY+"Detected "+TextFormatting.DARK_RED+currentEssence+TextFormatting.DARK_GRAY+" Life Essence.");
+						int currentEssence = (Integer)getCurrentEssence.invoke(getSoulNetwork.invoke(null, player));
+						list.add(TextFormatting.DARK_GRAY+"Detected "+TextFormatting.DARK_RED+currentEssence+TextFormatting.DARK_GRAY+" Life Essence");
+					}
+					catch(Exception e) {
+						e.printStackTrace();
+						list.add(TextFormatting.DARK_GRAY+"The owner's life network is pure and untouched");
+					}
 				}
-				catch(Exception e) {
-					e.printStackTrace();
-					par3List.add(TextFormatting.DARK_GRAY+"The owner's life network is pure and untouched...");
+				if(EssentialCraftCore.clazzExists("WayofTime.bloodmagic.apibutnotreally.BloodMagicAPI")) {
+					try {
+						Class<?> classNetworkHelper = Class.forName("WayofTime.bloodmagic.apibutnotreally.util.helper.NetworkHelper");
+						Method getSoulNetwork = classNetworkHelper.getMethod("getSoulNetwork", EntityPlayer.class);
+						Class<?> classSoulNetwork = Class.forName("WayofTime.bloodmagic.apibutnotreally.saving.SoulNetwork");
+						Method getCurrentEssence = classSoulNetwork.getMethod("getCurrentEssence");
+
+						int currentEssence = (Integer)getCurrentEssence.invoke(getSoulNetwork.invoke(null, player));
+						list.add(TextFormatting.DARK_GRAY+"Detected "+TextFormatting.DARK_RED+currentEssence+TextFormatting.DARK_GRAY+" Life Essence");
+					}
+					catch(Exception e) {
+						e.printStackTrace();
+						list.add(TextFormatting.DARK_GRAY+"The owner's life network is pure and untouched");
+					}
 				}
-			}
-			else if(par1ItemStack.getTagCompound() != null) {
-				par3List.add(TextFormatting.DARK_GRAY+"The owner's life network is pure and untouched...");
 			}
 		}
 	}

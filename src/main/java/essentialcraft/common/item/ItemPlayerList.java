@@ -27,9 +27,9 @@ public class ItemPlayerList extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World par2World, EntityPlayer par3EntityPlayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
-		NBTTagCompound itemTag = MiscUtils.getStackTag(par3EntityPlayer.getHeldItem(hand));
+		NBTTagCompound itemTag = MiscUtils.getStackTag(player.getHeldItem(hand));
 		if(!itemTag.hasKey("usernames"))
 			itemTag.setString("usernames", "||username:null");
 		String str = itemTag.getString("usernames");
@@ -37,25 +37,25 @@ public class ItemPlayerList extends Item implements IModelRegisterer {
 		boolean canAddUsername = true;
 		for(int i = 0; i < dt.length; ++i)
 		{
-			if(dt[i].fieldValue.equals(MiscUtils.getUUIDFromPlayer(par3EntityPlayer).toString()))
+			if(dt[i].fieldValue.equals(MiscUtils.getUUIDFromPlayer(player).toString()))
 				canAddUsername = false;
 		}
 		if(canAddUsername)
 		{
-			str+="||username:"+MiscUtils.getUUIDFromPlayer(par3EntityPlayer).toString();
+			str+="||username:"+MiscUtils.getUUIDFromPlayer(player).toString();
 		}
 		itemTag.setString("usernames", str);
-		return super.onItemRightClick(par2World, par3EntityPlayer, hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4)
 	{
-		if(par1ItemStack.getTagCompound() != null)
+		if(stack.getTagCompound() != null)
 		{
-			par3List.add("Allowed Players:");
-			NBTTagCompound itemTag = MiscUtils.getStackTag(par1ItemStack);
+			list.add("Allowed Players:");
+			NBTTagCompound itemTag = MiscUtils.getStackTag(stack);
 			if(!itemTag.hasKey("usernames"))
 				itemTag.setString("usernames", "||username:null");
 			String str = itemTag.getString("usernames");
@@ -65,7 +65,7 @@ public class ItemPlayerList extends Item implements IModelRegisterer {
 				String name = dt[i].fieldValue;
 				if(!name.equals("null"))
 				{
-					par3List.add(" -"+MiscUtils.getUsernameFromUUID(name));
+					list.add(" -"+MiscUtils.getUsernameFromUUID(name));
 				}
 			}
 		}

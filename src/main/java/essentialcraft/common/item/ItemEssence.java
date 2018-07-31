@@ -40,21 +40,21 @@ public class ItemEssence extends Item implements IModelRegisterer {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4) {
-		int t = par1ItemStack.getItemDamage()/4;
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4) {
+		int t = stack.getItemDamage()/4;
 		if(t == 0)
-			par3List.add("Rarity: \247f"+"Common");
+			list.add("Rarity: \247f"+"Common");
 		if(t == 1)
-			par3List.add("Rarity: \247e"+"Uncommon");
+			list.add("Rarity: \247e"+"Uncommon");
 		if(t == 2)
-			par3List.add("Rarity: \247b"+"Rare");
+			list.add("Rarity: \247b"+"Rare");
 		if(t == 3)
-			par3List.add("Rarity: \247d"+"Exceptional");
+			list.add("Rarity: \247d"+"Exceptional");
 	}
 
 	@Override
-	public EnumRarity getRarity(ItemStack par1ItemStack) {
-		int t = par1ItemStack.getItemDamage()/4;
+	public EnumRarity getRarity(ItemStack stack) {
+		int t = stack.getItemDamage()/4;
 		if(t == 1)
 			return EnumRarity.UNCOMMON;
 		if(t == 2)

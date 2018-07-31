@@ -73,17 +73,17 @@ public class ItemControlRod extends Item implements IModelRegisterer {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4)
 	{
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-		if(par1ItemStack.getTagCompound() != null)
+		super.addInformation(stack, player, list, par4);
+		if(stack.getTagCompound() != null)
 		{
-			int[] coord = MiscUtils.getStackTag(par1ItemStack).getIntArray("pos");
-			par3List.add("Currently linked to Mirror At:");
-			par3List.add("x: "+coord[0]);
-			par3List.add("y: "+coord[1]);
-			par3List.add("z: "+coord[2]);
-			par3List.add("dimension: "+MiscUtils.getStackTag(par1ItemStack).getInteger("dim"));
+			int[] coord = MiscUtils.getStackTag(stack).getIntArray("pos");
+			list.add("Currently linked to Mirror At:");
+			list.add("x: "+coord[0]);
+			list.add("y: "+coord[1]);
+			list.add("z: "+coord[2]);
+			list.add("dimension: "+MiscUtils.getStackTag(stack).getInteger("dim"));
 		}
 	}
 

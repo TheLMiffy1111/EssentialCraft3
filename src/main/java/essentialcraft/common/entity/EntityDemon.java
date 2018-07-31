@@ -140,7 +140,7 @@ public class EntityDemon extends EntityLiving implements IInventory {
 		}
 		if(this.ticksExisted % 20 == 0)
 		{
-			List<EntityMob> zombies = this.getEntityWorld().getEntitiesWithinAABB(EntityMob.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).expand(12, 12, 12));
+			List<EntityMob> zombies = this.getEntityWorld().getEntitiesWithinAABB(EntityMob.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).grow(12, 12, 12));
 			if(!zombies.isEmpty())
 			{
 				EntityMob z = zombies.get(getRNG().nextInt(zombies.size()));

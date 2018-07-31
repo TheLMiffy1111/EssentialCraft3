@@ -6,16 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiEnchantmentState extends GuiTextElement{
+public class GuiEnchantmentState extends GuiTextElement {
 
 	public TileMagicalEnchanter tile;
-	public int slotNum;
 
-	public GuiEnchantmentState(int i, int j, TileMagicalEnchanter t, int slot)
-	{
+	public GuiEnchantmentState(int i, int j, TileMagicalEnchanter t) {
 		super(i,j);
 		tile = t;
-		slotNum = slot;
 	}
 
 	@Override
@@ -51,34 +48,34 @@ public class GuiEnchantmentState extends GuiTextElement{
 	public void drawText(int posX, int posY) {
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		if(tile.getStackInSlot(1).isEmpty()) {
-			fontRenderer.drawStringWithShadow("Nothing To Enchant!", posX+4, posY+5, 0xffff00);
+			fontRenderer.drawStringWithShadow("Nothing To Enchant!", posX+4, posY+5, 0xFFFF00);
 		}
 		else if(!tile.getStackInSlot(2).isEmpty()) {
-			fontRenderer.drawStringWithShadow("Output Must Be Empty!", posX+4, posY+5, 0x00ff00);
+			fontRenderer.drawStringWithShadow("Output Must Be Empty!", posX+4, posY+5, 0xFF0000);
 		}
 		else if(tile.getCapability(CapabilityMRUHandler.MRU_HANDLER_CAPABILITY, null).getMRU() < 100) {
-			fontRenderer.drawStringWithShadow("No MRU!", posX+4, posY+5, 0xff0000);
+			fontRenderer.drawStringWithShadow("No MRU!", posX+4, posY+5, 0xFF0000);
 		}
 		else if(!tile.getStackInSlot(1).isItemEnchantable()) {
-			fontRenderer.drawStringWithShadow("Can't Enchant This!", posX+4, posY+5, 0xff0000);
+			fontRenderer.drawStringWithShadow("Item Can't Be Enchanted!", posX+4, posY+5, 0xFF0000);
 		}
 		else {
 			try {
 				if(tile.getEnchantmentsForStack(tile.getStackInSlot(1)) == null || tile.getEnchantmentsForStack(tile.getStackInSlot(1)).isEmpty()) {
-					fontRenderer.drawStringWithShadow("Can't Enchant This!", posX+4, posY+5, 0xff0000);
+					fontRenderer.drawStringWithShadow("Item Can't Be Enchanted!", posX+4, posY+5, 0xFF0000);
 				}
 				else if(tile.getMaxPower() <= 0) {
-					fontRenderer.drawStringWithShadow("No Bookshelves!", posX+4, posY+5, 0xff0000);
+					fontRenderer.drawStringWithShadow("No Bookshelves!", posX+4, posY+5, 0xFF0000);
 				}
 				else {
-					fontRenderer.drawStringWithShadow("Enchanting Item...", posX+4, posY+5, 0x00ff00);
+					fontRenderer.drawStringWithShadow("Enchanting Item...", posX+4, posY+5, 0x00FF00);
 				}
 			}
-			catch (Exception e) {
-				fontRenderer.drawStringWithShadow("Can't Enchant This!", posX+4, posY+5, 0xff0000);
+			catch(Exception e) {
+				fontRenderer.drawStringWithShadow("Item Can't Be Enchanted!", posX+4, posY+5, 0xFF0000);
 				return;
 			}
 		}
-		fontRenderer.drawStringWithShadow(tile.getMaxPower()+"", posX+122, posY+5, 0xffffff);
+		fontRenderer.drawStringWithShadow(tile.getMaxPower()+"", posX+122, posY+5, 0xFFFFFF);
 	}
 }

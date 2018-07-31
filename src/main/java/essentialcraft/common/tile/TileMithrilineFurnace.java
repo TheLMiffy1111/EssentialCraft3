@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MathUtils;
 import DummyCore.Utils.MiscUtils;
 import DummyCore.Utils.Notifier;
@@ -200,20 +198,8 @@ public class TileMithrilineFurnace extends TileEntity implements ISidedInventory
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MithrilineFurnaceSettings", "tileentities", new String[] {
-					"Maximum enderstar pulse stored:10000"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			maxEnergy = Float.parseFloat(data[0].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.mithrilinefurnace";
+			maxEnergy = cfg.get(category, "MaxESPE", 10000D).setMinValue(Double.MIN_NORMAL).getDouble();
 		}
 		catch(Exception e) {
 			return;
@@ -266,11 +252,11 @@ public class TileMithrilineFurnace extends TileEntity implements ISidedInventory
 	}
 
 	@Override
-	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		items[par1] = par2ItemStack;
+	public void setInventorySlotContents(int par1, ItemStack stack) {
+		items[par1] = stack;
 
-		if(!par2ItemStack.isEmpty() && par2ItemStack.getCount() > getInventoryStackLimit()) {
-			par2ItemStack.setCount(getInventoryStackLimit());
+		if(!stack.isEmpty() && stack.getCount() > getInventoryStackLimit()) {
+			stack.setCount(getInventoryStackLimit());
 		}
 	}
 
@@ -301,8 +287,8 @@ public class TileMithrilineFurnace extends TileEntity implements ISidedInventory
 	public void closeInventory(EntityPlayer p) {}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_1_ == 0;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot == 0;
 	}
 
 	@Override

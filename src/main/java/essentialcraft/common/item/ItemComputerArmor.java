@@ -8,6 +8,7 @@ import com.google.common.collect.Multimap;
 
 import DummyCore.Client.IModelRegisterer;
 import DummyCore.Utils.DCASMCheck;
+import DummyCore.Utils.ExistenceCheck;
 import essentialcraft.api.IMRUHandlerItem;
 import essentialcraft.common.capabilities.mru.CapabilityMRUHandler;
 import essentialcraft.common.capabilities.mru.MRUItemStorage;
@@ -36,10 +37,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import thaumcraft.api.items.IGoggles;
+import thaumcraft.api.items.IRevealer;
+import thaumcraft.api.items.IVisDiscountGear;
 
 @DCASMCheck
-//@ExistenceCheck(classPath = {"thaumcraft.api.IRepairable","thaumcraft.api.IVisDiscountGear","thaumcraft.api.nodes.IRevealer","thaumcraft.api.IGoggles"})
-public class ItemComputerArmor extends ItemArmor implements /*IRepairable, IVisDiscountGear, IRevealer, IGoggles, */ISpecialArmor, IModelRegisterer {
+@ExistenceCheck(classPath = {"thaumcraft.api.items.IVisDiscountGear", "thaumcraft.api.items.IRevealer","thaumcraft.api.items.IGoggles"})
+public class ItemComputerArmor extends ItemArmor implements IVisDiscountGear, IRevealer, IGoggles, ISpecialArmor, IModelRegisterer {
 
 	public static Capability<IMRUHandlerItem> MRU_HANDLER_ITEM_CAPABILITY = CapabilityMRUHandler.MRU_HANDLER_ITEM_CAPABILITY;
 	public int maxMRU = 1000000;
@@ -73,8 +77,6 @@ public class ItemComputerArmor extends ItemArmor implements /*IRepairable, IVisD
 	@Override
 	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4) {
 		super.addInformation(stack, player, list, par4);
-		/*if(EssentialCraftCore.clazzExists("thaumcraft.api.IVisDiscountGear"))
-	    	list.add((new StringBuilder()).append(TextFormatting.DARK_PURPLE).append(I18n.translateToLocal("tc.visdiscount")).append(": ").append(getVisDiscount(stack, player, null)).append("%").toString());*/
 
 		list.add(stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() + "/" + stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU() + " MRU");
 
@@ -118,35 +120,36 @@ public class ItemComputerArmor extends ItemArmor implements /*IRepairable, IVisD
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List) {
+	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> list) {
 		if(this.isInCreativeTab(par2CreativeTabs)) {
 			ItemStack min = new ItemStack(this, 1, 0);
 			ItemStack max = new ItemStack(this, 1, 0);
 			min.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(0);
 			max.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(maxMRU);
-			par3List.add(min);
-			par3List.add(max);
+			list.add(min);
+			list.add(max);
 		}
 	}
 
-	/*public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) {
-		int type = ((ItemArmor)itemstack.getItem()).armorType;
-		return type == 0;
+	@Override
+	public boolean showIngamePopups(ItemStack itemstack, EntityLivingBase player) {
+		EntityEquipmentSlot type = ((ItemArmor)itemstack.getItem()).armorType;
+		return type == EntityEquipmentSlot.HEAD;
 	}
 
+	@Override
 	public boolean showNodes(ItemStack itemstack, EntityLivingBase player) {
-		int type = ((ItemArmor)itemstack.getItem()).armorType;
-		return type == 0;
+		EntityEquipmentSlot type = ((ItemArmor)itemstack.getItem()).armorType;
+		return type == EntityEquipmentSlot.HEAD;
 	}
 
 	public static int[] discount = {18,25,12,15};
 
-	public int getVisDiscount(ItemStack stack, EntityPlayer player,
-			Aspect aspect) {
-		int type = ((ItemArmor)stack.getItem()).armorType;
-
-		return discount[type];
-	}*/
+	@Override
+	public int getVisDiscount(ItemStack stack, EntityPlayer player) {
+		EntityEquipmentSlot type = ((ItemArmor)stack.getItem()).armorType;
+		return discount[5-type.ordinal()];
+	}
 
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player,ItemStack armor, DamageSource source, double damage, int slot) {

@@ -34,11 +34,11 @@ public class ItemBoundGem extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		ItemStack stack = player.getHeldItem(hand);
-		if(stack.getTagCompound() != null && MiscUtils.getStackTag(stack).hasKey("pos"))
+		if(stack.getTagCompound() != null && MiscUtils.getStackTag(stack).hasKey("pos")) {
 			return EnumActionResult.PASS;
+		}
 
 		if(world.getBlockState(pos).getBlock() == BlocksCore.rayTower && world.getBlockState(pos).getValue(BlockRayTower.LAYER).getIndexTwo() == 1) {
 			pos = pos.down();
@@ -50,72 +50,66 @@ public class ItemBoundGem extends Item implements IModelRegisterer {
 		if(stack.getCount() <= 0)
 			player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
 
-		if(!player.inventory.addItemStackToInventory(is))
+		if(!player.inventory.addItemStackToInventory(is)) {
 			player.dropItem(is, false);
+		}
 
-		if(player.openContainer != null)
+		if(player.openContainer != null) {
 			player.openContainer.detectAndSendChanges();
+		}
 
 		world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 2.0F);
 		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World par2World, EntityPlayer par3EntityPlayer, EnumHand hand)
-	{
-		ItemStack par1ItemStack = par3EntityPlayer.getHeldItem(hand);
-		if(par1ItemStack.getTagCompound() != null && !par2World.isRemote && par3EntityPlayer.isSneaking())
-		{
-			if(par1ItemStack.getTagCompound().getBoolean("created")) {
-				par1ItemStack.setTagCompound(null);
-				par2World.playSound(null, par3EntityPlayer.posX, par3EntityPlayer.posY, par3EntityPlayer.posZ, SoundEvents.BLOCK_NOTE_BASS, SoundCategory.PLAYERS, 1.0F, 0.01F);
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+		if(stack.getTagCompound() != null && !world.isRemote && player.isSneaking()) {
+			if(stack.getTagCompound().getBoolean("created")) {
+				stack.setTagCompound(null);
+				world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_BASS, SoundCategory.PLAYERS, 1.0F, 0.01F);
 			}
 			else {
-				MiscUtils.getStackTag(par1ItemStack).setBoolean("created", true);
+				MiscUtils.getStackTag(stack).setBoolean("created", true);
 			}
 		}
-		return super.onItemRightClick(par2World, par3EntityPlayer, hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4) {
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-		addInfo(par1ItemStack, par2EntityPlayer, par3List);
+	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
+		super.addInformation(stack, world, list, flag);
+		addInfo(stack, world, list);
 	}
 
-	public void addInfo(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List)
-	{
-		if(par1ItemStack.getTagCompound() != null)
-		{
-			int[] coord = MiscUtils.getStackTag(par1ItemStack).getIntArray("pos");
-			par3List.add("Currently Bound To TileEntity At:");
-			par3List.add("x: "+coord[0]);
-			par3List.add("y: "+coord[1]);
-			par3List.add("z: "+coord[2]);
-			par3List.add("dimension: "+MiscUtils.getStackTag(par1ItemStack).getInteger("dim"));
+	public void addInfo(ItemStack stack, World world, List<String> list) {
+		if(stack.getTagCompound() != null) {
+			int[] coord = MiscUtils.getStackTag(stack).getIntArray("pos");
+			list.add("Currently Bound To Block At:");
+			list.add("x: "+coord[0]);
+			list.add("y: "+coord[1]);
+			list.add("z: "+coord[2]);
+			list.add("Dimension: "+MiscUtils.getStackTag(stack).getInteger("dim"));
 		}
 	}
 
-	public static int[] getCoords(ItemStack stack)
-	{
+	public static int[] getCoords(ItemStack stack) {
 		return MiscUtils.getStackTag(stack).getIntArray("pos");
 	}
 
 	@Override
-	public EnumRarity getRarity(ItemStack par1ItemStack)
-	{
-		return par1ItemStack.getTagCompound() != null ? EnumRarity.EPIC : EnumRarity.COMMON;
+	public EnumRarity getRarity(ItemStack stack) {
+		return stack.getTagCompound() != null ? EnumRarity.EPIC : EnumRarity.COMMON;
 	}
 
-	public ItemStack createTag(ItemStack stack)
-	{
+	public ItemStack createTag(ItemStack stack) {
 		ItemStack retStk = stack.copy();
 		retStk.setCount(1);
 		stack.shrink(1);
 
-		if(retStk.getTagCompound() == null)
-		{
+		if(retStk.getTagCompound() == null) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setIntArray("pos", new int[]{0,0,0});
 			retStk.setTagCompound(tag);

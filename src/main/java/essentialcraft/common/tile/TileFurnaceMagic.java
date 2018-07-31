@@ -2,8 +2,6 @@ package essentialcraft.common.tile;
 
 import java.util.List;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MathUtils;
 import essentialcraft.api.ApiCore;
 import essentialcraft.api.OreSmeltingRecipe;
@@ -26,8 +24,7 @@ public class TileFurnaceMagic extends TileMRUGeneric {
 	public static int smeltingTime = 400;
 
 	public TileFurnaceMagic() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(3);
 	}
 
@@ -77,7 +74,7 @@ public class TileFurnaceMagic extends TileMRUGeneric {
 							++progressLevel;
 
 							if(generatesCorruption)
-								ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+								ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, genCorruption);
 
 							if(progressLevel >= time) {
 								decrStackSize(1, 1);
@@ -96,7 +93,7 @@ public class TileFurnaceMagic extends TileMRUGeneric {
 							++progressLevel;
 
 							if(generatesCorruption)
-								ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+								ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, (genCorruption));
 
 							if(progressLevel >= time) {
 								decrStackSize(1, 1);
@@ -140,7 +137,7 @@ public class TileFurnaceMagic extends TileMRUGeneric {
 							++smeltingLevel;
 
 							if(!getWorld().isRemote && generatesCorruption)
-								ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+								ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, (genCorruption));
 
 							if(smeltingLevel >= time) {
 								decrStackSize(1, 1);
@@ -158,7 +155,7 @@ public class TileFurnaceMagic extends TileMRUGeneric {
 							getWorld().spawnParticle(EnumParticleTypes.FLAME, pos.getX()+0.5D + MathUtils.randomDouble(getWorld().rand)/2.2D, pos.getY(), pos.getZ()+0.5D + MathUtils.randomDouble(getWorld().rand)/2.2D, 0, -0.1D, 0);
 							++smeltingLevel;
 							if(!getWorld().isRemote && generatesCorruption)
-								ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+								ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, genCorruption);
 							if(smeltingLevel >= time) {
 								decrStackSize(1, 1);
 								int suggestedStackSize = 2;
@@ -181,28 +178,12 @@ public class TileFurnaceMagic extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("FurnaceMagicSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage:25",
-					"Can this device actually generate corruption:false",
-					"The amount of corruption generated each tick(do not set to 0!):3",
-					"Ticks required to smelt:400"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[2].fieldValue);
-			genCorruption = Integer.parseInt(data[3].fieldValue);
-			smeltingTime = Integer.parseInt(data[4].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.furnacemagic";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 25).setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", false).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 3, "Max amount of corruption generated per tick").setMinValue(0).getInt();
+			smeltingTime = cfg.get(category, "TicksRequired", 400).setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;
@@ -215,7 +196,7 @@ public class TileFurnaceMagic extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_1_ == 0 ? isBoundGem(p_94041_2_) : p_94041_1_ == 1;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot == 0 ? isBoundGem(stack) : slot == 1;
 	}
 }

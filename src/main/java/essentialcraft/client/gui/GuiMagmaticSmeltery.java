@@ -8,7 +8,6 @@ import essentialcraft.client.gui.element.GuiMRUState;
 import essentialcraft.client.gui.element.GuiMRUStorage;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.IFluidTank;
 
 public class GuiMagmaticSmeltery extends GuiCommon{
 
@@ -18,6 +17,6 @@ public class GuiMagmaticSmeltery extends GuiCommon{
 		this.elementList.add(new GuiBalanceState(43, 40, tile));
 		this.elementList.add(new GuiBoundGemState(43, 4, tile, 0));
 		this.elementList.add(new GuiMRUState(25, 58, tile, 0));
-		this.elementList.add(new GuiFluidTank(25, 4, (IFluidTank)tile));
+		this.elementList.add(new GuiFluidTank(25, 4, tile));
 	}
 }

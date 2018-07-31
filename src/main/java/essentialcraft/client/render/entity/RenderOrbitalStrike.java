@@ -21,18 +21,13 @@ public class RenderOrbitalStrike extends Render<EntityOrbitalStrike> {
 	@Override
 	public void doRender(EntityOrbitalStrike e, double screenX, double screenY, double screenZ, float rotationYaw, float rotationPitch) {
 		GlStateManager.pushMatrix();
-
-		EntityOrbitalStrike eos = e;
-
-		//GL11.glScaled(eos.delay/3, 1, eos.delay/3);
-
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 		GlStateManager.disableFog();
 		GlStateManager.disableLighting();
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
 		DrawUtils.bindTexture("minecraft", "textures/entity/beacon_beam.png");
 		GlStateManager.translate(-0.5F, 0, -0.5F);
-		TileEntityBeaconRenderer.renderBeamSegment(screenX, screenY, screenZ, 0, 1, e.getEntityWorld().getTotalWorldTime(), 0, (int)(255D-e.posY), new float[] {1,0,1}, eos.delay/15, eos.delay/6);
+		TileEntityBeaconRenderer.renderBeamSegment(screenX, screenY, screenZ, 0, 1, e.getEntityWorld().getTotalWorldTime(), 0, (int)(255D-e.posY), new float[] {1,0,1}, e.delay/15, e.delay/6);
 		GlStateManager.enableLighting();
 		GlStateManager.enableFog();
 		GlStateManager.popMatrix();

@@ -58,12 +58,12 @@ public class BlockWindRune extends BlockContainer implements IModelRegisterer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		return ((TileWindRune)par1World.getTileEntity(par2)).action(par4EntityPlayer);
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		return ((TileWindRune)world.getTileEntity(par2)).action(player);
 	}
 
 	@Override
 	public void registerModels() {
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation("essentialcraft:windRune", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation("essentialcraft:windrune", "inventory"));
 	}
 }

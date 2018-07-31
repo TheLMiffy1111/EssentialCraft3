@@ -2,11 +2,8 @@ package essentialcraft.common.tile;
 
 import java.util.List;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.common.inventory.InventoryMagicFilter;
 import essentialcraft.common.item.ItemFilter;
-import essentialcraft.common.item.ItemsCore;
 import essentialcraft.utils.common.ECUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -28,20 +25,19 @@ public class TileMagicalHopper extends TileMRUGeneric {
 	}
 
 	public TileMagicalHopper() {
-		super();
+		super(0);
 		setSlotsNum(1);
-		mruStorage.setMaxMRU(0);
 		slot0IsBoundGem = false;
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-		super.readFromNBT(par1NBTTagCompound);
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound par1NBTTagCompound) {
-		return super.writeToNBT(par1NBTTagCompound);
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		return super.writeToNBT(nbt);
 	}
 
 	@Override
@@ -51,7 +47,7 @@ public class TileMagicalHopper extends TileMRUGeneric {
 			EnumFacing r = getRotation();
 			AxisAlignedBB teleportBB = new AxisAlignedBB(pos.offset(r));
 			delay = itemDelay;
-			List<EntityItem> items = getWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos).expand(itemHopRadius, itemHopRadius, itemHopRadius));
+			List<EntityItem> items = getWorld().getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(pos).grow(itemHopRadius, itemHopRadius, itemHopRadius));
 			List<EntityItem> doNotTouch = getWorld().getEntitiesWithinAABB(EntityItem.class, teleportBB);
 
 			for(int i = 0; i < items.size(); ++i) {
@@ -77,22 +73,9 @@ public class TileMagicalHopper extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MagicalHopperSettings", "tileentities", new String[] {
-					"Radius in which the hopper will detect items(int):3",
-					"Delay between item detection in ticks:20"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			itemHopRadius = Integer.parseInt(data[0].fieldValue);
-			itemDelay = Integer.parseInt(data[1].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.magicalhopper";
+			itemHopRadius = cfg.get(category, "Radius", 3).setMinValue(0).getInt();
+			itemDelay = cfg.get(category, "Delay", 20).setMinValue(1).getInt();
 		}
 		catch(Exception e) {
 			return;
@@ -100,8 +83,8 @@ public class TileMagicalHopper extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_2_.getItem() == ItemsCore.filter;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return stack.getItem() instanceof ItemFilter;
 	}
 
 	@Override

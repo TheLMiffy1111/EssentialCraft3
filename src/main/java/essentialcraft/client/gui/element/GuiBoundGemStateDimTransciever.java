@@ -9,7 +9,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 
 public class GuiBoundGemStateDimTransciever extends GuiTextElement {
 
@@ -52,18 +51,17 @@ public class GuiBoundGemStateDimTransciever extends GuiTextElement {
 		else if(inventory.getStackInSlot(slotNum).getTagCompound() == null) {
 			Minecraft.getMinecraft().fontRenderer.drawString("Gem Not Bound!", posX+4, posY+5, 0xff0000, true);
 		}
-		else {
+		else if(tile.getWorld().provider.getDimension() == MiscUtils.getStackTag(inventory.getStackInSlot(slotNum)).getInteger("dim")) {
 			int o[] = ItemBoundGem.getCoords(inventory.getStackInSlot(slotNum));
 			BlockPos pos = new BlockPos(o[0], o[1], o[2]);
-			int d = MiscUtils.getStackTag(inventory.getStackInSlot(slotNum)).getInteger("dim");
-			World w = DimensionManager.getWorld(d);
+			World w = tile.getWorld();
 			if(w.getTileEntity(pos) == null) {
 				Minecraft.getMinecraft().fontRenderer.drawString("No Tile At Pos!", posX+5, posY+5, 0xff0000, true);
 			}
 			else if(!w.getTileEntity(pos).hasCapability(CapabilityMRUHandler.MRU_HANDLER_CAPABILITY, null)) {
 				Minecraft.getMinecraft().fontRenderer.drawString("Not Magical!", posX+12, posY+5, 0xff0000, true);
 			}
-			else if(tile.getWorld().equals(w) && tile.getPos().equals(pos)) {
+			else if(tile.getPos().equals(pos)) {
 				Minecraft.getMinecraft().fontRenderer.drawString("Bound To Self!", posX+5, posY+5, 0xff0000, true);
 			}
 			else if(w.getTileEntity(pos).getCapability(CapabilityMRUHandler.MRU_HANDLER_CAPABILITY, null).getMRU() <= 0) {

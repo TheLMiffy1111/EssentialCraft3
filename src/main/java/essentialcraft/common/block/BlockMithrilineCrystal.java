@@ -62,33 +62,33 @@ public class BlockMithrilineCrystal extends BlockContainer implements IModelRegi
 	}
 
 	@Override
-	public void getSubBlocks(CreativeTabs p_149666_2_, NonNullList<ItemStack> p_149666_3_)
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		p_149666_3_.add(new ItemStack(this, 1, 0));
-		p_149666_3_.add(new ItemStack(this, 1, 3));
-		p_149666_3_.add(new ItemStack(this, 1, 6));
-		p_149666_3_.add(new ItemStack(this, 1, 9));
-		p_149666_3_.add(new ItemStack(this, 1, 12));
+		list.add(new ItemStack(this, 1, 0));
+		list.add(new ItemStack(this, 1, 3));
+		list.add(new ItemStack(this, 1, 6));
+		list.add(new ItemStack(this, 1, 9));
+		list.add(new ItemStack(this, 1, 12));
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
-		super.breakBlock(par1World, par2Pos, par3State);
-		int par6 = par3State.getValue(LAYER).getIndexThree();
+	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
+		super.breakBlock(world, pos, blockstate);
+		int par6 = blockstate.getValue(LAYER).getIndexThree();
 		if(par6 == 0)
 		{
-			par1World.setBlockToAir(par2Pos.up());
-			par1World.setBlockToAir(par2Pos.up(2));
+			world.setBlockToAir(pos.up());
+			world.setBlockToAir(pos.up(2));
 		}
 		if(par6 == 1)
 		{
-			par1World.setBlockToAir(par2Pos.down());
-			par1World.setBlockToAir(par2Pos.up());
+			world.setBlockToAir(pos.down());
+			world.setBlockToAir(pos.up());
 		}
 		if(par6 == 2)
 		{
-			par1World.setBlockToAir(par2Pos.down());
-			par1World.setBlockToAir(par2Pos.down(2));
+			world.setBlockToAir(pos.down());
+			world.setBlockToAir(pos.down(2));
 		}
 	}
 

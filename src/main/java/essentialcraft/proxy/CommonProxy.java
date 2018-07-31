@@ -29,6 +29,7 @@ import essentialcraft.common.inventory.ContainerMRUChunkLoader;
 import essentialcraft.common.inventory.ContainerMRUCoil;
 import essentialcraft.common.inventory.ContainerMRUDimTransciever;
 import essentialcraft.common.inventory.ContainerMRUInfo;
+import essentialcraft.common.inventory.ContainerMRUIntersector;
 import essentialcraft.common.inventory.ContainerMagicalChest;
 import essentialcraft.common.inventory.ContainerMagicalEnchanter;
 import essentialcraft.common.inventory.ContainerMagicalFurnace;
@@ -54,6 +55,7 @@ import essentialcraft.common.inventory.ContainerSunRayAbsorber;
 import essentialcraft.common.inventory.ContainerUltraFlowerBurner;
 import essentialcraft.common.inventory.ContainerUltraHeatGenerator;
 import essentialcraft.common.inventory.ContainerWeaponBench;
+import essentialcraft.common.inventory.ContainerWeatherController;
 import essentialcraft.common.inventory.InventoryCraftingFrame;
 import essentialcraft.common.inventory.InventoryMagicFilter;
 import essentialcraft.common.tile.TileAdvancedBlockBreaker;
@@ -81,6 +83,7 @@ import essentialcraft.common.tile.TileMRUCUECStateChecker;
 import essentialcraft.common.tile.TileMRUChunkLoader;
 import essentialcraft.common.tile.TileMRUCoil;
 import essentialcraft.common.tile.TileMRUDimensionalTransciever;
+import essentialcraft.common.tile.TileMRUIntersector;
 import essentialcraft.common.tile.TileMagicalChest;
 import essentialcraft.common.tile.TileMagicalEnchanter;
 import essentialcraft.common.tile.TileMagicalFurnace;
@@ -106,6 +109,8 @@ import essentialcraft.common.tile.TileSunRayAbsorber;
 import essentialcraft.common.tile.TileUltraFlowerBurner;
 import essentialcraft.common.tile.TileUltraHeatGenerator;
 import essentialcraft.common.tile.TileWeaponMaker;
+import essentialcraft.common.tile.TileWeatherController;
+import essentialcraft.common.tile.TileWorldMerger;
 import essentialcraft.utils.cfg.Config;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBiped;
@@ -126,234 +131,180 @@ public class CommonProxy implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if(ID == Config.guiID[0])
-		{
+		if(ID == Config.guiID[0]) {
 			TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
-			if(tile == null)
-			{
+			if(tile == null) {
 				//Item:filter
-				if(x == 0 && y == -1 && z == 0)
-				{
+				if(x == 0 && y == -1 && z == 0) {
 					InventoryMagicFilter inventory = new InventoryMagicFilter(player.getHeldItemMainhand());
 					return new ContainerFilter(player, inventory);
 				}
 				//Item: Crafting Frame
-				if(x == 0 && y == -2 && z == 0)
-				{
+				if(x == 0 && y == -2 && z == 0) {
 					InventoryCraftingFrame inventory = new InventoryCraftingFrame(player.getHeldItemMainhand());
 					return new ContainerCraftingFrame(player, inventory);
 				}
 			}
-			if(tile instanceof TileRayTower)
-			{
+			if(tile instanceof TileRayTower) {
 				return new ContainerRayTower(player.inventory, tile);
 			}
-			if(tile instanceof TileMRUCUECAcceptor)
-			{
+			if(tile instanceof TileMRUCUECAcceptor) {
 				return new ContainerMRUAcceptor(player.inventory, tile);
 			}
-			if(tile instanceof TileMRUCUECStateChecker)
-			{
+			if(tile instanceof TileMRUCUECStateChecker) {
 				return new ContainerMRUInfo(player.inventory);
 			}
-			if(tile instanceof TileMoonWell)
-			{
+			if(tile instanceof TileMoonWell) {
 				return new ContainerMoonWell(player.inventory, tile);
 			}
-			if(tile instanceof TileSunRayAbsorber)
-			{
+			if(tile instanceof TileSunRayAbsorber) {
 				return new ContainerSunRayAbsorber(player.inventory, tile);
 			}
-			if(tile instanceof TileColdDistillator)
-			{
+			if(tile instanceof TileColdDistillator) {
 				return new ContainerColdDistillator(player.inventory, tile);
 			}
-			if(tile instanceof TileFlowerBurner)
-			{
+			if(tile instanceof TileFlowerBurner) {
 				return new ContainerFlowerBurner(player.inventory, tile);
 			}
-			if(tile instanceof TileHeatGenerator)
-			{
+			if(tile instanceof TileHeatGenerator) {
 				return new ContainerHeatGenerator(player.inventory, tile);
 			}
-			if(tile instanceof TileEnderGenerator)
-			{
+			if(tile instanceof TileEnderGenerator) {
 				return new ContainerEnderGenerator(player.inventory, tile);
 			}
-			if(tile instanceof TileMagicianTable)
-			{
+			if(tile instanceof TileMagicianTable) {
 				return new ContainerMagicianTable(player.inventory, tile);
 			}
-			if(tile instanceof TileMagicalQuarry)
-			{
+			if(tile instanceof TileMagicalQuarry) {
 				return new ContainerMagicalQuarry(player.inventory, tile);
 			}
-			if(tile instanceof TileMonsterHolder)
-			{
+			if(tile instanceof TileMonsterHolder) {
 				return new ContainerMonsterHolder(player.inventory, tile);
 			}
-			if(tile instanceof TilePotionSpreader)
-			{
+			if(tile instanceof TilePotionSpreader) {
 				return new ContainerPotionSpreader(player.inventory, tile);
 			}
-			if(tile instanceof TileMagicalEnchanter)
-			{
+			if(tile instanceof TileMagicalEnchanter) {
 				return new ContainerMagicalEnchanter(player.inventory, tile);
 			}
-			if(tile instanceof TileMonsterHarvester)
-			{
+			if(tile instanceof TileMonsterHarvester) {
 				return new ContainerMonsterHarvester(player.inventory, tile);
 			}
-			if(tile instanceof TileMagicalRepairer)
-			{
+			if(tile instanceof TileMagicalRepairer) {
 				return new ContainerMagicalRepairer(player.inventory, tile);
 			}
-			if(tile instanceof TileMatrixAbsorber)
-			{
+			if(tile instanceof TileMatrixAbsorber) {
 				return new ContainerMatrixAbsorber(player.inventory, tile);
 			}
-			if(tile instanceof TileRadiatingChamber)
-			{
+			if(tile instanceof TileRadiatingChamber) {
 				return new ContainerRadiatingChamber(player.inventory, tile);
 			}
-			if(tile instanceof TileMagmaticSmelter)
-			{
+			if(tile instanceof TileMagmaticSmelter) {
 				return new ContainerMagmaticSmeltery(player.inventory, tile);
 			}
-			if(tile instanceof TileMagicalJukebox)
-			{
+			if(tile instanceof TileMagicalJukebox) {
 				return new ContainerMagicalJukebox(player.inventory, tile);
 			}
-			if(tile instanceof TileCrystalFormer)
-			{
+			if(tile instanceof TileCrystalFormer) {
 				return new ContainerCrystalFormer(player.inventory, tile);
 			}
-			if(tile instanceof TileCrystalController)
-			{
+			if(tile instanceof TileCrystalController) {
 				return new ContainerCrystalController(player.inventory, tile);
 			}
-			if(tile instanceof TileCrystalExtractor)
-			{
+			if(tile instanceof TileCrystalExtractor) {
 				return new ContainerCrystalExtractor(player.inventory, tile);
 			}
-			if(tile instanceof TileChargingChamber)
-			{
+			if(tile instanceof TileChargingChamber) {
 				return new ContainerChargingChamber(player.inventory, tile);
 			}
-			if(tile instanceof TileMagicalTeleporter)
-			{
+			if(tile instanceof TileMagicalTeleporter) {
 				return new ContainerMagicalTeleporter(player.inventory, tile);
 			}
-			if(tile instanceof TileMagicalFurnace)
-			{
+			if(tile instanceof TileMagicalFurnace) {
 				return new ContainerMagicalFurnace(player.inventory, tile);
 			}
-			if(tile instanceof TileMRUCoil)
-			{
+			if(tile instanceof TileMRUCoil) {
 				return new ContainerMRUCoil(player.inventory, tile);
 			}
-			if(tile instanceof TileCorruptionCleaner)
-			{
+			if(tile instanceof TileCorruptionCleaner) {
 				return new ContainerCorruptionCleaner(player.inventory, tile);
 			}
-			if(tile instanceof TileDarknessObelisk)
-			{
+			if(tile instanceof TileDarknessObelisk) {
 				return new ContainerDarknessObelisk(player.inventory, tile);
 			}
-			if(tile instanceof TileUltraHeatGenerator)
-			{
+			if(tile instanceof TileUltraHeatGenerator) {
 				return new ContainerUltraHeatGenerator(player.inventory, tile);
 			}
-			if(tile instanceof TileUltraFlowerBurner)
-			{
+			if(tile instanceof TileUltraFlowerBurner) {
 				return new ContainerUltraFlowerBurner(player.inventory, tile);
 			}
-			if(tile instanceof TileMithrilineFurnace)
-			{
+			if(tile instanceof TileMithrilineFurnace) {
 				return new ContainerMithrilineFurnace(player.inventory, tile);
 			}
-			if(tile instanceof TileRightClicker)
-			{
+			if(tile instanceof TileRightClicker) {
 				return new ContainerRightClicker(player.inventory, tile);
 			}
-			if(tile instanceof TileRedstoneTransmitter)
-			{
+			if(tile instanceof TileRedstoneTransmitter) {
 				return new ContainerRedstoneTransmitter(player.inventory, tile);
 			}
-			if(tile instanceof TileMagicalHopper)
-			{
+			if(tile instanceof TileMagicalHopper) {
 				return new ContainerMagicalHopper(player.inventory, tile);
 			}
-			if(tile instanceof TileWeaponMaker)
-			{
+			if(tile instanceof TileWeaponMaker) {
 				return new ContainerWeaponBench(player.inventory, tile);
 			}
-			if(tile instanceof TileFurnaceMagic)
-			{
+			if(tile instanceof TileFurnaceMagic) {
 				return new ContainerFurnaceMagic(player.inventory, tile);
 			}
-			if(tile instanceof TileMagicalChest)
-			{
+			if(tile instanceof TileMagicalChest) {
 				return new ContainerMagicalChest(player.inventory, tile);
 			}
-			if(tile instanceof TileMIMInventoryStorage)
-			{
+			if(tile instanceof TileMIMInventoryStorage) {
 				return new ContainerMIMInventoryStorage(player.inventory, tile);
 			}
-			if(tile instanceof TileMIM)
-			{
+			if(tile instanceof TileMIM) {
 				return new ContainerMIM(player.inventory, tile);
 			}
-			if(tile instanceof TileMIMScreen)
-			{
+			if(tile instanceof TileMIMScreen) {
 				return new ContainerMIMScreen(player.inventory, tile);
 			}
-			if(tile instanceof TileMIMCraftingManager)
-			{
+			if(tile instanceof TileMIMCraftingManager) {
 				return new ContainerMIMCraftingManager(player.inventory, tile);
 			}
-			if(tile instanceof TileMIMExportNode || tile instanceof TileMIMImportNode || tile instanceof TileAdvancedBlockBreaker)
-			{
+			if(tile instanceof TileMIMExportNode || tile instanceof TileMIMImportNode || tile instanceof TileAdvancedBlockBreaker) {
 				return new ContainerMIMSimpleNode(player.inventory, tile);
 			}
-			if(tile instanceof TileCrafter)
-			{
+			if(tile instanceof TileCrafter) {
 				return new ContainerCrafter(player.inventory, tile);
 			}
-			if(tile instanceof TileAnimalSeparator)
-			{
+			if(tile instanceof TileAnimalSeparator) {
 				return new ContainerRayTower(player.inventory, tile);
 			}
-			if(tile instanceof TileMRUChunkLoader)
-			{
+			if(tile instanceof TileMRUChunkLoader) {
 				return new ContainerMRUChunkLoader(player.inventory, tile);
 			}
-			if(tile instanceof TileMRUDimensionalTransciever)
-			{
+			if(tile instanceof TileMRUDimensionalTransciever) {
 				return new ContainerMRUDimTransciever(player.inventory, tile);
 			}
-			if(tile instanceof TilePlayerPentacle)
-			{
+			if(tile instanceof TilePlayerPentacle) {
 				return new ContainerPlayerPentacle();
 			}
+			if(tile instanceof TileMRUIntersector) {
+				return new ContainerMRUIntersector(player.inventory, tile);
+			}
+			if(tile instanceof TileWorldMerger) {
+				return new ContainerRayTower(player.inventory, tile);
+			}
+			if(tile instanceof TileWeatherController) {
+				return new ContainerWeatherController(player.inventory, tile);
+			}
 		}
-		if(ID == Config.guiID[1])
-		{
+		if(ID == Config.guiID[1]) {
 			List<EntityDemon> demons = world.getEntitiesWithinAABB(EntityDemon.class, new AxisAlignedBB(x-1, y-1, z-1, x+1, y+1, z+1));
-			if(!demons.isEmpty())
-			{
+			if(!demons.isEmpty()) {
 				return new ContainerDemon(player, demons.get(0));
 			}
 		}
-		return null;
-	}
-
-	public void openBookGUIForPlayer() {}
-
-	public void openPentacleGUIForPlayer(TileEntity tile) {}
-
-	public Object getClientVoidChestGUI(EntityPlayer player, World world, int x, int y, int z, int page)
-	{
 		return null;
 	}
 
@@ -361,6 +312,8 @@ public class CommonProxy implements IGuiHandler {
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		return null;
 	}
+
+	public void openBookGUIForPlayer() {}
 
 	public void registerRenderInformation() {}
 
@@ -370,35 +323,29 @@ public class CommonProxy implements IGuiHandler {
 
 	public void handleItemRegister(Item i) {}
 
-	public World getClientWorld()
-	{
+	public World getClientWorld() {
 		return null;
 	}
 
-	public Object getClientIcon(String iconName)
-	{
+	public Object getClientIcon(String iconName) {
 		return null;
 	}
 
 	public void spawnParticle(String name, float x, float y, float z, double i, double j, double k) {}
 
-	public boolean itemHasEffect(ItemStack stk)
-	{
+	public boolean itemHasEffect(ItemStack stk) {
 		return false;
 	}
 
-	public ModelBiped getClientModel(int id)
-	{
+	public ModelBiped getClientModel(int id) {
 		return null;
 	}
 
-	public Object getRenderer(int index)
-	{
+	public Object getRenderer(int index) {
 		return null;
 	}
 
-	public EntityPlayer getClientPlayer()
-	{
+	public EntityPlayer getClientPlayer() {
 		return null;
 	}
 

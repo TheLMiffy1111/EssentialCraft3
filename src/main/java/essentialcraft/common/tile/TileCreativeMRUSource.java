@@ -1,10 +1,15 @@
 package essentialcraft.common.tile;
 
+import essentialcraft.api.ApiCore;
+import net.minecraftforge.common.config.Configuration;
+
 public class TileCreativeMRUSource extends TileMRUGeneric {
 
+	public static int cfgMaxMRU = ApiCore.GENERATOR_MAX_MRU_GENERIC*100;
+	
 	public TileCreativeMRUSource() {
+		super(cfgMaxMRU);
 		setSlotsNum(0);
-		mruStorage.setMaxMRU(100000);
 	}
 
 	@Override
@@ -16,5 +21,15 @@ public class TileCreativeMRUSource extends TileMRUGeneric {
 	public void update()  {
 		mruStorage.setMRU(mruStorage.getMaxMRU());
 		super.update();
+	}
+	
+	public static void setupConfig(Configuration cfg) {
+		try {
+			String category = "tileentities.creativemrusource";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC*100).setMinValue(1).getInt();
+		}
+		catch(Exception e) {
+			return;
+		}
 	}
 }

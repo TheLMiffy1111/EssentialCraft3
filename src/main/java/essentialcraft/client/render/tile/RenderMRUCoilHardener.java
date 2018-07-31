@@ -17,12 +17,12 @@ public class RenderMRUCoilHardener extends TileEntitySpecialRenderer<TileMRUCoil
 	public static final ResourceLocation textures = new ResourceLocation("essentialcraft:textures/models/mrucoilhardener.png");
 	public static final IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation("essentialcraft:models/block/mrucoilhardener.obj"));
 
-	public void doRender(TileMRUCoilHardener tile, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
+	public void doRender(TileMRUCoilHardener tile, double x, double y, double z, float partialTicks)
 	{
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.pushMatrix();
 		if(tile.localLightning != null)
-			tile.localLightning.render(p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_);
+			tile.localLightning.render(x, y, z, partialTicks);
 		GlStateManager.popMatrix();
 		RenderHelper.enableStandardItemLighting();
 	}
@@ -30,15 +30,15 @@ public class RenderMRUCoilHardener extends TileEntitySpecialRenderer<TileMRUCoil
 	/**
 	 * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
 	 */
-	protected ResourceLocation getEntityTexture(TileEntity p_110775_1_)
+	protected ResourceLocation getEntityTexture(TileEntity entity)
 	{
 		return textures;
 	}
 
 	@Override
-	public void render(TileMRUCoilHardener p_147500_1_, double p_147500_2_, double p_147500_4_, double p_147500_6_, float p_147500_8_, int destroyStage, float alpha) {
-		if(p_147500_1_.getBlockMetadata() == 0)
-			this.doRender(p_147500_1_, p_147500_2_, p_147500_4_, p_147500_6_, p_147500_8_, 0);
+	public void render(TileMRUCoilHardener tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		if(tile.getBlockMetadata() == 0)
+			this.doRender(tile, x, y, z, partialTicks);
 	}
 
 	@Override

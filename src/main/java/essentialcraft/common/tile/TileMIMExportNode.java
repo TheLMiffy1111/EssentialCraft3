@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import essentialcraft.common.inventory.InventoryMagicFilter;
 import essentialcraft.common.item.ItemFilter;
-import essentialcraft.common.item.ItemsCore;
 import essentialcraft.utils.common.ECUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -12,12 +11,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileMIMExportNode extends TileMRUGeneric {
 	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 	public TileMIMExportNode() {
-		mruStorage.setMaxMRU(0);
+		super(0);
 		setSlotsNum(1);
 		slot0IsBoundGem = false;
 	}
@@ -29,8 +29,8 @@ public class TileMIMExportNode extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_2_.getItem() == ItemsCore.filter;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return stack.getItem() instanceof ItemFilter;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class TileMIMExportNode extends TileMRUGeneric {
 		for(int i = 0; i < itemsToExport.size(); ++i) {
 			for(int j = 0; j < slots; ++j) {
 				if(inv.insertItem(j, itemsToExport.get(i), true).getCount() < itemsToExport.get(i).getCount()) {
-					if(inv.getStackInSlot(j).isEmpty() || inv.getStackInSlot(j).isItemEqual(itemsToExport.get(i)) && ItemStack.areItemStackTagsEqual(inv.getStackInSlot(j), itemsToExport.get(i))) {
+					if(inv.getStackInSlot(j).isEmpty() || ItemHandlerHelper.canItemStacksStack(inv.getStackInSlot(j), itemsToExport.get(i))) {
 						if(getStackInSlot(0).isEmpty() || !(getStackInSlot(0).getItem() instanceof ItemFilter)) {
 							ItemStack copied = itemsToExport.get(i).copy();
 							int original = copied.getCount();

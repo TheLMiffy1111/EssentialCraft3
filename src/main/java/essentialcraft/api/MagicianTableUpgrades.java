@@ -3,6 +3,8 @@ package essentialcraft.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -15,11 +17,11 @@ public class MagicianTableUpgrades {
 
 	public static final List<ItemStack> UPGRADE_STACKS = new ArrayList<ItemStack>();
 
-	public static final List<Float> UPGRADE_EFFICIENCIES = new ArrayList<Float>();
+	public static final DoubleList UPGRADE_EFFICIENCIES = new DoubleArrayList();
 
 	public static final List<ResourceLocation> UPGRADE_TEXTURES = new ArrayList<ResourceLocation>();
 
-	public static void addUpgrade(ItemStack is, float f,ResourceLocation rl)
+	public static void addUpgrade(ItemStack is, double f, ResourceLocation rl)
 	{
 		UPGRADE_STACKS.add(is.copy());
 		UPGRADE_EFFICIENCIES.add(f);

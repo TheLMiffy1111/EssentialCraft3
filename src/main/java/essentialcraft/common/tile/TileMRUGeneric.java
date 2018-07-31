@@ -33,6 +33,12 @@ public abstract class TileMRUGeneric extends TileEntity implements ISidedInvento
 		mruStorage = new MRUTileStorage();
 	}
 
+	public TileMRUGeneric(int maxMRU) {
+		super();
+		tracker = new TileStatTracker(this);
+		mruStorage = new MRUTileStorage(maxMRU);
+	}
+
 	public int syncTick = 10;
 	public int innerRotation;
 	private ItemStack[] items = {ItemStack.EMPTY};
@@ -75,8 +81,9 @@ public abstract class TileMRUGeneric extends TileEntity implements ISidedInvento
 			}
 			syncTick = 20;
 		}
-		else
+		else {
 			--syncTick;
+		}
 
 		if(requestSync && getWorld().isRemote) {
 			requestSync = false;
@@ -103,25 +110,25 @@ public abstract class TileMRUGeneric extends TileEntity implements ISidedInvento
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int par1) {
-		return items[par1];
+	public ItemStack getStackInSlot(int slot) {
+		return items[slot];
 	}
 
 	@Override
-	public ItemStack decrStackSize(int par1, int par2) {
-		if(!items[par1].isEmpty()) {
+	public ItemStack decrStackSize(int slot, int amount) {
+		if(!items[slot].isEmpty()) {
 			ItemStack itemstack;
 
-			if(items[par1].getCount() <= par2) {
-				itemstack = items[par1];
-				items[par1] = ItemStack.EMPTY;
+			if(items[slot].getCount() <= amount) {
+				itemstack = items[slot];
+				items[slot] = ItemStack.EMPTY;
 				return itemstack;
 			}
 			else {
-				itemstack = items[par1].splitStack(par2);
+				itemstack = items[slot].splitStack(amount);
 
-				if(items[par1].getCount() == 0) {
-					items[par1] = ItemStack.EMPTY;
+				if(items[slot].getCount() == 0) {
+					items[slot] = ItemStack.EMPTY;
 				}
 
 				return itemstack;
@@ -133,10 +140,10 @@ public abstract class TileMRUGeneric extends TileEntity implements ISidedInvento
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int par1) {
-		if(!items[par1].isEmpty()) {
-			ItemStack itemstack = items[par1];
-			items[par1] = ItemStack.EMPTY;
+	public ItemStack removeStackFromSlot(int slot) {
+		if(!items[slot].isEmpty()) {
+			ItemStack itemstack = items[slot];
+			items[slot] = ItemStack.EMPTY;
 			return itemstack;
 		}
 		else {
@@ -145,11 +152,11 @@ public abstract class TileMRUGeneric extends TileEntity implements ISidedInvento
 	}
 
 	@Override
-	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		items[par1] = par2ItemStack;
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		items[slot] = stack;
 
-		if (!par2ItemStack.isEmpty() && par2ItemStack.getCount() > getInventoryStackLimit()) {
-			par2ItemStack.setCount(getInventoryStackLimit());
+		if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit()) {
+			stack.setCount(getInventoryStackLimit());
 		}
 	}
 
@@ -170,8 +177,8 @@ public abstract class TileMRUGeneric extends TileEntity implements ISidedInvento
 	public void closeInventory(EntityPlayer player) {}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return slot0IsBoundGem && p_94041_1_ == 0 ? isBoundGem(p_94041_2_) : true;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot0IsBoundGem && slot == 0 ? isBoundGem(stack) : true;
 	}
 
 	@Override
@@ -184,13 +191,13 @@ public abstract class TileMRUGeneric extends TileEntity implements ISidedInvento
 	}
 
 	@Override
-	public boolean canInsertItem(int p_102007_1_, ItemStack p_102007_2_, EnumFacing p_102007_3_) {
-		return isItemValidForSlot(p_102007_1_, p_102007_2_);
+	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing facing) {
+		return isItemValidForSlot(slot, stack);
 	}
 
 	@Override
-	public boolean canExtractItem(int p_102008_1_, ItemStack p_102008_2_, EnumFacing p_102008_3_) {
-		return MathUtils.arrayContains(getOutputSlots(), p_102008_1_);
+	public boolean canExtractItem(int slot, ItemStack stack, EnumFacing facing) {
+		return MathUtils.arrayContains(getOutputSlots(), slot);
 	}
 
 	public boolean isBoundGem(ItemStack stack) {
@@ -199,8 +206,9 @@ public abstract class TileMRUGeneric extends TileEntity implements ISidedInvento
 
 	@Override
 	public void clear() {
-		for(int i = 0; i < getSizeInventory(); i++)
+		for(int i = 0; i < getSizeInventory(); i++) {
 			setInventorySlotContents(i, ItemStack.EMPTY);
+		}
 	}
 
 	@Override

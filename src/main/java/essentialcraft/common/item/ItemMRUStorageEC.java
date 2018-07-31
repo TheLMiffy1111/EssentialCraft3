@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMRUStorageEC extends Item implements IBauble, IItemColor, IModelRegisterer {
+
 	public static Capability<IMRUHandlerItem> MRU_HANDLER_ITEM_CAPABILITY = CapabilityMRUHandler.MRU_HANDLER_ITEM_CAPABILITY;
 	public int[] maxMRU = new int[6];
 	public static int[] colors = {0x555555, 0x665555, 0x775555, 0x885555, 0x995555, 0xaa5555, 0xbb5555, 0xcc5555, 0xdd5555, 0xee6666, 0xff6666};
@@ -35,39 +36,41 @@ public class ItemMRUStorageEC extends Item implements IBauble, IItemColor, IMode
 		super();
 		this.maxMRU = maxMRU;
 		setMaxStackSize(1);
+		setHasSubtypes(true);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4) {
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-		par3List.add(par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() + "/" + par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU() + " MRU");
+	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
+		super.addInformation(stack, world, list, flag);
+		list.add(stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() + "/" + stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU() + " MRU");
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List) {
-		if(this.isInCreativeTab(par2CreativeTabs))
-			for(int var4 = 0; var4 < 5; ++var4) {
-				ItemStack min = new ItemStack(this, 1, var4);
-				ItemStack max = new ItemStack(this, 1, var4);
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+		if(this.isInCreativeTab(tab)) {
+			for(int i = 0; i < 5; ++i) {
+				ItemStack min = new ItemStack(this, 1, i);
+				ItemStack max = new ItemStack(this, 1, i);
 				min.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(0);
-				max.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(maxMRU[var4]);
-				par3List.add(min);
-				par3List.add(max);
+				max.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(maxMRU[i]);
+				list.add(min);
+				list.add(max);
 			}
+		}
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack p_77667_1_) {
-		return getUnlocalizedName()+dropNames[Math.min(p_77667_1_.getItemDamage(), dropNames.length-1)];
+	public String getUnlocalizedName(ItemStack stack) {
+		return getUnlocalizedName()+dropNames[Math.min(stack.getItemDamage(), dropNames.length-1)];
 	}
 
 	@Override
-	public int getColorFromItemstack(ItemStack par1ItemStack, int par2) {
-		int dam = par1ItemStack.getItemDamage();
+	public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+		int dam = stack.getItemDamage();
 		if(dam != -1) {
-			int currentMRU = par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU();
-			int maxMRU = par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU();
+			int currentMRU = stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU();
+			int maxMRU = stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU();
 			int percentage = MathUtils.getPercentage(currentMRU, maxMRU);
 			percentage /= 10;
 			return colors[percentage];

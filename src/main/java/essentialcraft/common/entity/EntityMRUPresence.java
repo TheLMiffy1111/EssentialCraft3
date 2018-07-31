@@ -51,8 +51,8 @@ public class EntityMRUPresence extends EntityLivingBase {
 
 	public static final DataParameter<NBTTagCompound> MRU_STORAGE = EntityDataManager.<NBTTagCompound>createKey(EntityMRUPresence.class, DataSerializers.COMPOUND_TAG);
 
-	public EntityMRUPresence(World par1World) {
-		super(par1World);
+	public EntityMRUPresence(World world) {
+		super(world);
 		this.setSize(0.3F, 0.3F);
 	}
 
@@ -96,11 +96,12 @@ public class EntityMRUPresence extends EntityLivingBase {
 
 	public void merge() {
 		if(!this.isDead) {
-			List<EntityMRUPresence> l = this.getEntityWorld().getEntitiesWithinAABB(EntityMRUPresence.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D));
+			List<EntityMRUPresence> l = this.getEntityWorld().getEntitiesWithinAABB(EntityMRUPresence.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D),
+					entity->entity != this && entity.mruStorage.getMRU() <= this.mruStorage.getMRU());
 			if(!l.isEmpty()) {
 				for(int i = 0; i < l.size(); ++i) {
 					EntityMRUPresence presence = l.get(i);
-					if(presence != this && !presence.isDead) {
+					if(!presence.isDead) {
 						presence.setDead();
 						mruStorage.setBalance((mruStorage.getBalance()*mruStorage.getMRU()+presence.mruStorage.getBalance()*presence.mruStorage.getMRU())/(mruStorage.getMRU()+presence.mruStorage.getMRU()));
 						mruStorage.addMRU(presence.mruStorage.getMRU(), true);
@@ -171,7 +172,7 @@ public class EntityMRUPresence extends EntityLivingBase {
 							}
 						}
 					}
-					List<EntityPlayer> players = this.getEntityWorld().getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).expand(12, 12, 12));
+					List<EntityPlayer> players = this.getEntityWorld().getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).grow(12, 12, 12));
 					for(int i = 0; i < players.size(); ++i) {
 						EntityPlayer player = players.get(i);
 						Vec3d playerCheck = new Vec3d(player.posX-this.posX, player.posY-this.posY, player.posZ-this.posZ);
@@ -226,7 +227,7 @@ public class EntityMRUPresence extends EntityLivingBase {
 		}
 
 		renderIndex += 0.001F*mruStorage.getBalance();
-		if(renderIndex>=1F)
+		if(renderIndex>4F)
 			renderIndex=0F;
 
 		firstTick = false;

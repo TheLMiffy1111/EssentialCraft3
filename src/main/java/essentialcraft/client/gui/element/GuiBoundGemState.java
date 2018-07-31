@@ -9,13 +9,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
-public class GuiBoundGemState extends GuiTextElement{
+public class GuiBoundGemState extends GuiTextElement {
 
 	public TileEntity tile;
 	public int slotNum;
 
-	public GuiBoundGemState(int i, int j, TileEntity t, int slot)
-	{
+	public GuiBoundGemState(int i, int j, TileEntity t, int slot) {
 		super(i,j);
 		tile = t;
 		slotNum = slot;

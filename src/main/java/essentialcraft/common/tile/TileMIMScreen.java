@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -16,7 +14,7 @@ public class TileMIMScreen extends TileMRUGeneric {
 	public static int mruForOut = 10;
 
 	public TileMIMScreen() {
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(2);
 	}
 
@@ -53,25 +51,12 @@ public class TileMIMScreen extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("NewMagicalInventoryManagerScreenSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Per Inserted Item:500",
-					"MRU Per Requested Item(for 1):10"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruForIns = Integer.parseInt(data[1].fieldValue);
-			mruForOut = Integer.parseInt(data[2].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-
-			cfg.save();
-		}catch(Exception e) {
+			String category = "tileentities.magicalinventorymanagerscreen";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruForIns = cfg.get(category, "MRUUsageIn", 500, "MRU Per Inserted Item").setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			mruForOut = cfg.get(category, "MRUUsageOut", 10, "MRU Per Requested Item (for 1)").setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+		}
+		catch(Exception e) {
 			return;
 		}
 	}

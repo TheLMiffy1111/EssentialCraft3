@@ -22,11 +22,11 @@ public class RenderMagicalMirror extends TileEntitySpecialRenderer<TileMagicalMi
 	public static final ResourceLocation glass = new ResourceLocation("essentialcraft:textures/models/mirror.png");
 	public static final IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation("essentialcraft:models/block/mirror.obj"));
 
-	public void doRender(TileMagicalMirror tile, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_) {
+	public void doRender(TileMagicalMirror tile, double x, double y, double z, float partialTicks) {
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)p_76986_2_+0.5F, (float)p_76986_4_-0.25F, (float)p_76986_6_+0.5F);
-		float timeIndex = (tile.getWorld().getWorldTime()+p_76986_8_)%120;
+		GlStateManager.translate((float)x+0.5F, (float)y-0.25F, (float)z+0.5F);
+		float timeIndex = (tile.getWorld().getWorldTime()+partialTicks)%120;
 		float yIndex = 1.0F;
 		if(timeIndex <= 60)
 			yIndex = timeIndex/240F;
@@ -73,12 +73,12 @@ public class RenderMagicalMirror extends TileEntitySpecialRenderer<TileMagicalMi
 		{
 			if(tile.transferTime < 20)
 			{
-				DrawUtils.renderItemStack_Full(tile.transferingStack, p_76986_2_, p_76986_4_, p_76986_6_, (tile.getWorld().getWorldTime()+p_76986_8_)%360, 0, 1, 1, 1, 0.5F, -0.3F+tile.transferTime/20F, 0.5F);
+				DrawUtils.renderItemStack_Full(tile.transferingStack, x, y, z, (tile.getWorld().getWorldTime()+partialTicks)%360, 0, 1, 1, 1, 0.5F, -0.3F+tile.transferTime/20F, 0.5F);
 			}else
 			{
 				Vec3d vec = new Vec3d(tile.inventoryPos.getX() - tile.getPos().getX(), tile.inventoryPos.getY() - tile.getPos().getY(), tile.inventoryPos.getZ() - tile.getPos().getZ());
 
-				DrawUtils.renderItemStack_Full(tile.transferingStack, p_76986_2_, p_76986_4_, p_76986_6_, (tile.getWorld().getWorldTime()+p_76986_8_)%360, 0, 1, 1, 1, 0.5F+(float)vec.x*(tile.transferTime-20F)/40, 0.5F+(float)vec.y*(tile.transferTime-20F)/40, 0.5F+(float)vec.z*(tile.transferTime-20F)/40);
+				DrawUtils.renderItemStack_Full(tile.transferingStack, x, y, z, (tile.getWorld().getWorldTime()+partialTicks)%360, 0, 1, 1, 1, 0.5F+(float)vec.x*(tile.transferTime-20F)/40, 0.5F+(float)vec.y*(tile.transferTime-20F)/40, 0.5F+(float)vec.z*(tile.transferTime-20F)/40);
 			}
 		}
 	}
@@ -86,15 +86,15 @@ public class RenderMagicalMirror extends TileEntitySpecialRenderer<TileMagicalMi
 	/**
 	 * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
 	 */
-	protected ResourceLocation getEntityTexture(TileEntity p_110775_1_)
+	protected ResourceLocation getEntityTexture(TileEntity entity)
 	{
 		return textures;
 	}
 
 	@Override
-	public void render(TileMagicalMirror p_147500_1_, double p_147500_2_, double p_147500_4_, double p_147500_6_, float p_147500_8_, int destroyStage, float alpha) {
-		if(p_147500_1_.getBlockMetadata() == 0)
-			this.doRender(p_147500_1_, p_147500_2_, p_147500_4_, p_147500_6_, p_147500_8_, 0);
+	public void render(TileMagicalMirror tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		if(tile.getBlockMetadata() == 0)
+			this.doRender(tile, x, y, z, partialTicks);
 	}
 
 	@Override

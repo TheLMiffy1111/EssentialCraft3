@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import essentialcraft.common.registry.BiomeRegistry;
-import essentialcraft.utils.cfg.Config;
 import net.minecraft.init.Biomes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;

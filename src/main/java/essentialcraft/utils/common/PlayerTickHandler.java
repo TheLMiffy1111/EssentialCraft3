@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,12 +70,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PlayerTickHandler {
-	public Hashtable<EntityPlayer, Integer> ticks = new Hashtable<EntityPlayer, Integer>();
-	public Hashtable<EntityPlayer, Integer> wticks = new Hashtable<EntityPlayer, Integer>();
+	public HashMap<EntityPlayer, Integer> ticks = new HashMap<EntityPlayer, Integer>();
+	public HashMap<EntityPlayer, Integer> wticks = new HashMap<EntityPlayer, Integer>();
 
-	public Hashtable<EntityPlayer, Boolean> isWearingBoots = new Hashtable<EntityPlayer, Boolean>();
+	public HashMap<EntityPlayer, Boolean> isWearingBoots = new HashMap<EntityPlayer, Boolean>();
 
-	public Hashtable<EntityPlayer, Boolean> isFlightAllowed = new Hashtable<EntityPlayer, Boolean>();
+	public HashMap<EntityPlayer, Boolean> isFlightAllowed = new HashMap<EntityPlayer, Boolean>();
 
 	public boolean client_flightAllowed;
 
@@ -581,7 +581,7 @@ public class PlayerTickHandler {
 					WorldEventRegistry.currentEvent.playerTick(e, WorldEventRegistry.currentEventDuration);
 
 				World wrd = e.getEntityWorld();
-				List<EntityItem> itemList = wrd.<EntityItem>getEntitiesWithinAABB(EntityItem.class,new AxisAlignedBB(e.posX-0.5D, e.posY-0.5D, e.posZ-0.5D, e.posX+0.5D, e.posY+0.5D, e.posZ+0.5D).expand(2, 1, 2));
+				List<EntityItem> itemList = wrd.<EntityItem>getEntitiesWithinAABB(EntityItem.class,new AxisAlignedBB(e.posX-0.5D, e.posY-0.5D, e.posZ-0.5D, e.posX+0.5D, e.posY+0.5D, e.posZ+0.5D).grow(2, 1, 2));
 				for(int i = 0; i < itemList.size(); ++i) {
 					doGroundItemChecks(itemList.get(i));
 				}

@@ -2,14 +2,18 @@ package essentialcraft.common.tile;
 
 import essentialcraft.api.ApiCore;
 import essentialcraft.common.capabilities.mru.MRUTileCrossDimStorage;
+import essentialcraft.common.capabilities.mru.MRUTileRangelessStorage;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Configuration;
 
 public class TileMRUDimensionalTransciever extends TileMRUGeneric {
 
+	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
+	public static boolean allowDimensionalTransfer = true;
+	
 	public TileMRUDimensionalTransciever() {
-		super();
-		mruStorage = new MRUTileCrossDimStorage();
-		mruStorage.setMaxMRU(ApiCore.DEVICE_MAX_MRU_GENERIC);
+		super(cfgMaxMRU);
+		mruStorage = allowDimensionalTransfer ? new MRUTileCrossDimStorage(cfgMaxMRU) : new MRUTileRangelessStorage(cfgMaxMRU);
 		setSlotsNum(1);
 	}
 
@@ -20,12 +24,23 @@ public class TileMRUDimensionalTransciever extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return isBoundGem(p_94041_2_);
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return isBoundGem(stack);
 	}
 
 	@Override
 	public int[] getOutputSlots() {
 		return new int[0];
+	}
+	
+	public static void setupConfig(Configuration cfg) {
+		try {
+			String category = "tileentities.mrudimensionaltransciever";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			allowDimensionalTransfer = cfg.get(category, "AllowDimensionalTransfer", true).getBoolean();
+		}
+		catch(Exception e) {
+			return;
+		}
 	}
 }

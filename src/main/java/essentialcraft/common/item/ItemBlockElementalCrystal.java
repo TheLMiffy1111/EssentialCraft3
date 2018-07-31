@@ -2,27 +2,14 @@ package essentialcraft.common.item;
 
 import DummyCore.Client.IItemColor;
 import DummyCore.Utils.MiscUtils;
-import essentialcraft.common.tile.TileElementalCrystal;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class ItemBlockElementalCrystal extends ItemBlock implements IItemColor {
 
-	public ItemBlockElementalCrystal(Block p_i45328_1_) {
-		super(p_i45328_1_);
+	public ItemBlockElementalCrystal(Block block) {
+		super(block);
 		this.setMaxDamage(0);
 		this.setHasSubtypes(true);
 	}
@@ -58,153 +45,5 @@ public class ItemBlockElementalCrystal extends ItemBlock implements IItemColor {
 		double blue = 11D/255D*fire+212D/255D*water+28D/255D*earth+146D/255D*air+244D/255D*neutral;
 
 		return ((int)(red*255D)<<16)+((int)(blue*255D)<<8)+(int)(green*255D);
-	}
-
-	@Override
-	public EnumActionResult onItemUse(EntityPlayer par2EntityPlayer, World par3World, BlockPos pos, EnumHand hand, EnumFacing facing, float par8, float par9, float par10) {
-		ItemStack par1ItemStack = par2EntityPlayer.getHeldItem(hand);
-		float size = 0;
-		float fire = 0;
-		float water = 0;
-		float earth = 0;
-		float air = 0;
-		if(MiscUtils.getStackTag(par1ItemStack) != null) {
-			size = MiscUtils.getStackTag(par1ItemStack).getFloat("size");
-			fire = MiscUtils.getStackTag(par1ItemStack).getFloat("fire");
-			water = MiscUtils.getStackTag(par1ItemStack).getFloat("water");
-			earth = MiscUtils.getStackTag(par1ItemStack).getFloat("earth");
-			air = MiscUtils.getStackTag(par1ItemStack).getFloat("air");
-		}
-		Block i1 = par3World.getBlockState(pos).getBlock();
-
-		if(i1 == Blocks.SNOW && (i1.getMetaFromState(par3World.getBlockState(pos)) & 7) < 1)
-		{
-			facing = EnumFacing.UP;
-		}
-		else if(i1 != Blocks.VINE && i1 != Blocks.TALLGRASS && i1 != Blocks.DEADBUSH
-				&& (i1 == null || !i1.isReplaceable(par3World, pos)))
-		{
-			if(facing == EnumFacing.DOWN)
-			{
-				pos = pos.down();
-			}
-
-			if(facing == EnumFacing.UP)
-			{
-				pos = pos.up();
-			}
-
-			if(facing == EnumFacing.NORTH)
-			{
-				pos = pos.north();
-			}
-
-			if(facing == EnumFacing.SOUTH)
-			{
-				pos = pos.south();
-			}
-
-			if(facing == EnumFacing.WEST)
-			{
-				pos = pos.west();
-			}
-
-			if(facing == EnumFacing.EAST)
-			{
-				pos = pos.east();
-			}
-		}
-
-		if(par1ItemStack.getCount() == 0)
-		{
-			return EnumActionResult.PASS;
-		}
-		else if(!par2EntityPlayer.canPlayerEdit(pos, facing, par1ItemStack))
-		{
-			return EnumActionResult.PASS;
-		}
-		else if(pos.getY() == 255)
-		{
-			return EnumActionResult.PASS;
-		}
-		else if(par3World.mayPlace(this.block, pos, false, facing, par2EntityPlayer))
-		{
-			Block block = this.block;
-			int j1 = this.getMetadata(par1ItemStack.getItemDamage());
-			IBlockState k1 = block.getStateForPlacement(par3World, pos, facing, par8, par9, par10, j1, par2EntityPlayer);
-
-			if (placeBlockAt(par1ItemStack, par2EntityPlayer, par3World, pos, facing, par8, par9, par10, k1))
-			{
-				par3World.setBlockState(pos, k1, 3);
-				par3World.playSound(par2EntityPlayer, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, block.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (block.getSoundType().getVolume() + 1.0F) / 2.0F, block.getSoundType().getPitch() * 0.8F);
-				par1ItemStack.shrink(1);
-				TileElementalCrystal c = (TileElementalCrystal) par3World.getTileEntity(pos);
-				if(c != null)
-				{
-					c.size = size;
-					c.fire = fire;
-					c.water = water;
-					c.earth = earth;
-					c.air = air;
-				}
-
-			}
-
-			return EnumActionResult.SUCCESS;
-		}
-		else
-		{
-			return EnumActionResult.PASS;
-		}
-	}
-
-	/**
-	 * Returns the metadata of the block which this Item (ItemBlock) can place
-	 */
-	@Override
-	public int getMetadata(int par1) {
-		return par1;
-	}
-
-	@Override
-	public void getSubItems(CreativeTabs p_150895_2_, NonNullList<ItemStack> p_150895_3_) {
-		if(this.isInCreativeTab(p_150895_2_))
-			for(int i = 0; i < 5; ++i) {
-				for(int i1 = 0; i1 < 4; ++i1) {
-					ItemStack crystalStack = new ItemStack(this,1,0);
-					NBTTagCompound tag = new NBTTagCompound();
-					tag.setFloat("size", i*25);
-					float[] elements = {0,0,0,0};
-					elements[i1] = 100F;
-					tag.setFloat("fire", elements[0]);
-					tag.setFloat("water", elements[1]);
-					tag.setFloat("earth", elements[2]);
-					tag.setFloat("air", elements[3]);
-					crystalStack.setTagCompound(tag);
-					p_150895_3_.add(crystalStack);
-				}{
-					ItemStack crystalStack = new ItemStack(this,1,0);
-					NBTTagCompound tag = new NBTTagCompound();
-					tag.setFloat("size", i*25);
-					float[] elements = {100,100,100,100};
-					tag.setFloat("fire", elements[0]);
-					tag.setFloat("water", elements[1]);
-					tag.setFloat("earth", elements[2]);
-					tag.setFloat("air", elements[3]);
-					crystalStack.setTagCompound(tag);
-					p_150895_3_.add(crystalStack);
-				}{
-					ItemStack crystalStack = new ItemStack(this,1,0);
-					NBTTagCompound tag = new NBTTagCompound();
-					tag.setFloat("size", i*25);
-					float[] elements = {0,0,0,0};
-					tag.setFloat("fire", elements[0]);
-					tag.setFloat("water", elements[1]);
-					tag.setFloat("earth", elements[2]);
-					tag.setFloat("air", elements[3]);
-					crystalStack.setTagCompound(tag);
-					p_150895_3_.add(crystalStack);
-				}
-			}
 	}
 }

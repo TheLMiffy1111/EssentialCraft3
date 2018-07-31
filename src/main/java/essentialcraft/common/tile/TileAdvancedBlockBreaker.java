@@ -14,7 +14,8 @@ import net.minecraft.world.World;
 public class TileAdvancedBlockBreaker extends TileMRUGeneric {
 
 	public TileAdvancedBlockBreaker() {
-		mruStorage.setMaxMRU(0);
+		super(0);
+		this.slot0IsBoundGem = false;
 		setSlotsNum(1);
 	}
 
@@ -30,30 +31,29 @@ public class TileAdvancedBlockBreaker extends TileMRUGeneric {
 		return new int[] {0};
 	}
 
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return stack.getItem() instanceof ItemFilter;
+	}
+
 	public void breakBlocks() {
 		for(int i = 1; i < 13; ++i) {
-			BlockPos p = new BlockPos(pos.getX() + getRotation().getFrontOffsetX()*i, pos.getY() + getRotation().getFrontOffsetY()*i, pos.getZ() + getRotation().getFrontOffsetZ()*i);
+			BlockPos p = pos.offset(getRotation(), i);
 			Block b = getWorld().getBlockState(p).getBlock();
 			if(b != null && !b.isAir(getWorld().getBlockState(p), getWorld(), p)) {
-				ItemStack fromBlock = new ItemStack(b,1,getWorld().getBlockState(p).getValue(BlockAdvBlockBreaker.FACING).getIndex());
+				ItemStack fromBlock = b.getItem(getWorld(), p, getWorld().getBlockState(p));
 				World w = getWorld();
-				int dX = pos.getX() + getRotation().getFrontOffsetX()*i;
-				int dY = pos.getY() + getRotation().getFrontOffsetY()*i;
-				int dZ = pos.getZ() + getRotation().getFrontOffsetZ()*i;
-				BlockPos dP = new BlockPos(dX, dY, dZ);
 				if(getStackInSlot(0).isEmpty() || !(getStackInSlot(0).getItem() instanceof ItemFilter)) {
-					b.breakBlock(w, dP, w.getBlockState(dP));
-					b.onBlockDestroyedByPlayer(w, dP, w.getBlockState(dP));
-					b.dropBlockAsItem(w, dP, w.getBlockState(dP), 0);
-					w.setBlockState(dP, Blocks.AIR.getDefaultState(), 2);
+					b.breakBlock(w, p, w.getBlockState(p));
+					b.onBlockDestroyedByPlayer(w, p, w.getBlockState(p));
+					b.dropBlockAsItem(w, p, w.getBlockState(p), 0);
+					w.setBlockToAir(p);
 				}
-				else {
-					if(ECUtils.canFilterAcceptItem(new InventoryMagicFilter(getStackInSlot(0)), fromBlock, getStackInSlot(0))) {
-						b.breakBlock(w, dP, w.getBlockState(dP));
-						b.onBlockDestroyedByPlayer(w, dP, w.getBlockState(dP));
-						b.dropBlockAsItem(w, dP, w.getBlockState(dP), 0);
-						w.setBlockState(dP, Blocks.AIR.getDefaultState(), 2);
-					}
+				else if(ECUtils.canFilterAcceptItem(new InventoryMagicFilter(getStackInSlot(0)), fromBlock, getStackInSlot(0))) {
+					b.breakBlock(w, p, w.getBlockState(p));
+					b.onBlockDestroyedByPlayer(w, p, w.getBlockState(p));
+					b.dropBlockAsItem(w, p, w.getBlockState(p), 0);
+					w.setBlockToAir(p);
 				}
 			}
 		}

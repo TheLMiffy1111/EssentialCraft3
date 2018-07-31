@@ -131,11 +131,11 @@ public class TileMRUCUECAcceptor extends TileEntity implements IStructurePiece, 
 	}
 
 	@Override
-	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		items[par1] = par2ItemStack;
+	public void setInventorySlotContents(int par1, ItemStack stack) {
+		items[par1] = stack;
 
-		if(!par2ItemStack.isEmpty() && par2ItemStack.getCount() > getInventoryStackLimit())
-			par2ItemStack.setCount(getInventoryStackLimit());
+		if(!stack.isEmpty() && stack.getCount() > getInventoryStackLimit())
+			stack.setCount(getInventoryStackLimit());
 	}
 
 	@Override
@@ -165,8 +165,8 @@ public class TileMRUCUECAcceptor extends TileEntity implements IStructurePiece, 
 	public void closeInventory(EntityPlayer p) {}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_2_.getItem() == ItemsCore.bound_gem;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return stack.getItem() == ItemsCore.bound_gem;
 	}
 
 	@Override

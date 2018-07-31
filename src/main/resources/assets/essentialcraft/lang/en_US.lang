@@ -312,7 +312,7 @@ essentialcraft.page.mru_11.txt=Sometimes, if too much unstable MRU leak into the
 essentialcraft.page.mru_12.txt=Here is a picture of a 100% balanced MRUCU. Yes, they exist too!
 essentialcraft.page.mru_13.txt=Usually MRUCUs will get their balance shifted to one or other side. There is another problem - you simply cannot SEE the MRUCUs! There are items, that allow you to see them, but you can't make them now. 
 essentialcraft.page.mru_14.txt=However, you can HEAR MRUCUs! They make a little noise, that you can hear, if you listen carefully. If MRUCU is pretty big it will start corrupting the world around itself.|It is also known, that standing near MRUCUs without any protection may lead to some nasty effects...
-essentialcraft.page.mru_15.txt=You can simply break those corruption blocks, just do not stand in them for too long! You can also MOVE MRUCUs using MRUCU Moving Wands. They break after some time too. To pull MRUCUs hold rightclick, and to push them also hold SHIFT.
+essentialcraft.page.mru_15.txt=You can simply break those corruption blocks, just do not stand in them for too long! You can also MOVE MRUCUs using MRUCU Moving Wands. They break after some time too. To pull MRUCUs hold right-click, and to push them also hold SHIFT.
 essentialcraft.page.soulStone_0.txt=Every living thing has 'MRU Matrix'. This matrix cannot be seen or otherwise known of, and it serves as a protection from various MRU effects. However, there is a way to see the numeric representation of your matrix - the Soul Stone!
 essentialcraft.page.soulStone_1.txt=To make a Soul Stone throw some emeralds on an emerald block surrounded by soul sand.
 essentialcraft.page.soulStone_2.txt=To make the soul stone read information bound it to yourself by right-clicking.
@@ -388,7 +388,7 @@ ec3book.discovery_essentialcraft.disc.magicalMirrors.desc=Item Teleportation
 
 essentialcraft.page.boundGem_0.txt=Machines in EssentialCraft can generate or transfer MRU energy. We are talking about transferring right now. Every machine that can accept MRU will have a special slot with a gray gem icon in it. This slot is for the bound gem.
 essentialcraft.page.boundGem_1.txt=There are no wires or pipes in essentialcraft. There are no tubes and/or golems. No robots. Any device can accept MRU energy on it's own. Basically, the Bound Gem serves as a location storage for the machine.
-essentialcraft.page.boundGem_2.txt=When you right-click any device with a bound gem it will remember it's position and dimension. If you shift-rightclick the gem in your hand it will loose all that information. If the bound gem already stores the position, it will not relink to another device!
+essentialcraft.page.boundGem_2.txt=When you right-click any device with a bound gem it will remember it's position and dimension. If you shift-right-click the gem in your hand it will lose all that information. If the bound gem already stores the position, it will not relink to another device!
 essentialcraft.page.boundGem_3.txt=If you do not see the specific slot in the device, try shift-clicking the gem in the GUI, it should automatically find a correct slot. Devices with bound gems can't get energy from any MRU storage, that is greater than 16 blocks away.
 essentialcraft.page.boundGem_4.txt=Of course devices can't accept energy from other dimensions. However, they can accept MRU pretty much from ANY MRU storage, including other devices! Holding a bound gem in your hand will highlight the device it is liked to.
 essentialcraft.page.matrixDestructor_0.txt=You will need a lot of MRU energy to work with your machines. Even the first one already require energy! To create your first bits of energy you will need this device.
@@ -401,7 +401,7 @@ essentialcraft.page.radiatingChamber_2.txt=Every recipe in this thing has an upp
 essentialcraft.page.radiatingChamber_3.txt=The Balance in the device will be the same, as in the block, that acts as an MRU source for this device.
 essentialcraft.page.radiatingChamber_4.txt=It is worth saying, that while this device works it generates some unstable MRU in the world - it means, that it will create and empower MRUCU around itself. It will also put a nasty potion effect on you.
 essentialcraft.page.miscRadiation_0.txt=You will certainly need some items to use in crafts - and, well, here they are:
-essentialcraft.page.magicianTable_0.txt=Usually most of items in essentialcraft come from combining 5 different items and some MRU. Or just radiating 1 item with MRU. This is like an infusion in Thaumcraft - but you inject not the aspects, but MRU into the item.
+essentialcraft.page.magicianTable_0.txt=Usually most of items in EssentialCraft come from combining 5 different items and some MRU. Or just radiating 1 item with MRU. This is like an infusion in Thaumcraft - but you inject not the aspects, but MRU into the item.
 essentialcraft.page.magicianTable_1.txt=Magician Table can do the exact requested thing! It is, basically, another crafting table of the mod. It needs a supply of MRU and some items. It does not care about the balance you give to it.
 essentialcraft.page.magicianTable_2.txt=It is worth saying, that while this device works it generates some unstable MRU in the world - it means, that it will create and empower MRUCU around itself. It will also put a nasty potion effect on you.
 essentialcraft.page.magicianTable_4.txt=The device can be upgraded using items, listed above. Each upgrade will increase the speed of the device, but will also increase the MRU usage. The more expensive the upgrade is, the more effect it will have on the device.
@@ -477,7 +477,7 @@ ec3book.discovery_essentialcraft.disc.frozenMace.desc=33% permafrost chance
 ec3book.discovery_essentialcraft.disc.magmaticStaff.name=Magmatic Staff
 ec3book.discovery_essentialcraft.disc.magmaticStaff.desc=The sleepin' volcano
 ec3book.discovery_essentialcraft.disc.mhs.name=Magical Hazmat Suit
-ec3book.discovery_essentialcraft.disc.mhs.desc=... ... ... And a crowbar.
+ec3book.discovery_essentialcraft.disc.mhs.desc=.........And a crowbar.
 ec3book.discovery_essentialcraft.disc.elementalCharms.name=Elemental Charms
 ec3book.discovery_essentialcraft.disc.elementalCharms.desc=Protection, once again!
 ec3book.discovery_essentialcraft.disc.mruCoil.name=MRU Tesla Coil
@@ -501,10 +501,10 @@ ec3book.discovery_essentialcraft.disc.magicalQuarry.desc=Move along, Buildcraft!
 ec3book.discovery_essentialcraft.disc.hoanna.name=Visiting Hoanna
 ec3book.discovery_essentialcraft.disc.hoanna.desc=The Ancient Legend...
 
-essentialcraft.page.crystals_0.txt=Lots of devices in essentialcraft not only use MRU, but also convert it to more 'elemental' state. And if the simplest devices can do this using the basic Elemental Cores, more advanced devices may require a more specific item.
+essentialcraft.page.crystals_0.txt=Lots of devices in EssentialCraft not only use MRU, but also convert it to more 'elemental' state. And if the simplest devices can do this using the basic Elemental Cores, more advanced devices may require a more specific item.
 essentialcraft.page.crystals_1.txt=You have found an answer in your knowledge of earlier times. Back in time, in places with huge MRU concentration there were those called 'crystals'. They used to be a main source of MRU energy, and worked kinda like a magnet for all MRU in the world.
 essentialcraft.page.crystals_2.txt=Those crystals seem to serve exact the purpose you need! Even more - if you scrap them, they will drop some dust - essence, exactly the thing you need! 
-essentialcraft.page.crystals_3.txt=However, there is a small problem. Lots of time has passed, and the crystals... no longer exsist. All destroyed, blown up or just disappeared because of MRU changes in the world. The idea - busted? Of course no!
+essentialcraft.page.crystals_3.txt=However, there is a small problem. Lots of time has passed, and the crystals... no longer exist. All destroyed, blown up or just disappeared because of MRU changes in the world. The idea - busted? Of course no!
 essentialcraft.page.crystals_4.txt=After lots of work you were able to recreate a crystal! Somewhat, at least. The crystal you've made broke almost instantly. But it was that exact crystal!
 essentialcraft.page.crystals_5.txt=After a little bit more work you've discovered a way to create a machine, that can create the smallest, yet pretty resistant crystal from diamonds, water, glass and LOTS of MRU!
 essentialcraft.page.crystals_7.txt=The bottom 3 slots are for buckets with water, 2 slots in the middle are for glass and the top slot is for diamond. Just supply the machine with MRU and wait. The crystal will appear in the top-left slot.
@@ -536,7 +536,7 @@ essentialcraft.page.reactor_0.txt=MRU and electricity, electricity and MRU... Th
 essentialcraft.page.reactor_2.txt=MRU reactor is a tough thing to build, so the structure shape for this will come in 3 layers, on next 3 pages.
 essentialcraft.page.reactor_8.txt=The reactor is pretty dangerous, so be sure to place it as far away as you can. Also, it generates completely unbalanced MRU energy, so make sure to back off!
 essentialcraft.page.soulStorage_0.txt=You can store MRU in different items too, not only in a structure! Those items serve the purpose of a battery, so if any item in your inventory requires MRU it will try to take it from the storage first.
-essentialcraft.page.soulStorage_1.txt=Soul shard. Stores 500 MRU.
+essentialcraft.page.soulStorage_1.txt=Soul Shard. Stores 500 MRU.
 essentialcraft.page.soulStorage_2.txt=Soul Sphere. Stores 5,000 MRU.
 essentialcraft.page.soulStorage_3.txt=Dark Soul Matter. Stores 30,000 MRU.
 essentialcraft.page.soulStorage_4.txt=Red Soul Matter. Stores 120,000 MRU.
@@ -1026,7 +1026,7 @@ essentialcraft.page.magicalHopper_0.txt=This wonderful device will pick up items
 
 essentialcraft.page.metadataManager_0.txt=This block will output a redstone signal with the strength equal to the metadata of the block it is placed next to. However, it will not cause a block update itself, so for the things like wheat you will need to give this device a block update to handle the wheat change.
 
-essentialcraft.page.blockBreaker_0.txt=This device upon receiving a redstone signal will break up to 12 blocks in front of itself, which have the same HARDNESS(the amount of time required to break the block). It will also try to collect drops from the broken blocks and split them out of the back of itself.
+essentialcraft.page.blockBreaker_0.txt=This device upon receiving a redstone signal will break up to 12 blocks in front of itself, which have the same HARDNESS(the amount of time required to break the block).
 
 essentialcraft.page.weaponMaker_0.txt=You already know that MRU is a dangerous thing. But MRU is radiation, right? You think, that you might be able to create a weapon, that will create concentrated MRU rays, which should kill everything that exists.
 essentialcraft.page.weaponMaker_1.txt=The weapon bench is able to create guns for you. Opening it up brings an interesting GUI. There are 4 types of weapons, which you can made, and to switch between the crafting patterns just put the bench in the crafting window.
@@ -1077,7 +1077,7 @@ ec3book.discovery_redSuit.desc=It is from the future!
 
 essentialcraft.page.enderstar_0.txt=The Enderstar. What is it? The Enderstar, or sometimes referenced as 'The Green Sun' is a mysterious object, that exists on the other material plane. It actually is so far from yours, that there is no way to see or feel the enderstar...
 essentialcraft.page.enderstar_1.txt=Not much is known about this mysterious object, but some ancient knowledge exists. It teaches, that the Enderstar is the thing, that gives life to everything and everyone via Pulses - chaotic, uncontrollable pulses of destructive energy, which, upon appearing into our plane gets too weakened to damage anything.
-essentialcraft.page.enderstar_2.txt=This energy is called ESPE - Ender Star Pulse Energy, and it seems possible to collect it... But who knows how?..
+essentialcraft.page.enderstar_2.txt=This energy is called ESPE - Ender Star Pulse Energy, and it seems possible to collect it...
 
 essentialcraft.page.mithriline_0.txt=The Enderstar Pulses do not change anything on their own... However, it seems, that some MRU rays were caught by the pulse when they were passing through your world. That changed something - however, not much. It seems, that most of the world stayed unaffected, but what was already so.
 essentialcraft.page.mithriline_1.txt=Some Elemental Infused Ore is now replaced with Mithriline Ore. The amount of Mithriline dropped is affected by the fortune enchantment.
@@ -1237,7 +1237,7 @@ essentialcraft.page.newMimInv_0.txt=This module is able to hold up to 54 Invento
 essentialcraft.page.newMimInv_1.txt=Basically, any time the item is imported into the system the manager will go through the list of all inventories linked by the Inventory Gem in this device and find the one to put the item in. The exporting will work the same way.
 essentialcraft.page.newMimInv_2.txt=Any inventory can be linked - hoppers, chests, brewing stands, etc. Nothing will happen to the inventories - they will still be the same - you will be able to normally interact with them, take items out or put them in. Press right-click with the Inventory Gem in your hand to see the inventory it is linked to.
 essentialcraft.page.newMimCraft_0.txt=This module for the Magical Inventory Manager can hold up to 54 Crafting Frames. It will then make the recipes from the frames available in the Screen Modules. It sadly does not support multi-step crafting. It will take the items to craft from the Inventories, bound in the Inventory Module.
-essentialcraft.page.newMimScreen_0.txt=This module for the Magical Inventory Manager allows you to easily access all the linked inventories in one GUI. Just select the item you want to grab, set the size using the buttons below, or the text field next to them and press Request. Alternatively, perform a double-click, shiftclick or press Enter on your keyboard.
+essentialcraft.page.newMimScreen_0.txt=This module for the Magical Inventory Manager allows you to easily access all the linked inventories in one GUI. Just select the item you want to grab, set the size using the buttons below, or the text field next to them and press Request. Alternatively, perform a double-click, shift-click or press Enter on your keyboard.
 essentialcraft.page.newMimScreen_1.txt=There is also a search bar at the top of the GUI - just type something it and only items containing the typed text in their names will be shown. The search bar is not case-sensitive.
 essentialcraft.page.newMimScreen_2.txt=Crafting works the same way as requesting. You can also import items into the system using the screen - just above the request button there is an input slot. All items in there will automatically be put in the system. Shift-clicking also works.
 
@@ -1311,5 +1311,7 @@ advancements.essentialcraft.the_endless_summer.title=Everlasting Song
 advancements.essentialcraft.the_endless_summer.desc=The worlds merged together...
 advancements.essentialcraft.papers_please.title=Papers, Please!
 advancements.essentialcraft.papers_please.desc=Glory to Arstotzka!
+
+tile.essentialcraft.intersector.name=MRU Intersector
 
 item.essentialcraft.balance_setter.name=Balance Setter

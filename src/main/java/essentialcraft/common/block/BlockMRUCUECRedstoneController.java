@@ -32,19 +32,19 @@ public class BlockMRUCUECRedstoneController extends BlockContainer implements IM
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		if(par4EntityPlayer.isSneaking()) {
-			TileMRUCUECRedstoneController rc = (TileMRUCUECRedstoneController)par1World.getTileEntity(par2);
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		if(player.isSneaking()) {
+			TileMRUCUECRedstoneController rc = (TileMRUCUECRedstoneController)world.getTileEntity(par2);
 			rc.setting += 1;
 			if(rc.setting >= 11)
 				rc.setting = 0;
-			if(par4EntityPlayer.getEntityWorld().isRemote)
-				par4EntityPlayer.sendMessage(new TextComponentString(I18n.translateToLocal("essentialcraft.txt.redstone_"+rc.setting)));
+			if(player.getEntityWorld().isRemote)
+				player.sendMessage(new TextComponentString(I18n.translateToLocal("essentialcraft.txt.redstone_"+rc.setting)));
 		}
 		else {
-			TileMRUCUECRedstoneController rc = (TileMRUCUECRedstoneController)par1World.getTileEntity(par2);
-			if(par4EntityPlayer.getEntityWorld().isRemote)
-				par4EntityPlayer.sendMessage(new TextComponentString(I18n.translateToLocal("essentialcraft.txt.redstone_"+rc.setting)));
+			TileMRUCUECRedstoneController rc = (TileMRUCUECRedstoneController)world.getTileEntity(par2);
+			if(player.getEntityWorld().isRemote)
+				player.sendMessage(new TextComponentString(I18n.translateToLocal("essentialcraft.txt.redstone_"+rc.setting)));
 		}
 		return true;
 	}

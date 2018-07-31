@@ -2,9 +2,10 @@ package essentialcraft.utils.common;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.UUID;
 
 import com.google.common.collect.HashMultimap;
@@ -76,10 +77,10 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class ECUtils {
 	public static final HashMultimap<EnumStructureType,Block> STRUCTURE_TO_BLOCKS_MAP = HashMultimap.<EnumStructureType, Block>create();
-	public static final Hashtable<String, Float> MRU_RESISTANCES = new Hashtable<String, Float>();
-	public static final Hashtable<String, Boolean> IGNORE_META = new Hashtable<String, Boolean>();
+	public static final HashMap<String, Float> MRU_RESISTANCES = new HashMap<String, Float>();
+	public static final HashMap<String, Boolean> IGNORE_META = new HashMap<String, Boolean>();
 	public static final List<SpellEntry> SPELL_LIST = new ArrayList<SpellEntry>();
-	public static final Hashtable<UUID,PlayerGenericData> PLAYER_DATA_MAP = new Hashtable<UUID, PlayerGenericData>();
+	public static final HashMap<UUID,PlayerGenericData> PLAYER_DATA_MAP = new HashMap<UUID, PlayerGenericData>();
 	private static final List<ScheduledServerAction> ACTION_LIST = new ArrayList<ScheduledServerAction>();
 	public static NBTTagCompound ec3WorldTag = new NBTTagCompound();
 
@@ -341,6 +342,10 @@ public class ECUtils {
 		}
 	}
 
+	public static boolean randomIncreaseCorruptionAt(World w, BlockPos p, Random rand, int amount) {
+		return increaseCorruptionAt(w, p, rand.nextInt(amount+1));
+	}
+
 	public static boolean increaseCorruptionAt(World w, BlockPos p, int amount) {
 		try {
 			IMRUHandler mruStorage = getClosestMRUCU(w, p, 32);
@@ -353,10 +358,11 @@ public class ECUtils {
 				Coord3D c = new Coord3D(p.getX()+0.5D, p.getY()+0.5D, p.getZ()+0.5D);
 				createMRUCUAt(w, c, amount, 1.0F+MathUtils.randomFloat(w.rand), true, false);
 			}
-			List<EntityPlayer> players = w.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(p).expand(6D, 3D, 6D));
+			List<EntityPlayer> players = w.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(p).grow(6D, 3D, 6D));
 			for(EntityPlayer player : players) {
-				if(!w.isRemote)
+				if(!w.isRemote) {
 					calculateAndAddMRUCorruptionPE(player);
+				}
 			}
 		}
 		catch(Exception e) {
@@ -365,8 +371,7 @@ public class ECUtils {
 		return false;
 	}
 
-	public static void calculateAndAddMRUCorruptionPE(EntityPlayer player)
-	{
+	public static void calculateAndAddMRUCorruptionPE(EntityPlayer player) {
 		if(player.isCreative() || player.isSpectator()) {
 			return;
 		}
@@ -375,7 +380,7 @@ public class ECUtils {
 			int currentDuration = player.getActivePotionEffect(PotionRegistry.mruCorruption).getDuration();
 			int newDuration = currentDuration+2;
 			int newModifier = currentDuration/2000;
-			player.removePotionEffect(PotionRegistry.mruCorruption);
+			player.removeActivePotionEffect(PotionRegistry.mruCorruption);
 			player.addPotionEffect(new PotionEffect(PotionRegistry.mruCorruption,newDuration,newModifier,true,true));
 		}
 		else {
@@ -383,14 +388,13 @@ public class ECUtils {
 		}
 	}
 
-	public static void calculateAndAddPE(EntityPlayer player, Potion potion, int index, int index2)
-	{
+	public static void calculateAndAddPE(EntityPlayer player, Potion potion, int index, int index2) {
 		boolean hasEffect = player.getActivePotionEffect(potion) != null;
 		if(hasEffect) {
 			int currentDuration = player.getActivePotionEffect(potion).getDuration();
 			int newDuration = currentDuration+index2;
 			int newModifier = currentDuration/index;
-			player.removePotionEffect(potion);
+			player.removeActivePotionEffect(potion);
 			player.addPotionEffect(new PotionEffect(potion,newDuration,newModifier,true,true));
 		}
 		else {

@@ -1,8 +1,8 @@
 package essentialcraft.common.tile;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import DummyCore.Utils.Coord3D;
 import DummyCore.Utils.DataStorage;
@@ -50,15 +50,14 @@ public class TileMRUCoil extends TileMRUGeneric {
 	public static boolean hurtPlayers = true;
 	public static boolean hurtPassive = true;
 	public static float damage = 18F;
-	public static float radiusModifier = 1F;
+	public static double radiusModifier = 1D;
 
 	public TileMRUCoil() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(2);
 	}
 
-	public boolean isStructureCorrect() {
+	public boolean canWork() {
 		return isStructureCorrect && mruStorage.getMRU() >= mruUsage;
 	}
 
@@ -73,7 +72,7 @@ public class TileMRUCoil extends TileMRUGeneric {
 			dp.setY(dy);
 			++height;
 		}
-		Collection<Block> allowed = ECUtils.STRUCTURE_TO_BLOCKS_MAP.get(EnumStructureType.MRU_COIL);
+		Set<Block> allowed = ECUtils.STRUCTURE_TO_BLOCKS_MAP.get(EnumStructureType.MRU_COIL);
 		Block b_0 = getWorld().getBlockState(dp.add(0, 0, 0)).getBlock();
 		Block b_1 = getWorld().getBlockState(dp.add(1, 0, 0)).getBlock();
 		Block b_2 = getWorld().getBlockState(dp.add(-1, 0, 0)).getBlock();
@@ -101,7 +100,7 @@ public class TileMRUCoil extends TileMRUGeneric {
 		Block b_1_9 = getWorld().getBlockState(dp.add(-3, 0, 0)).getBlock();
 		Block b_1_10 = getWorld().getBlockState(dp.add(-3, 0, -1)).getBlock();
 		Block b_1_11 = getWorld().getBlockState(dp.add(-3, 0, 1)).getBlock();
-		List<Block> cBl = new ArrayList<Block>();
+		Set<Block> cBl = new HashSet<Block>();
 		cBl.add(b_0);
 		cBl.add(b_1);
 		cBl.add(b_2);
@@ -138,9 +137,14 @@ public class TileMRUCoil extends TileMRUGeneric {
 	public void update() {
 		super.update();
 		mruStorage.update(getPos(), getWorld(), getStackInSlot(0));
+		--ticksBeforeStructureCheck;
+		if(ticksBeforeStructureCheck <= 0) {
+			ticksBeforeStructureCheck = 20;
+			initStructure();
+		}
 		if(getWorld().isBlockIndirectlyGettingPowered(pos) == 0) {
 			if(getWorld().isRemote) {
-				if(isStructureCorrect()) {
+				if(canWork()) {
 					if(localLightning == null) {
 						localLightning = new Lightning(getWorld().rand, new Coord3D(0.5F, 0.9F, 0.5F), new Coord3D(0.5F + MathUtils.randomDouble(getWorld().rand), 0.9F + MathUtils.randomDouble(getWorld().rand), 0.5F + MathUtils.randomDouble(getWorld().rand)), 0.1F, 1.0F, 0.2F, 1.0F);
 					}
@@ -161,7 +165,7 @@ public class TileMRUCoil extends TileMRUGeneric {
 				}
 			}
 			if(isStructureCorrect) {
-				List<EntityLivingBase> entities = getWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos).expand(rad*radiusModifier, rad*radiusModifier, rad*radiusModifier));
+				List<EntityLivingBase> entities = getWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos).grow(rad*radiusModifier, rad*radiusModifier, rad*radiusModifier));
 				if(entities != null && !entities.isEmpty() && monsterLightning == null) {
 					Ford:
 						for(EntityLivingBase b : entities) {
@@ -198,19 +202,13 @@ public class TileMRUCoil extends TileMRUGeneric {
 						}
 				}
 			}
-			if(ticksBeforeStructureCheck <= 0) {
-				ticksBeforeStructureCheck = 20;
-				initStructure();
-			}
-			else
-				--ticksBeforeStructureCheck;
 		}
 	}
 
 	public void attack(EntityLivingBase b) {
 		if(mruStorage.getMRU() >= mruUsage && !b.isDead && b.hurtTime <= 0 && b.hurtResistantTime <= 0) {
 			if(generatesCorruption)
-				ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+				ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, (genCorruption));
 			b.attackEntityFrom(DamageSource.MAGIC, damage);
 			if(getWorld().isRemote && monsterLightning == null)
 				getWorld().playSound(pos.getX()+0.5F,pos.getY()+0.5F,pos.getZ()+0.5F, SoundRegistry.machineLightningHit, SoundCategory.BLOCKS, 2F, 2F, false);
@@ -221,40 +219,20 @@ public class TileMRUCoil extends TileMRUGeneric {
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-		return bb;
+		return INFINITE_EXTENT_AABB;
 	}
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MRUCoilSettings", "tileentities", new String[] {
-					"Max MRU:"+ApiCore.DEVICE_MAX_MRU_GENERIC*10,
-					"MRU Usage per hit:1000",
-					"Can this device actually generate corruption:false",
-					"The amount of corruption generated each tick(do not set to 0!):20",
-					"Can the coil attack players, and, therefore, requires a Whitelist:true",
-					"Can the coil attack passive entities, like sheep:true",
-					"Damage per hit:18.0",
-					"Radius multiplier:1.0"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[2].fieldValue);
-			genCorruption = Integer.parseInt(data[3].fieldValue);
-			hurtPlayers = Boolean.parseBoolean(data[4].fieldValue);
-			hurtPassive = Boolean.parseBoolean(data[5].fieldValue);
-			damage = Float.parseFloat(data[6].fieldValue);
-			radiusModifier = Float.parseFloat(data[7].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.mrucoil";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC*10).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 1000, "MRU Usage per hit").setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", false).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 20, "Max amount of corruption generated per tick").setMinValue(0).getInt();
+			hurtPlayers = cfg.get(category, "DamagePlayer", true).getBoolean();
+			hurtPassive = cfg.get(category, "DamagePassive", true).getBoolean();
+			damage = (float)cfg.get(category, "Damage", 18D).setMinValue(0D).getDouble();
+			radiusModifier = cfg.get(category, "RadiusMultiplier", 1D).setMinValue(0D).getDouble();
 		}
 		catch(Exception e) {
 			return;
@@ -267,7 +245,7 @@ public class TileMRUCoil extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_1_ == 0 ? isBoundGem(p_94041_2_) : p_94041_2_.getItem() == ItemsCore.playerList;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot == 0 ? isBoundGem(stack) : stack.getItem() == ItemsCore.playerList;
 	}
 }

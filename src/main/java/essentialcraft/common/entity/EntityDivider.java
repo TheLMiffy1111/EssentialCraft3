@@ -75,7 +75,7 @@ public class EntityDivider extends Entity {
 
 		if(delay <= 0 && !this.isDead)
 		{
-			List<EntityLivingBase> allEntities = this.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).expand(3, 3, 3));
+			List<EntityLivingBase> allEntities = this.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).grow(3, 3, 3));
 			for(int i = 0; i < allEntities.size(); ++i) {
 
 				EntityLivingBase elb = allEntities.get(i);

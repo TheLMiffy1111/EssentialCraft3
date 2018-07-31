@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.common.item.ItemEssence;
 import net.minecraft.item.ItemStack;
@@ -13,12 +11,11 @@ public class TileCrystalController extends TileMRUGeneric {
 
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
 	public static int mruUsage = 100;
-	public static int chanceToUseMRU = 20;
-	public static float mutateModifier = 0.001F;
+	public static double chanceToUseMRU = 0.05D;
+	public static double mutateModifier = 0.001D;
 
 	public TileCrystalController() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(2);
 	}
 
@@ -28,7 +25,7 @@ public class TileCrystalController extends TileMRUGeneric {
 		mruStorage.update(getPos(), getWorld(), getStackInSlot(0));
 
 		if(getWorld().isBlockIndirectlyGettingPowered(pos) == 0) {
-			if(!getWorld().isRemote && getWorld().rand.nextInt(chanceToUseMRU) == 0 && mruStorage.getMRU() >= mruUsage) {
+			if(!getWorld().isRemote && getWorld().rand.nextDouble() < chanceToUseMRU && mruStorage.getMRU() >= mruUsage) {
 				mruStorage.extractMRU(mruUsage, true);
 			}
 		}
@@ -49,9 +46,9 @@ public class TileCrystalController extends TileMRUGeneric {
 		if(!getStackInSlot(1).isEmpty() && getStackInSlot(1).getItem() instanceof ItemEssence && mruStorage.getMRU() > mruUsage*10 && getCrystal() != null && getCrystal().size < 100) {
 			ItemStack e = getStackInSlot(1);
 			TileElementalCrystal c = getCrystal();
-			int rarity = (int)((float)e.getItemDamage() / 4);
-			float chance = mutateModifier * (rarity + 1);
-			if(getWorld().rand.nextFloat() <= chance) {
+			int rarity = (int)((double)e.getItemDamage() / 4);
+			double chance = mutateModifier * (rarity + 1);
+			if(getWorld().rand.nextDouble() < chance) {
 				mruStorage.extractMRU(mruUsage*10, true);
 				int type = e.getItemDamage()%4;
 				c.mutate(type, getWorld().rand.nextInt((rarity + 1) * 2));
@@ -62,59 +59,44 @@ public class TileCrystalController extends TileMRUGeneric {
 
 	public TileElementalCrystal getCrystal() {
 		TileElementalCrystal t = null;
-		if(hasCrystalOnFront())
+		if(hasCrystalOnEast())
 			t = (TileElementalCrystal)getWorld().getTileEntity(pos.east());
-		if(hasCrystalOnBack())
+		if(hasCrystalOnWest())
 			t = (TileElementalCrystal)getWorld().getTileEntity(pos.west());
-		if(hasCrystalOnLeft())
+		if(hasCrystalOnSouth())
 			t = (TileElementalCrystal)getWorld().getTileEntity(pos.south());
-		if(hasCrystalOnRight())
+		if(hasCrystalOnNorth())
 			t = (TileElementalCrystal)getWorld().getTileEntity(pos.north());
 		return t;
 	}
 
-	public boolean hasCrystalOnFront() {
+	public boolean hasCrystalOnEast() {
 		TileEntity t = getWorld().getTileEntity(pos.east());
-		return t != null && t instanceof TileElementalCrystal;
+		return t instanceof TileElementalCrystal;
 	}
 
-	public boolean hasCrystalOnBack() {
+	public boolean hasCrystalOnWest() {
 		TileEntity t = getWorld().getTileEntity(pos.west());
-		return t != null && t instanceof TileElementalCrystal;
+		return t instanceof TileElementalCrystal;
 	}
 
-	public boolean hasCrystalOnLeft() {
+	public boolean hasCrystalOnSouth() {
 		TileEntity t = getWorld().getTileEntity(pos.south());
-		return t != null && t instanceof TileElementalCrystal;
+		return t instanceof TileElementalCrystal;
 	}
 
-	public boolean hasCrystalOnRight() {
+	public boolean hasCrystalOnNorth() {
 		TileEntity t = getWorld().getTileEntity(pos.north());
-		return t != null && t instanceof TileElementalCrystal;
+		return t instanceof TileElementalCrystal;
 	}
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("CrystalControllerSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage:100",
-					"Chance to NOT use MRU(do not set to 0!):20",
-					"Crystal mutation chance modifier:0.001"
-			}, "");
-			String dataString="";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mutateModifier = Float.parseFloat(data[3].fieldValue);
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			chanceToUseMRU = Integer.parseInt(data[2].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.crystalcontroller";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 100).setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			chanceToUseMRU = cfg.get(category, "UseMRUChance", 0.05D).setMinValue(0D).setMaxValue(1D).getDouble();
+			mutateModifier = cfg.get(category, "MutationChanceModifier", 0.001D).setMinValue(0D).getDouble();
 		}
 		catch(Exception e) {
 			return;

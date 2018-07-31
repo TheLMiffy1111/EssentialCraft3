@@ -18,26 +18,26 @@ public class RenderMagicalRepairer extends TileEntitySpecialRenderer<TileMagical
 	public static final IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation("essentialcraft:models/block/magicalrepairer.obj"));
 	public static final ResourceLocation textures = new ResourceLocation("essentialcraft:textures/models/magicalrepairer.png");
 
-	public void doRender(TileMagicalRepairer tile, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_) {
+	public void doRender(TileMagicalRepairer tile, double x, double y, double z, float partialTicks) {
 		RenderHelper.disableStandardItemLighting();
 		{
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(p_76986_2_,  p_76986_4_,  p_76986_6_);
+			GlStateManager.translate(x,  y,  z);
 			Minecraft.getMinecraft().renderEngine.bindTexture(textures);
 			model.renderAll();
 			GlStateManager.popMatrix();
 		}
 
-		float rotation = (tile.getWorld().getWorldTime()+p_76986_8_) % 360;
+		float rotation = (tile.getWorld().getWorldTime()+partialTicks) % 360;
 
 		GlStateManager.pushMatrix();
-		DrawUtils.renderItemStack_Full(tile.getStackInSlot(1), p_76986_2_, p_76986_4_, p_76986_6_, rotation,0F, 1, 1, 1, 0.5F, 0.65F, 0.5F);
+		DrawUtils.renderItemStack_Full(tile.getStackInSlot(1), x, y, z, rotation,0F, 1, 1, 1, 0.5F, 0.65F, 0.5F);
 		GlStateManager.popMatrix();
 		RenderHelper.enableStandardItemLighting();
 	}
 
 	@Override
-	public void render(TileMagicalRepairer p_147500_1_, double p_147500_2_, double p_147500_4_, double p_147500_6_, float p_147500_8_, int destroyStage, float alpha) {
-		this.doRender(p_147500_1_, p_147500_2_, p_147500_4_, p_147500_6_, p_147500_8_, 0);
+	public void render(TileMagicalRepairer tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		this.doRender(tile, x, y, z, partialTicks);
 	}
 }

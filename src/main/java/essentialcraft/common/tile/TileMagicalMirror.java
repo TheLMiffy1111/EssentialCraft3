@@ -3,7 +3,6 @@ package essentialcraft.common.tile;
 import DummyCore.Utils.DataStorage;
 import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MathUtils;
-import essentialcraft.api.ApiCore;
 import essentialcraft.utils.common.ECUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,15 +23,13 @@ public class TileMagicalMirror extends TileMRUGeneric {
 	public BlockPos inventoryPos;
 	public int transferTime = 0;
 
-	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
-	public static float cfgMaxDistance = 8;
+	public static double cfgMaxDistance = 8;
 	public ItemStack transferingStack = ItemStack.EMPTY;
 
 	public boolean pulsing;
 
 	public TileMagicalMirror() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(0);
 	}
 
 	@Override
@@ -129,22 +126,8 @@ public class TileMagicalMirror extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MagicalMirrorSettings", "tileentities", new String[] {
-					"Max MRU:"+ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"Max range of item transfering:8.0"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			cfgMaxDistance = Float.parseFloat(data[1].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.magicalmirror";
+			cfgMaxDistance = cfg.get(category, "Radius", 8D).setMinValue(0D).getDouble();
 		}
 		catch(Exception e) {
 			return;
@@ -153,8 +136,7 @@ public class TileMagicalMirror extends TileMRUGeneric {
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-		return bb;
+		return INFINITE_EXTENT_AABB;
 	}
 
 	@Override

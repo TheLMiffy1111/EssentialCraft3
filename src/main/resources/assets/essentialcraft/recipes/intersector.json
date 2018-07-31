@@ -1,0 +1,32 @@
+{
+    "type": "forge:ore_shaped",
+    "group": "essentialcraft:intersector",
+    "pattern": [
+        "GGG",
+        "TOT",
+        "SSS"
+    ],
+    "key": {
+        "G": {
+            "type": "forge:ore_dict",
+            "ore": "glassFortified"
+        },
+        "T": {
+            "item": "essentialcraft:raytower",
+            "data": 0
+        },
+        "O": {
+            "type": "forge:ore_dict",
+            "ore": "plateObsidian"
+        },
+        "S": {
+            "type": "forge:ore_dict",
+            "ore": "stoneFortified"
+        }
+    },
+    "result": {
+        "item": "essentialcraft:intersector",
+        "count": 1,
+        "data": 0
+    }
+}

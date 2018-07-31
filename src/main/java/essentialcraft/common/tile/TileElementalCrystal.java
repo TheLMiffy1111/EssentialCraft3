@@ -2,8 +2,6 @@ package essentialcraft.common.tile;
 
 import java.util.Random;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MiscUtils;
 import DummyCore.Utils.Notifier;
 import DummyCore.Utils.TileStatTracker;
@@ -21,12 +19,12 @@ import net.minecraftforge.common.config.Configuration;
 
 public class TileElementalCrystal extends TileEntity implements ITickable {
 	public int syncTick = 10;
-	public float size,fire,water,earth,air;
+	public double size,fire,water,earth,air;
 	private TileStatTracker tracker;
 	public boolean requestSync = true;
 
-	public static float mutatuinChance = 0.001F;
-	public static float growthModifier = 1.0F;
+	public static double mutationChance = 0.001D;
+	public static double growthModifier = 1.0D;
 
 	public TileElementalCrystal() {
 		super();
@@ -36,25 +34,25 @@ public class TileElementalCrystal extends TileEntity implements ITickable {
 	@Override
 	public void readFromNBT(NBTTagCompound i) {
 		super.readFromNBT(i);
-		size = i.getFloat("size");
-		fire = i.getFloat("fire");
-		water = i.getFloat("water");
-		earth = i.getFloat("earth");
-		air = i.getFloat("air");
+		size = i.getDouble("size");
+		fire = i.getDouble("fire");
+		water = i.getDouble("water");
+		earth = i.getDouble("earth");
+		air = i.getDouble("air");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound i)  {
 		super.writeToNBT(i);
-		i.setFloat("size", size);
-		i.setFloat("fire", fire);
-		i.setFloat("water", water);
-		i.setFloat("earth", earth);
-		i.setFloat("air", air);
+		i.setDouble("size", size);
+		i.setDouble("fire", fire);
+		i.setDouble("water", water);
+		i.setDouble("earth", earth);
+		i.setDouble("air", air);
 		return i;
 	}
 
-	public float getElementByNum(int num) {
+	public double getElementByNum(int num) {
 		if(num == 0)
 			return fire;
 		if(num == 1)
@@ -66,7 +64,7 @@ public class TileElementalCrystal extends TileEntity implements ITickable {
 		return -1;
 	}
 
-	public void setElementByNum(int num, float amount) {
+	public void setElementByNum(int num, double amount) {
 		if(num == 0)
 			fire += amount;
 		if(num == 1)
@@ -79,7 +77,7 @@ public class TileElementalCrystal extends TileEntity implements ITickable {
 
 	public void randomlyMutate() {
 		Random r = getWorld().rand;
-		if(r.nextFloat() <= mutatuinChance)
+		if(r.nextDouble() <= mutationChance)
 			mutate(r.nextInt(4), r.nextInt(3)-r.nextInt(3));
 	}
 
@@ -156,7 +154,7 @@ public class TileElementalCrystal extends TileEntity implements ITickable {
 		if(size < 100) {
 			getWorld().spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, pos.getX()+getWorld().rand.nextFloat(),pos.getY()+1,pos.getZ()+getWorld().rand.nextFloat(), 0, 0, 0);
 			if(!getWorld().isRemote) {
-				size += 0.002F*growthModifier;
+				size += 0.002D*growthModifier;
 				randomlyMutate();
 			}
 		}
@@ -194,22 +192,9 @@ public class TileElementalCrystal extends TileEntity implements ITickable {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("ElementalCrystalSettings", "tileentities", new String[] {
-					"Chance to mutate per tick:0.001",
-					"Growth per tick modifier(crystal grows at 0.2% per tick):1.0"
-			}, "");
-			String dataString="";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mutatuinChance = Float.parseFloat(data[0].fieldValue);
-			growthModifier = Float.parseFloat(data[1].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.elementalcrystal";
+			mutationChance = cfg.get(category, "MutationChance", 0.001D, "Chance to mutate per tick").setMinValue(0D).setMaxValue(1D).getDouble();
+			growthModifier = cfg.get(category, "GrowthModifier", 1D).setMinValue(0).getDouble();
 		}
 		catch(Exception e) {
 			return;

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DummyCore.Utils.Coord3D;
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.Lightning;
 import DummyCore.Utils.MathUtils;
 import essentialcraft.api.ApiCore;
@@ -33,9 +31,8 @@ public class TileMRUReactor extends TileMRUGeneric {
 	public List<Lightning> lightnings = new ArrayList<Lightning>();
 
 	public TileMRUReactor() {
-		super();
+		super(cfgMaxMRU);
 		mruStorage.setBalance(0F);
-		mruStorage.setMaxMRU(cfgMaxMRU);
 		slot0IsBoundGem = false;
 	}
 
@@ -159,16 +156,18 @@ public class TileMRUReactor extends TileMRUGeneric {
 				}
 			}
 			mruStorage.addMRU(mruGenerated, true);
-			if(cfgBalance == -1F) {
+			if(cfgBalance < 0) {
 				if(cycle) {
 					mruStorage.setBalance(Math.round((mruStorage.getBalance() + 0.01F)*100)/100F);
-					if(mruStorage.getBalance() > 1.99F)
+					if(mruStorage.getBalance() > 1.99F) {
 						cycle = false;
+					}
 				}
 				else {
 					mruStorage.setBalance(Math.round((mruStorage.getBalance() - 0.01F)*100)/100F);
-					if(mruStorage.getBalance() < 0.01F)
+					if(mruStorage.getBalance() < 0.01F) {
 						cycle = true;
+					}
 				}
 			}
 			else {
@@ -194,26 +193,11 @@ public class TileMRUReactor extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MRUReactorSettings", "tileentities", new String[]{
-					"Max MRU:" + ApiCore.GENERATOR_MAX_MRU_GENERIC,
-					"Default balance(-1 is cyclic):-1.0",
-					"MRU generated per tick:50",
-					"Damage Entities around:true"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			cfgBalance = Float.parseFloat(data[1].fieldValue);
-			mruGenerated = Integer.parseInt(data[2].fieldValue);
-			damage = Boolean.parseBoolean(data[3].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.mrureactor";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			cfgBalance = (float)cfg.get(category, "Balance", -1D, "Default balance (-1 is cyclic)").setMinValue(-1D).setMaxValue(2D).getDouble();
+			mruGenerated = cfg.get(category, "MRUGenerated", 50).setMinValue(0).getInt();
+			damage = cfg.get(category, "DamageEntitiesAround", true).getBoolean();
 		}
 		catch(Exception e) {
 			return;

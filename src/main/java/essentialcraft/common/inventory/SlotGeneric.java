@@ -8,25 +8,25 @@ import net.minecraft.util.ResourceLocation;
 public class SlotGeneric extends Slot {
 	public int slot;
 
-	public SlotGeneric(IInventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_) {
-		super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
-		slot = p_i1824_2_;
+	public SlotGeneric(IInventory inv, int slot, int xPos, int yPos) {
+		super(inv, slot, xPos, yPos);
+		this.slot = slot;
 	}
 
-	public SlotGeneric(IInventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_, ResourceLocation p_i1824_5_) {
-		super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
-		slot = p_i1824_2_;
-		this.setBackgroundName(p_i1824_5_.toString());
+	public SlotGeneric(IInventory inv, int slot, int xPos, int yPos, ResourceLocation background) {
+		super(inv, slot, xPos, yPos);
+		this.slot = slot;
+		this.setBackgroundName(background.toString());
 	}
 
-	public SlotGeneric(IInventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_, String p_i1824_5_) {
-		super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
-		slot = p_i1824_2_;
-		this.setBackgroundName(p_i1824_5_);
+	public SlotGeneric(IInventory inv, int slot, int xPos, int yPos, String background) {
+		super(inv, slot, xPos, yPos);
+		this.slot = slot;
+		this.setBackgroundName(background);
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack p_75214_1_) {
-		return inventory.isItemValidForSlot(slot, p_75214_1_);
+	public boolean isItemValid(ItemStack stack) {
+		return this.inventory.isItemValidForSlot(this.slot, stack);
 	}
 }

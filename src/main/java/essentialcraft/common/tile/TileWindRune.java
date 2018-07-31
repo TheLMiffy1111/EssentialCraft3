@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
@@ -196,5 +197,10 @@ public class TileWindRune extends TileEntity implements ITickable {
 		if(tier0Checker.test(w, cp)) {
 			tier = 0;
 		}
+	}
+	
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		return new AxisAlignedBB(pos.add(-1, 0, -1), pos.add(2, 1, 2));
 	}
 }

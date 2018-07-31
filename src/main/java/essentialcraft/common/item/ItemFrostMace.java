@@ -54,21 +54,21 @@ public class ItemFrostMace extends ItemSword implements IModelRegisterer {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4) {
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-		par3List.add(par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() + "/" + par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU() + " MRU");
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4) {
+		super.addInformation(stack, player, list, par4);
+		list.add(stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() + "/" + stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU() + " MRU");
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List)
+	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(par2CreativeTabs)) {
 			ItemStack min = new ItemStack(this, 1, 0);
 			ItemStack max = new ItemStack(this, 1, 0);
 			min.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(0);
 			max.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(maxMRU);
-			par3List.add(min);
-			par3List.add(max);
+			list.add(min);
+			list.add(max);
 		}
 	}
 
@@ -124,8 +124,10 @@ public class ItemFrostMace extends ItemSword implements IModelRegisterer {
 	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot s, ItemStack stack)
 	{
 		Multimap<String, AttributeModifier> multimap = HashMultimap.<String, AttributeModifier>create();
-		if(s == EntityEquipmentSlot.MAINHAND)
+		if(s == EntityEquipmentSlot.MAINHAND) {
 			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", 16, 0));
+			multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4D, 0));
+		}
 		return multimap;
 	}
 

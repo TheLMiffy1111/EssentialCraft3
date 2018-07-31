@@ -67,68 +67,55 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState s)
-	{
+	public EnumBlockRenderType getRenderType(IBlockState s) {
 		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public void getSubBlocks(CreativeTabs p_149666_2_, NonNullList<ItemStack> p_149666_3_)
-	{
-		for(int i = 0; i < 8; ++i)
-			p_149666_3_.add(new ItemStack(this, 1, i));
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
+		for(int i = 0; i < 8; ++i) {
+			list.add(new ItemStack(this, 1, i));
+		}
 	}
 
 	@Override
-	public int damageDropped(IBlockState meta)
-	{
+	public int damageDropped(IBlockState meta) {
 		return meta.getValue(TYPE).getIndex();
 	}
 
-	public void shear(Entity en, IShearable e)
-	{
-		if(e.isShearable(new ItemStack(Items.SHEARS), en.getEntityWorld(), en.getPosition()))
-		{
+	public void shear(Entity en, IShearable e) {
+		if(e.isShearable(new ItemStack(Items.SHEARS), en.getEntityWorld(), en.getPosition())) {
 			List<ItemStack> items = e.onSheared(new ItemStack(Items.SHEARS), en.getEntityWorld(), en.getPosition(), 2);
-			for(ItemStack is : items)
-			{
-				if(!is.isEmpty())
-				{
+			for(ItemStack is : items) {
+				if(!is.isEmpty()) {
 					EntityItem itm = new EntityItem(en.getEntityWorld(),en.posX,en.posY,en.posZ,is);
-					if(!en.getEntityWorld().isRemote)
+					if(!en.getEntityWorld().isRemote) {
 						en.getEntityWorld().spawnEntity(itm);
+					}
 				}
 			}
 		}
 	}
 
-	public void breed(EntityItem e)
-	{
-		if(!e.getItem().isEmpty())
-		{
+	public void breed(EntityItem e) {
+		if(!e.getItem().isEmpty()) {
 			AxisAlignedBB aabb = new AxisAlignedBB(e.posX-0.5D, e.posY-0.5D, e.posZ-0.5D, e.posX+0.5D, e.posY+0.5D, e.posZ+0.5D).expand(3, 3, 3);
 			List<EntityAnimal> animals = e.getEntityWorld().getEntitiesWithinAABB(EntityAnimal.class,aabb);
-			for(EntityAnimal animal : animals)
-			{
-				if(animal.isBreedingItem(e.getItem()) && animal.getGrowingAge() == 0 && !animal.isInLove())
-				{
+			for(EntityAnimal animal : animals) {
+				if(animal.isBreedingItem(e.getItem()) && animal.getGrowingAge() == 0 && !animal.isInLove()) {
 					FakePlayer fake = new FakePlayer((WorldServer) e.getEntityWorld(), breederFakePlayerProfile);
-
 					animal.setInLove(fake);
-
-					fake = null;
 					e.getItem().shrink(1);
-					if(invalidate(e))
+					if(invalidate(e)) {
 						break;
+					}
 				}
 			}
 		}
 	}
 
-	public void shuffle(EntityItem e)
-	{
-		if(!e.getEntityWorld().isRemote)
-		{
+	public void shuffle(EntityItem e) {
+		if(!e.getEntityWorld().isRemote) {
 			e.setPositionAndRotation(e.posX+MathUtils.randomDouble(e.getEntityWorld().rand), e.posY, e.posZ+MathUtils.randomDouble(e.getEntityWorld().rand), 0, 0);
 		}
 	}
@@ -141,25 +128,17 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 				Block b = Block.getBlockFromItem(stk.getItem());
 				if(b instanceof IPlantable) {
 					if(e.getEntityWorld().isAirBlock(p) && e.getEntityWorld().getBlockState(p.down()).getBlock().canSustainPlant(e.getEntityWorld().getBlockState(p.down()), e.getEntityWorld(), p.down(), EnumFacing.UP, (IPlantable)b)) {
-						FakePlayer user = new FakePlayer((WorldServer)e.getEntityWorld(),planterFakePlayerProfile);
-
+						FakePlayer user = new FakePlayer((WorldServer)e.getEntityWorld(), planterFakePlayerProfile);
 						stk.getItem().onItemUse(user, e.getEntityWorld(), p.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
-
 						invalidate(e);
-
-						user = null;
 					}
 				}
 			}
 			else if(stk.getItem() instanceof IPlantable) {//seeds
 				if(e.getEntityWorld().isAirBlock(p) && e.getEntityWorld().getBlockState(p.down()).getBlock().canSustainPlant(e.getEntityWorld().getBlockState(p.down()), e.getEntityWorld(), p.down(), EnumFacing.UP, (IPlantable)stk.getItem())) {
 					FakePlayer user = new FakePlayer((WorldServer) e.getEntityWorld(),planterFakePlayerProfile);
-
 					stk.getItem().onItemUse(user, e.getEntityWorld(), p.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
-
 					invalidate(e);
-
-					user = null;
 				}
 			}
 			else if(stk.getItem() instanceof ItemBlockSpecial) {//reeds
@@ -167,47 +146,36 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 				if(b instanceof IPlantable) {
 					if(e.getEntityWorld().isAirBlock(p) && e.getEntityWorld().getBlockState(p.down()).getBlock().canSustainPlant(e.getEntityWorld().getBlockState(p.down()), e.getEntityWorld(), p.down(), EnumFacing.UP, (IPlantable)b)) {
 						FakePlayer user = new FakePlayer((WorldServer)e.getEntityWorld(),planterFakePlayerProfile);
-
 						stk.getItem().onItemUse(user, e.getEntityWorld(), p.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0, 0, 0);
-
 						invalidate(e);
-
-						user = null;
 					}
 				}
 			}
 		}
 	}
 
-	public boolean invalidate(EntityItem e)
-	{
-		if(e.getItem().isEmpty() || e.getItem().getCount() <= 0)
-		{
+	public boolean invalidate(EntityItem e) {
+		if(e.getItem().isEmpty() || e.getItem().getCount() <= 0) {
 			e.setDead();
 			return true;
 		}
-
 		return false;
 	}
 
-	public boolean canProvidePower()
-	{
+	public boolean canProvidePower() {
 		return true;
 	}
 
 	@Override
-	public void neighborChanged(IBlockState s, World w, BlockPos p, Block n, BlockPos fp)
-	{
-		if(s.getValue(TYPE).getIndex() == 0)
-		{
-			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0)
-			{
-				AxisAlignedBB aabb = new AxisAlignedBB(p).expand(12, 12, 12);
+	public void neighborChanged(IBlockState s, World w, BlockPos p, Block n, BlockPos fp) {
+		if(s.getValue(TYPE).getIndex() == 0) {
+			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0) {
+				AxisAlignedBB aabb = new AxisAlignedBB(p).grow(12, 12, 12);
 				List<EntityItem> items = w.getEntitiesWithinAABB(EntityItem.class, aabb);
-				for(EntityItem itm : items)
-				{
-					if(!itm.isDead)
+				for(EntityItem itm : items) {
+					if(!itm.isDead) {
 						plant(itm);
+					}
 				}
 			}
 		}
@@ -215,7 +183,7 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 		{
 			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0)
 			{
-				AxisAlignedBB aabb = new AxisAlignedBB(p).expand(12, 12, 12);
+				AxisAlignedBB aabb = new AxisAlignedBB(p).grow(12, 12, 12);
 				List<EntityItem> items = w.getEntitiesWithinAABB(EntityItem.class, aabb);
 				for(EntityItem itm : items)
 				{
@@ -228,7 +196,7 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 		{
 			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0)
 			{
-				AxisAlignedBB aabb = new AxisAlignedBB(p).expand(12, 12, 12);
+				AxisAlignedBB aabb = new AxisAlignedBB(p).grow(12, 12, 12);
 				List<EntityItem> items = w.getEntitiesWithinAABB(EntityItem.class, aabb);
 				for(EntityItem itm : items)
 				{
@@ -241,7 +209,7 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 		{
 			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0)
 			{
-				AxisAlignedBB aabb = new AxisAlignedBB(p).expand(12, 12, 12);
+				AxisAlignedBB aabb = new AxisAlignedBB(p).grow(12, 12, 12);
 				List<Entity> entities = w.getEntitiesWithinAABB(Entity.class, aabb);
 				List<IShearable> sheep = new ArrayList<IShearable>();
 				for(Entity e : entities) {
@@ -257,7 +225,10 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 		}
 		if(s.getValue(TYPE).getIndex() == 6 || s.getValue(TYPE).getIndex() == 7)
 		{
-			((TileAnimalSeparator)w.getTileEntity(p)).separate(s.getValue(TYPE).getIndex() == 6);
+			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0)
+			{
+				((TileAnimalSeparator)w.getTileEntity(p)).separate(s.getValue(TYPE).getIndex() == 6);
+			}
 		}
 	}
 
@@ -270,15 +241,15 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		if(par1World.getTileEntity(par2) == null || par3.getValue(TYPE).getIndex() == 4) {
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		if(world.getTileEntity(par2) == null || par3.getValue(TYPE).getIndex() == 4) {
 			return false;
 		}
-		if(par4EntityPlayer.isSneaking()) {
+		if(player.isSneaking()) {
 			return false;
 		}
-		if(!par1World.isRemote) {
-			par4EntityPlayer.openGui(EssentialCraftCore.core, Config.guiID[0], par1World, par2.getX(), par2.getY(), par2.getZ());
+		if(!world.isRemote) {
+			player.openGui(EssentialCraftCore.core, Config.guiID[0], world, par2.getX(), par2.getY(), par2.getZ());
 			return true;
 		}
 		return true;
@@ -300,12 +271,12 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
-		if(par1World.getTileEntity(par2Pos) != null) {
-			IInventory inv = (IInventory)par1World.getTileEntity(par2Pos);
-			InventoryHelper.dropInventoryItems(par1World, par2Pos, inv);
+	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
+		if(world.getTileEntity(pos) != null) {
+			IInventory inv = (IInventory)world.getTileEntity(pos);
+			InventoryHelper.dropInventoryItems(world, pos, inv);
 		}
-		super.breakBlock(par1World, par2Pos, par3State);
+		super.breakBlock(world, pos, blockstate);
 	}
 
 	@Override

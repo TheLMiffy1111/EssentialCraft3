@@ -2,7 +2,6 @@ package essentialcraft.common.tile;
 
 import essentialcraft.common.inventory.InventoryMagicFilter;
 import essentialcraft.common.item.ItemFilter;
-import essentialcraft.common.item.ItemsCore;
 import essentialcraft.utils.common.ECUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -15,14 +14,14 @@ public class TileMIMImportNode extends TileMRUGeneric {
 	final Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 	public TileMIMImportNode() {
-		mruStorage.setMaxMRU(0);
+		super(0);
 		setSlotsNum(1);
 		slot0IsBoundGem = false;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_2_.getItem() == ItemsCore.filter;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return stack.getItem() instanceof ItemFilter;
 	}
 
 	public EnumFacing getRotation() {

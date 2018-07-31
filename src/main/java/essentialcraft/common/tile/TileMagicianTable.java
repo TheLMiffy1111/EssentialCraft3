@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.api.MagicianTableRecipe;
 import essentialcraft.api.MagicianTableRecipes;
@@ -13,29 +11,28 @@ import net.minecraftforge.common.config.Configuration;
 
 public class TileMagicianTable extends TileMRUGeneric {
 
-	public float progressLevel, progressRequired, speedFactor = 1, mruConsume = 1;
+	public double progressLevel, progressRequired, speedFactor = 1, mruConsume = 1;
 	public int upgrade = -1;
 	public MagicianTableRecipe currentRecipe;
 
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
 	public static boolean generatesCorruption = true;
 	public static int genCorruption = 1;
-	public static float mruUsage = 1;
+	public static double mruUsage = 1;
 
 	public TileMagicianTable() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(7);
 	}
 
 	@Override
 	public void update() {
 		if(upgrade == -1)
-			speedFactor = 1F;
+			speedFactor = 1D;
 		else
-			speedFactor = MagicianTableUpgrades.UPGRADE_EFFICIENCIES.get(upgrade);
+			speedFactor = MagicianTableUpgrades.UPGRADE_EFFICIENCIES.getDouble(upgrade);
 		if(speedFactor != 1)
-			mruConsume = speedFactor * 2 * mruUsage;
+			mruConsume = speedFactor * mruUsage;
 		else
 			mruConsume = mruUsage;
 		super.update();
@@ -74,11 +71,11 @@ public class TileMagicianTable extends TileMRUGeneric {
 					currentRecipe = null;
 					return;
 				}
-				float mruReq = mruConsume;
+				double mruReq = mruConsume;
 				if(mruStorage.getMRU() >= (int)mruReq && progressLevel < progressRequired) {
 					progressLevel += speedFactor;
 					if(generatesCorruption)
-						ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+						ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, (genCorruption));
 					mruStorage.extractMRU((int)mruReq, true);
 					if(progressLevel >= progressRequired) {
 						progressRequired = 0;
@@ -94,20 +91,20 @@ public class TileMagicianTable extends TileMRUGeneric {
 	@Override
 	public void readFromNBT(NBTTagCompound i) {
 		super.readFromNBT(i);
-		progressLevel = i.getFloat("progressLevel");
-		progressRequired = i.getFloat("progressRequired");
-		speedFactor = i.getFloat("speedFactor");
-		mruConsume = i.getFloat("mruConsume");
+		progressLevel = i.getDouble("progressLevel");
+		progressRequired = i.getDouble("progressRequired");
+		speedFactor = i.getDouble("speedFactor");
+		mruConsume = i.getDouble("mruConsume");
 		upgrade = i.getInteger("upgrade");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound i) {
 		super.writeToNBT(i);
-		i.setFloat("progressLevel", progressLevel);
-		i.setFloat("progressRequired", progressRequired);
-		i.setFloat("speedFactor", speedFactor);
-		i.setFloat("mruConsume", mruConsume);
+		i.setDouble("progressLevel", progressLevel);
+		i.setDouble("progressRequired", progressRequired);
+		i.setDouble("speedFactor", speedFactor);
+		i.setDouble("mruConsume", mruConsume);
 		i.setInteger("upgrade", upgrade);
 		return i;
 	}
@@ -147,26 +144,11 @@ public class TileMagicianTable extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MagicianTableSettings", "tileentities", new String[]{
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage Modifier:1.0",
-					"Can this device actually generate corruption:true",
-					"The amount of corruption generated each tick(do not set to 0!):1"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Float.parseFloat(data[1].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[2].fieldValue);
-			genCorruption = Integer.parseInt(data[3].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.magiciantable";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsageModifier", 1D).setMinValue(0D).getDouble();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", true).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 1, "Max amount of corruption generated per tick").setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;

@@ -41,6 +41,7 @@ import essentialcraft.common.tile.TileMRUChunkLoader;
 import essentialcraft.common.tile.TileMRUCoil;
 import essentialcraft.common.tile.TileMRUCoilHardener;
 import essentialcraft.common.tile.TileMRUDimensionalTransciever;
+import essentialcraft.common.tile.TileMRUIntersector;
 import essentialcraft.common.tile.TileMRUReactor;
 import essentialcraft.common.tile.TileMagicalChest;
 import essentialcraft.common.tile.TileMagicalDisplay;
@@ -72,7 +73,9 @@ import essentialcraft.common.tile.TileSunRayAbsorber;
 import essentialcraft.common.tile.TileUltraFlowerBurner;
 import essentialcraft.common.tile.TileUltraHeatGenerator;
 import essentialcraft.common.tile.TileWeaponMaker;
+import essentialcraft.common.tile.TileWeatherController;
 import essentialcraft.common.tile.TileWindRune;
+import essentialcraft.common.tile.TileWorldMerger;
 import essentialcraft.utils.cfg.Config;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.config.Configuration;
@@ -153,6 +156,11 @@ public class TileRegistry {
 		addTileToMapping(TileMimic.class);
 		addTileToMapping(TileMRUChunkLoader.class);
 		addTileToMapping(TileMRUDimensionalTransciever.class);
+		addTileToMapping(TileMRUIntersector.class);
+		addTileToMapping(TileWorldMerger.class);
+		addTileToMapping(TileWeatherController.class);
+
+		Config.config.save();
 	}
 
 	public static void addTileToMapping(Class<? extends TileEntity> tile) {

@@ -3,8 +3,6 @@ package essentialcraft.common.tile;
 import java.util.List;
 import java.util.Random;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.utils.common.ECUtils;
 import net.minecraft.enchantment.EnchantmentData;
@@ -13,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.config.Configuration;
@@ -40,8 +39,7 @@ public class TileMagicalEnchanter extends TileMRUGeneric {
 	public static int maxEnchantmentLevel = 60;
 
 	public TileMagicalEnchanter() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(3);
 	}
 
@@ -133,7 +131,7 @@ public class TileMagicalEnchanter extends TileMRUGeneric {
 		if(canItemBeEnchanted() && mruStorage.getMRU() >= mruUsage) {
 			mruStorage.extractMRU(mruUsage, true);
 			if(generatesCorruption)
-				ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+				ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, genCorruption);
 			++progressLevel;
 			if(progressLevel >= getRequiredTimeToAct()) {
 				enchant();
@@ -211,28 +209,12 @@ public class TileMagicalEnchanter extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MagicalEnchanterSettings", "tileentities", new String[]{
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage:100",
-					"Max level of enchantment:60",
-					"Can this device actually generate corruption:false",
-					"The amount of corruption generated each tick(do not set to 0!):2"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			maxEnchantmentLevel = Integer.parseInt(data[2].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[3].fieldValue);
-			genCorruption = Integer.parseInt(data[4].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.magicalenchanter";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 100).setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			maxEnchantmentLevel = cfg.get(category, "MaxEnchantLevel", 60).setMinValue(0).getInt();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", false).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 2, "Max amount of corruption generated per tick").setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;
@@ -242,5 +224,10 @@ public class TileMagicalEnchanter extends TileMRUGeneric {
 	@Override
 	public int[] getOutputSlots() {
 		return new int[] {2};
+	}
+
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		return new AxisAlignedBB(pos, pos.add(1, 2, 1));
 	}
 }

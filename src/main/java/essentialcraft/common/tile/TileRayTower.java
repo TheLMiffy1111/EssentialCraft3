@@ -1,10 +1,12 @@
 package essentialcraft.common.tile;
 
 import DummyCore.Utils.MiscUtils;
+import DummyCore.Utils.Notifier;
+import DummyCore.Utils.TileStatTracker;
+import essentialcraft.api.ApiCore;
 import essentialcraft.common.capabilities.mru.CapabilityMRUHandler;
 import essentialcraft.common.capabilities.mru.MRUTileStorage;
 import essentialcraft.common.item.ItemBoundGem;
-import essentialcraft.common.item.ItemsCore;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -15,15 +17,24 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class TileRayTower extends TileEntity implements IInventory, ITickable {
+
+	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
 	public int syncTick;
-	protected MRUTileStorage mruStorage = new MRUTileStorage(5000);
+	protected MRUTileStorage mruStorage = new MRUTileStorage(cfgMaxMRU);
 	public int innerRotation;
 	public ItemStack[] items = {ItemStack.EMPTY};
+	private TileStatTracker tracker;
+
+	public TileRayTower() {
+		super();
+		tracker = new TileStatTracker(this);
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound i) {
@@ -45,12 +56,16 @@ public class TileRayTower extends TileEntity implements IInventory, ITickable {
 		++innerRotation;
 		//Sending the sync packets to the CLIENT.
 		if(syncTick == 0) {
-			if(!getWorld().isRemote)
-				MiscUtils.sendPacketToAllAround(getWorld(), getUpdatePacket(), pos.getX(), pos.getY(), pos.getZ(), getWorld().provider.getDimension(), 16);
-			syncTick = 10;
+			if(tracker == null)
+				Notifier.notifyCustomMod("EssentialCraft", "[WARNING][SEVERE]TileEntity " + this + " at pos " + pos.getX() + "," + pos.getY() + ","  + pos.getZ() + " tries to sync itself, but has no TileTracker attached to it! SEND THIS MESSAGE TO THE DEVELOPER OF THE MOD!");
+			else if(!getWorld().isRemote && tracker.tileNeedsSyncing()) {
+				MiscUtils.sendPacketToAllAround(getWorld(), getUpdatePacket(), pos.getX(), pos.getY(), pos.getZ(), getWorld().provider.getDimension(), 32);
+			}
+			syncTick = 20;
 		}
-		else
+		else {
 			--syncTick;
+		}
 		mruStorage.update(getPos(), getWorld(), getStackInSlot(0));
 	}
 
@@ -113,11 +128,11 @@ public class TileRayTower extends TileEntity implements IInventory, ITickable {
 
 
 	@Override
-	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		items[par1] = par2ItemStack;
+	public void setInventorySlotContents(int par1, ItemStack stack) {
+		items[par1] = stack;
 
-		if(!par2ItemStack.isEmpty() && par2ItemStack.getCount() > getInventoryStackLimit())
-			par2ItemStack.setCount(getInventoryStackLimit());
+		if(!stack.isEmpty() && stack.getCount() > getInventoryStackLimit())
+			stack.setCount(getInventoryStackLimit());
 	}
 
 
@@ -148,18 +163,15 @@ public class TileRayTower extends TileEntity implements IInventory, ITickable {
 	public void closeInventory(EntityPlayer player) {}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_2_.getItem() == ItemsCore.bound_gem;
-	}
-
-	public boolean isBoundGem(ItemStack stack) {
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return stack.getItem() instanceof ItemBoundGem;
 	}
 
 	@Override
 	public void clear() {
-		for(int i = 0; i < getSizeInventory(); i++)
+		for(int i = 0; i < getSizeInventory(); i++) {
 			setInventorySlotContents(i, ItemStack.EMPTY);
+		}
 	}
 
 	@Override
@@ -198,5 +210,15 @@ public class TileRayTower extends TileEntity implements IInventory, ITickable {
 			ret &= stk.isEmpty();
 		}
 		return ret;
+	}
+
+	public static void setupConfig(Configuration cfg) {
+		try {
+			String category = "tileentities.raytower";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).getInt();
+		}
+		catch(Exception e) {
+			return;
+		}
 	}
 }

@@ -81,7 +81,7 @@ public class MagicianTable {
 						toRemove.add(entry);
 				}
 			}
-		};
+		}
 
 		if(toRemove.isEmpty())
 			CraftTweakerAPI.logWarning("No recipe for "+Arrays.toString(ingredients));

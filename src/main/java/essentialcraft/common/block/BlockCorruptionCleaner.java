@@ -28,26 +28,22 @@ public class BlockCorruptionCleaner extends BlockContainer implements IModelRegi
 	}
 
 	@Override
-	public boolean isOpaqueCube(IBlockState s)
-	{
+	public boolean isOpaqueCube(IBlockState s) {
 		return false;
 	}
 
 	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.TRANSLUCENT;
+	public BlockRenderLayer getBlockLayer() {
+		return BlockRenderLayer.CUTOUT_MIPPED;
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState s)
-	{
+	public boolean isFullCube(IBlockState s) {
 		return false;
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState s)
-	{
+	public EnumBlockRenderType getRenderType(IBlockState s) {
 		return EnumBlockRenderType.MODEL;
 	}
 
@@ -57,23 +53,23 @@ public class BlockCorruptionCleaner extends BlockContainer implements IModelRegi
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		if(par4EntityPlayer.isSneaking()) {
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		if(player.isSneaking()) {
 			return false;
 		}
-		if(!par1World.isRemote) {
-			par4EntityPlayer.openGui(EssentialCraftCore.core, Config.guiID[0], par1World, par2.getX(), par2.getY(), par2.getZ());
+		if(!world.isRemote) {
+			player.openGui(EssentialCraftCore.core, Config.guiID[0], world, par2.getX(), par2.getY(), par2.getZ());
 			return true;
 		}
 		return true;
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2, IBlockState par5)
+	public void breakBlock(World world, BlockPos par2, IBlockState par5)
 	{
-		IInventory inv = (IInventory)par1World.getTileEntity(par2);
-		InventoryHelper.dropInventoryItems(par1World, par2, inv);
-		super.breakBlock(par1World, par2, par5);
+		IInventory inv = (IInventory)world.getTileEntity(par2);
+		InventoryHelper.dropInventoryItems(world, par2, inv);
+		super.breakBlock(world, par2, par5);
 	}
 
 	@Override

@@ -10,15 +10,18 @@ import essentialcraft.api.ApiCore;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraftforge.common.config.Configuration;
 
 public class TileMRUChunkLoader extends TileMRUGeneric implements IChunkLoader {
+
+	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC*10;
+	public static int mruUsage = 5;
 
 	public boolean getChunks = true;
 	public DummyChunkLoader loader = new DummyChunkLoader(this);
 
 	public TileMRUChunkLoader() {
-		super();
-		mruStorage.setMaxMRU(ApiCore.DEVICE_MAX_MRU_GENERIC);
+		super(ApiCore.DEVICE_MAX_MRU_GENERIC);
 		setSlotsNum(1);
 	}
 
@@ -30,14 +33,14 @@ public class TileMRUChunkLoader extends TileMRUGeneric implements IChunkLoader {
 		if(!getWorld().isRemote) {
 			loader.tick();
 			if(canOperate()) {
-				mruStorage.extractMRU(5, true);
+				mruStorage.extractMRU(mruUsage, true);
 			}
 		}
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return isBoundGem(p_94041_2_);
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return isBoundGem(stack);
 	}
 
 	@Override
@@ -47,7 +50,7 @@ public class TileMRUChunkLoader extends TileMRUGeneric implements IChunkLoader {
 
 	@Override
 	public boolean canOperate() {
-		return mruStorage.getMRU() >= 5;
+		return mruStorage.getMRU() >= mruUsage;
 	}
 
 	@Override
@@ -77,5 +80,16 @@ public class TileMRUChunkLoader extends TileMRUGeneric implements IChunkLoader {
 	public NBTTagCompound writeToNBT(NBTTagCompound i) {
 		loader.write(i);
 		return super.writeToNBT(i);
+	}
+
+	public static void setupConfig(Configuration cfg) {
+		try {
+			String category = "tileentities.mruchunkloader";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC*10).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 5).setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+		}
+		catch(Exception e) {
+			return;
+		}
 	}
 }

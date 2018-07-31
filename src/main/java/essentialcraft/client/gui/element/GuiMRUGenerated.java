@@ -29,8 +29,7 @@ public class GuiMRUGenerated extends GuiTextElement{
 	public TileEntity tile;
 	public String tileValue;
 
-	public GuiMRUGenerated(int i, int j, TileEntity t, String tileType)
-	{
+	public GuiMRUGenerated(int i, int j, TileEntity t, String tileType) {
 		super(i,j);
 		tile = t;
 		tileValue = tileType;
@@ -92,7 +91,6 @@ public class GuiMRUGenerated extends GuiTextElement{
 					int scaledSize = MathUtils.pixelatedTextureSize(furnace.currentBurnTime, furnace.currentMaxBurnTime, 14)+1;
 					this.drawTexturedModalRect(posX+101, posY+2+15-scaledSize, 176, 15-scaledSize, 15, scaledSize);
 				}
-				float mruGenerated = 20;
 				Block[] b = new Block[4];
 				b[0] = furnace.getWorld().getBlockState(furnace.getPos().add(2, 0, 0)).getBlock();
 				b[1] = furnace.getWorld().getBlockState(furnace.getPos().add(-2, 0, 0)).getBlock();
@@ -106,143 +104,85 @@ public class GuiMRUGenerated extends GuiTextElement{
 					else if(b[i] instanceof IHotBlock) {}
 					else {}
 				}
-				float heat = furnace.heat;
+				double heat = furnace.heat;
+				double mruGenerated;
 				if(heat < 1000)
 					mruGenerated = heat/100;
+				else if(heat > 10000)
+					mruGenerated = 80+heat/1000;
 				else
-					if(heat > 10000)
-						mruGenerated = 80+heat/1000;
-					else
-						mruGenerated = heat/124;
+					mruGenerated = heat/124;
 				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(mruGenerated+" MRU/t", posX+2, posY+5, 0xffffff);
 				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Heat: "+(int)furnace.heat+"C", posX+82, posY-10, 0xffffff);
 			}
 		}
-		if(tileValue.equals("naturalFurnace"))
-		{
-			if(tile instanceof TileFlowerBurner)
-			{
+		if(tileValue.equals("naturalFurnace")) {
+			if(tile instanceof TileFlowerBurner) {
 				TileFlowerBurner furnace = (TileFlowerBurner) tile;
 				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(TileFlowerBurner.mruGenerated+" MRU/t", posX+2, posY+5, 0xffffff);
 				DrawUtils.bindTexture("essentialcraft", "textures/gui/slot_common.png");
 				this.drawTexturedModalRect(posX+82, posY, 0, 0, 18, 18);
 				RenderItem renderitem = Minecraft.getMinecraft().getRenderItem();
-				if(furnace.burnedFlower != null)
-				{
+				if(furnace.burnedFlower != null) {
 					BlockPos pos = new BlockPos(furnace.burnedFlower.getX(),furnace.burnedFlower.getY(), furnace.burnedFlower.getZ());
 					IBlockState b = furnace.getWorld().getBlockState(pos);
-					if(b != null && b.getBlock() != Blocks.AIR && Item.getItemFromBlock(b.getBlock()) != null)
-					{
+					if(b != null && b.getBlock() != Blocks.AIR && Item.getItemFromBlock(b.getBlock()) != null) {
 						renderitem.renderItemIntoGUI(b.getBlock().getPickBlock(b, new RayTraceResult(Vec3d.ZERO, EnumFacing.DOWN, pos), furnace.getWorld(), furnace.burnedFlower, Minecraft.getMinecraft().player), posX+83, posY+1);
 					}
 				}
 				DrawUtils.bindTexture("minecraft", "textures/gui/container/furnace.png");
 				this.drawTexturedModalRect(posX+82, posY-15, 55, 36, 15, 15);
-				if(furnace.burnTime > 0)
-				{
+				if(furnace.burnTime > 0) {
 					int scaledSize = MathUtils.pixelatedTextureSize(furnace.burnTime, 30*20, 14)+1;
 					this.drawTexturedModalRect(posX+83, posY-scaledSize, 176, 15-scaledSize, 15, scaledSize);
 				}
 			}
 		}
-		if(tileValue.equals("ultraNaturalFurnace"))
-		{
-			if(tile instanceof TileUltraFlowerBurner)
-			{
+		if(tileValue.equals("ultraNaturalFurnace")) {
+			if(tile instanceof TileUltraFlowerBurner) {
 				TileUltraFlowerBurner furnace = (TileUltraFlowerBurner) tile;
 				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(furnace.mruProduced+" MRU/t", posX+2, posY+5, 0xffffff);
 				DrawUtils.bindTexture("essentialcraft", "textures/gui/slot_common.png");
 				this.drawTexturedModalRect(posX+82, posY, 0, 0, 18, 18);
 				RenderItem renderitem = Minecraft.getMinecraft().getRenderItem();
-				if(furnace.burnedFlower != null)
-				{
+				if(furnace.burnedFlower != null) {
 					BlockPos pos = furnace.burnedFlower;
 					IBlockState b = furnace.getWorld().getBlockState(pos);
-					if(b != null && Item.getItemFromBlock(b.getBlock()) != null)
-					{
+					if(b != null && Item.getItemFromBlock(b.getBlock()) != null) {
 						renderitem.renderItemIntoGUI(b.getBlock().getPickBlock(b, new RayTraceResult(Vec3d.ZERO, EnumFacing.DOWN, pos), furnace.getWorld(), furnace.burnedFlower, Minecraft.getMinecraft().player), posX+83, posY+1);
 					}
 				}
 				DrawUtils.bindTexture("minecraft", "textures/gui/container/furnace.png");
 				this.drawTexturedModalRect(posX+82, posY-15, 55, 36, 15, 15);
-				if(furnace.burnTime > 0)
-				{
+				if(furnace.burnTime > 0) {
 					int scaledSize = MathUtils.pixelatedTextureSize(furnace.burnTime, 30*20, 14)+1;
 					this.drawTexturedModalRect(posX+83, posY-scaledSize, 176, 15-scaledSize, 15, scaledSize);
 				}
 			}
 		}
-		if(tileValue.equals("cold"))
-		{
-			if(tile instanceof TileColdDistillator)
-			{
+		if(tileValue.equals("cold")) {
+			if(tile instanceof TileColdDistillator) {
 				TileColdDistillator cold = (TileColdDistillator) tile;
-				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(cold.CgetMru()+" MRU/t", posX+2, posY+5, 0xffffff);
+				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(cold.getMRU()+" MRU/t", posX+2, posY+5, 0xffffff);
 			}
 		}
-		if(tileValue.equals("enderGenerator"))
-		{
+		if(tileValue.equals("enderGenerator")) {
 			Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(TileEnderGenerator.mruGenerated+" MRU/hit", posX+2, posY+5, 0xffffff);
 		}
-		if(tileValue.equals("sunray"))
-		{
+		if(tileValue.equals("sunray")) {
 			Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(TileSunRayAbsorber.mruGenerated+" MRU/t", posX+2, posY+5, 0xffffff);
 		}
-		if(tileValue.equals("moonwell"))
-		{
-			float mruGenerated = TileMoonWell.mruGenerated;
+		if(tileValue.equals("moonwell")) {
+			double mruGenerated = TileMoonWell.mruGenerated;
 			int moonPhase = tile.getWorld().provider.getMoonPhase(tile.getWorld().getWorldTime());
-			float moonFactor = 1.0F;
-			switch(moonPhase)
-			{
-			case 0:
-			{
-				moonFactor = 1.0F;
-				break;
-			}
-			case 1:
-			{
-				moonFactor = 0.75F;
-				break;
-			}
-			case 7:
-			{
-				moonFactor = 0.75F;
-				break;
-			}
-			case 2:
-			{
-				moonFactor = 0.5F;
-				break;
-			}
-			case 6:
-			{
-				moonFactor = 0.5F;
-				break;
-			}
-			case 3:
-			{
-				moonFactor = 0.25F;
-				break;
-			}
-			case 5:
-			{
-				moonFactor = 0.25F;
-				break;
-			}
-			case 4:
-			{
-				moonFactor = 0.0F;
-				break;
-			}
-			}
+			double moonFactor = Math.abs(1D - moonPhase*0.25D);
 			mruGenerated *= moonFactor;
-			float heightFactor = 1.0F;
-			if(tile.getPos().getY() > 80)
-				heightFactor = 0F;
-			else
-			{
-				heightFactor = 1.0F - tile.getPos().getY()/80F;
+			double heightFactor = 1.0F;
+			if(tile.getPos().getY() > TileMoonWell.maxHeight) {
+				heightFactor = 0D;
+			}
+			else {
+				heightFactor = 1D - tile.getPos().getY()/TileMoonWell.maxHeight;
 				mruGenerated *= heightFactor;
 			}
 			Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((int)mruGenerated+" MRU/t", posX+2, posY+5, 0xffffff);

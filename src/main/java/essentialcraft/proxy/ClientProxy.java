@@ -36,6 +36,7 @@ import essentialcraft.client.gui.GuiMRUChunkLoader;
 import essentialcraft.client.gui.GuiMRUCoil;
 import essentialcraft.client.gui.GuiMRUDimTransciever;
 import essentialcraft.client.gui.GuiMRUInfo;
+import essentialcraft.client.gui.GuiMRUIntersector;
 import essentialcraft.client.gui.GuiMagicalChest;
 import essentialcraft.client.gui.GuiMagicalEnchanter;
 import essentialcraft.client.gui.GuiMagicalFurnace;
@@ -61,6 +62,7 @@ import essentialcraft.client.gui.GuiSunRayAbsorber;
 import essentialcraft.client.gui.GuiUltraFlowerBurner;
 import essentialcraft.client.gui.GuiUltraHeatGenerator;
 import essentialcraft.client.gui.GuiWeaponBench;
+import essentialcraft.client.gui.GuiWeatherController;
 import essentialcraft.client.model.ModelArmorEC;
 import essentialcraft.client.particle.ParticleCSpell;
 import essentialcraft.client.particle.ParticleColoredFlame;
@@ -113,7 +115,9 @@ import essentialcraft.client.render.tile.RenderMonsterHolder;
 import essentialcraft.client.render.tile.RenderPlayerPentacle;
 import essentialcraft.client.render.tile.RenderRadiatingChamber;
 import essentialcraft.client.render.tile.RenderRayTower;
+import essentialcraft.client.render.tile.RenderWeatherController;
 import essentialcraft.client.render.tile.RenderWindRune;
+import essentialcraft.client.render.tile.RenderWorldMerger;
 import essentialcraft.common.entity.EntityArmorDestroyer;
 import essentialcraft.common.entity.EntityDemon;
 import essentialcraft.common.entity.EntityDivider;
@@ -150,6 +154,7 @@ import essentialcraft.common.inventory.ContainerMRUChunkLoader;
 import essentialcraft.common.inventory.ContainerMRUCoil;
 import essentialcraft.common.inventory.ContainerMRUDimTransciever;
 import essentialcraft.common.inventory.ContainerMRUInfo;
+import essentialcraft.common.inventory.ContainerMRUIntersector;
 import essentialcraft.common.inventory.ContainerMagicalEnchanter;
 import essentialcraft.common.inventory.ContainerMagicalFurnace;
 import essentialcraft.common.inventory.ContainerMagicalHopper;
@@ -173,6 +178,7 @@ import essentialcraft.common.inventory.ContainerSunRayAbsorber;
 import essentialcraft.common.inventory.ContainerUltraFlowerBurner;
 import essentialcraft.common.inventory.ContainerUltraHeatGenerator;
 import essentialcraft.common.inventory.ContainerWeaponBench;
+import essentialcraft.common.inventory.ContainerWeatherController;
 import essentialcraft.common.inventory.InventoryCraftingFrame;
 import essentialcraft.common.inventory.InventoryMagicFilter;
 import essentialcraft.common.item.ItemSecret;
@@ -205,6 +211,7 @@ import essentialcraft.common.tile.TileMRUChunkLoader;
 import essentialcraft.common.tile.TileMRUCoil;
 import essentialcraft.common.tile.TileMRUCoilHardener;
 import essentialcraft.common.tile.TileMRUDimensionalTransciever;
+import essentialcraft.common.tile.TileMRUIntersector;
 import essentialcraft.common.tile.TileMRUReactor;
 import essentialcraft.common.tile.TileMagicalChest;
 import essentialcraft.common.tile.TileMagicalDisplay;
@@ -234,7 +241,9 @@ import essentialcraft.common.tile.TileSunRayAbsorber;
 import essentialcraft.common.tile.TileUltraFlowerBurner;
 import essentialcraft.common.tile.TileUltraHeatGenerator;
 import essentialcraft.common.tile.TileWeaponMaker;
+import essentialcraft.common.tile.TileWeatherController;
 import essentialcraft.common.tile.TileWindRune;
+import essentialcraft.common.tile.TileWorldMerger;
 import essentialcraft.utils.cfg.Config;
 import essentialcraft.utils.common.ECEventHandler;
 import net.minecraft.block.Block;
@@ -278,43 +287,38 @@ public class ClientProxy extends CommonProxy {
 		//ModelLoaderRegistry.registerLoader(ModelGun_LoaderBased.LoaderGun.INSTANCE);
 	}
 
-	public boolean listHasKey(String key)
-	{
-		for(int i = 0; i < playingMusic.size(); ++i)
-		{
-			if(playingMusic.get(i).getLeft().equals(key))
+	public boolean listHasKey(String key) {
+		for(int i = 0; i < playingMusic.size(); ++i) {
+			if(playingMusic.get(i).getLeft().equals(key)) {
 				return true;
+			}
 		}
 
 		return false;
 	}
 
-	public int positionOf(String key)
-	{
-		for(int i = 0; i < playingMusic.size(); ++i)
-		{
-			if(playingMusic.get(i).getLeft().equals(key))
+	public int positionOf(String key) {
+		for(int i = 0; i < playingMusic.size(); ++i) {
+			if(playingMusic.get(i).getLeft().equals(key)) {
 				return i;
+			}
 		}
 
 		return 0;
 	}
 
 	@Override
-	public void stopSound(String soundID)
-	{
-		if(listHasKey(soundID))
-		{
-			Minecraft.getMinecraft().getSoundHandler().stopSound(playingMusic.get(positionOf(soundID)).getRight());
-			playingMusic.remove(soundID);
+	public void stopSound(String soundID) {
+		if(listHasKey(soundID)) {
+			int pos = positionOf(soundID);
+			Minecraft.getMinecraft().getSoundHandler().stopSound(playingMusic.get(pos).getRight());
+			playingMusic.remove(pos);
 		}
 	}
 
 	@Override
-	public void startSound(String soundID, String soundName)
-	{
-		if(!listHasKey(soundID))
-		{
+	public void startSound(String soundID, String soundName) {
+		if(!listHasKey(soundID)) {
 			PositionedSoundRecord s = PositionedSoundRecord.getMusicRecord(SoundEvent.REGISTRY.getObject(new ResourceLocation(soundName)));
 			playingMusic.add(Pair.<String, ISound>of(soundID, s));
 
@@ -323,10 +327,8 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void startRecord(String soundID, String soundName, BlockPos pos)
-	{
-		if(!listHasKey(soundID))
-		{
+	public void startRecord(String soundID, String soundName, BlockPos pos) {
+		if(!listHasKey(soundID)) {
 			PositionedSoundRecord s = PositionedSoundRecord.getRecordSoundRecord(SoundEvent.REGISTRY.getObject(new ResourceLocation(soundName)), pos.getX()+0.5F, pos.getY()+0.5F, pos.getZ()+0.5F);
 			playingMusic.add(Pair.<String, ISound>of(soundID, s));
 
@@ -337,224 +339,178 @@ public class ClientProxy extends CommonProxy {
 	ResourceLocation villagerSkin = new ResourceLocation("essentialcraft","textures/entities/magician.png");
 
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world,int x, int y, int z)
-	{
-		if(ID == Config.guiID[0])
-		{
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		if(ID == Config.guiID[0]) {
 			TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
-			if(tile == null)
-			{
+			if(tile == null) {
 				//Item:filter
-				if(x == 0 && y == -1 && z == 0)
-				{
+				if(x == 0 && y == -1 && z == 0) {
 					InventoryMagicFilter inventory = new InventoryMagicFilter(player.getHeldItemMainhand());
 					return new GuiFilter(new ContainerFilter(player, inventory), inventory);
 				}
 				//Item: Crafting Frame
-				if(x == 0 && y == -2 && z == 0)
-				{
+				if(x == 0 && y == -2 && z == 0) {
 					InventoryCraftingFrame inventory = new InventoryCraftingFrame(player.getHeldItemMainhand());
 					return new GuiCraftingFrame(new ContainerCraftingFrame(player, inventory), inventory);
 				}
 			}
-			if(tile instanceof TileRayTower)
-			{
+			if(tile instanceof TileRayTower) {
 				return new GuiRayTower(new ContainerRayTower(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMRUCUECAcceptor)
-			{
+			if(tile instanceof TileMRUCUECAcceptor) {
 				return new GuiMRUAcceptor(new ContainerMRUAcceptor(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMRUCUECStateChecker)
-			{
+			if(tile instanceof TileMRUCUECStateChecker) {
 				return new GuiMRUInfo(new ContainerMRUInfo(player.inventory), tile);
 			}
-			if(tile instanceof TileMoonWell)
-			{
+			if(tile instanceof TileMoonWell) {
 				return new GuiMoonWell(new ContainerMoonWell(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileSunRayAbsorber)
-			{
+			if(tile instanceof TileSunRayAbsorber) {
 				return new GuiSunRayAbsorber(new ContainerSunRayAbsorber(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileColdDistillator)
-			{
+			if(tile instanceof TileColdDistillator) {
 				return new GuiColdDistillator(new ContainerColdDistillator(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileFlowerBurner)
-			{
+			if(tile instanceof TileFlowerBurner) {
 				return new GuiFlowerBurner(new ContainerFlowerBurner(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileHeatGenerator)
-			{
+			if(tile instanceof TileHeatGenerator) {
 				return new GuiHeatGenerator(new ContainerHeatGenerator(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileEnderGenerator)
-			{
+			if(tile instanceof TileEnderGenerator) {
 				return new GuiEnderGenerator(new ContainerEnderGenerator(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMagicianTable)
-			{
+			if(tile instanceof TileMagicianTable) {
 				return new GuiMagicianTable(new ContainerMagicianTable(player.inventory, tile), (TileMagicianTable)tile);
 			}
-			if(tile instanceof TileMagicalQuarry)
-			{
+			if(tile instanceof TileMagicalQuarry) {
 				return new GuiMagicalQuarry(new ContainerMagicalQuarry(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMonsterHolder)
-			{
+			if(tile instanceof TileMonsterHolder) {
 				return new GuiMonsterHolder(new ContainerMonsterHolder(player.inventory, tile), tile);
 			}
-			if(tile instanceof TilePotionSpreader)
-			{
+			if(tile instanceof TilePotionSpreader) {
 				return new GuiPotionSpreader(new ContainerPotionSpreader(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMagicalEnchanter)
-			{
+			if(tile instanceof TileMagicalEnchanter) {
 				return new GuiMagicalEnchanter(new ContainerMagicalEnchanter(player.inventory, tile), (TileMagicalEnchanter)tile);
 			}
-			if(tile instanceof TileMonsterHarvester)
-			{
+			if(tile instanceof TileMonsterHarvester) {
 				return new GuiMonsterHarvester(new ContainerMonsterHarvester(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMagicalRepairer)
-			{
+			if(tile instanceof TileMagicalRepairer) {
 				return new GuiMagicalRepairer(new ContainerMagicalRepairer(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMatrixAbsorber)
-			{
+			if(tile instanceof TileMatrixAbsorber) {
 				return new GuiMatrixAbsorber(new ContainerMatrixAbsorber(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileRadiatingChamber)
-			{
+			if(tile instanceof TileRadiatingChamber) {
 				return new GuiRadiatingChamber(new ContainerRadiatingChamber(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMagmaticSmelter)
-			{
+			if(tile instanceof TileMagmaticSmelter) {
 				return new GuiMagmaticSmeltery(new ContainerMagmaticSmeltery(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMagicalJukebox)
-			{
+			if(tile instanceof TileMagicalJukebox) {
 				return new GuiMagicalJukebox(new ContainerMagicalJukebox(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileCrystalFormer)
-			{
+			if(tile instanceof TileCrystalFormer) {
 				return new GuiCrystalFormer(new ContainerCrystalFormer(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileCrystalController)
-			{
+			if(tile instanceof TileCrystalController) {
 				return new GuiCrystalController(new ContainerCrystalController(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileCrystalExtractor)
-			{
+			if(tile instanceof TileCrystalExtractor) {
 				return new GuiCrystalExtractor(new ContainerCrystalExtractor(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileChargingChamber)
-			{
+			if(tile instanceof TileChargingChamber) {
 				return new GuiChargingChamber(new ContainerChargingChamber(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMagicalTeleporter)
-			{
+			if(tile instanceof TileMagicalTeleporter) {
 				return new GuiMagicalTeleporter(new ContainerMagicalTeleporter(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMagicalFurnace)
-			{
+			if(tile instanceof TileMagicalFurnace) {
 				return new GuiMagicalFurnace(new ContainerMagicalFurnace(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMRUCoil)
-			{
+			if(tile instanceof TileMRUCoil) {
 				return new GuiMRUCoil(new ContainerMRUCoil(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileCorruptionCleaner)
-			{
+			if(tile instanceof TileCorruptionCleaner) {
 				return new GuiCorruptionCleaner(new ContainerCorruptionCleaner(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileDarknessObelisk)
-			{
+			if(tile instanceof TileDarknessObelisk) {
 				return new GuiDarknessObelisk(new ContainerDarknessObelisk(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileUltraHeatGenerator)
-			{
+			if(tile instanceof TileUltraHeatGenerator) {
 				return new GuiUltraHeatGenerator(new ContainerUltraHeatGenerator(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileUltraFlowerBurner)
-			{
+			if(tile instanceof TileUltraFlowerBurner) {
 				return new GuiUltraFlowerBurner(new ContainerUltraFlowerBurner(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMithrilineFurnace)
-			{
+			if(tile instanceof TileMithrilineFurnace) {
 				return new GuiMithrilineFurnace(new ContainerMithrilineFurnace(player.inventory, tile), (TileMithrilineFurnace)tile);
 			}
-			if(tile instanceof TileRightClicker)
-			{
+			if(tile instanceof TileRightClicker) {
 				return new GuiRightClicker(new ContainerRightClicker(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileRedstoneTransmitter)
-			{
+			if(tile instanceof TileRedstoneTransmitter) {
 				return new GuiCommon(new ContainerRedstoneTransmitter(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMagicalHopper)
-			{
+			if(tile instanceof TileMagicalHopper) {
 				return new GuiCommon(new ContainerMagicalHopper(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileWeaponMaker)
-			{
+			if(tile instanceof TileWeaponMaker) {
 				return new GuiWeaponBench(new ContainerWeaponBench(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileFurnaceMagic)
-			{
+			if(tile instanceof TileFurnaceMagic) {
 				return new GuiFurnaceMagic(new ContainerFurnaceMagic(player.inventory, tile), (TileFurnaceMagic)tile);
 			}
-			if(tile instanceof TilePlayerPentacle)
-			{
+			if(tile instanceof TilePlayerPentacle) {
 				return new GuiPlayerPentacle(tile);
 			}
-			if(tile instanceof TileMagicalChest)
-			{
+			if(tile instanceof TileMagicalChest) {
 				return new GuiMagicalChest(player.inventory, (TileMagicalChest)tile);
 			}
-			if(tile instanceof TileMIMInventoryStorage)
-			{
+			if(tile instanceof TileMIMInventoryStorage) {
 				return new GuiMIMInventoryStorage(player.inventory, (TileMIMInventoryStorage)tile);
 			}
-			if(tile instanceof TileMIM)
-			{
+			if(tile instanceof TileMIM) {
 				return new GuiMIM(new ContainerMIM(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMIMScreen)
-			{
+			if(tile instanceof TileMIMScreen) {
 				return new GuiMIMScreen((TileMIMScreen) tile, player);
 			}
-			if(tile instanceof TileMIMCraftingManager)
-			{
+			if(tile instanceof TileMIMCraftingManager) {
 				return new GuiMIMCraftingManager(player.inventory, (TileMIMCraftingManager) tile);
 			}
-			if(tile instanceof TileMIMExportNode || tile instanceof TileMIMImportNode || tile instanceof TileAdvancedBlockBreaker)
-			{
+			if(tile instanceof TileMIMExportNode || tile instanceof TileMIMImportNode || tile instanceof TileAdvancedBlockBreaker) {
 				return new GuiCommon(new ContainerMIMSimpleNode(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileCrafter)
-			{
+			if(tile instanceof TileCrafter) {
 				return new GuiCrafter(new ContainerCrafter(player.inventory, tile),(TileCrafter) tile);
 			}
-			if(tile instanceof TileAnimalSeparator)
-			{
+			if(tile instanceof TileAnimalSeparator) {
 				return new GuiRayTower(new ContainerRayTower(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMRUChunkLoader)
-			{
+			if(tile instanceof TileMRUChunkLoader) {
 				return new GuiMRUChunkLoader(new ContainerMRUChunkLoader(player.inventory, tile), tile);
 			}
-			if(tile instanceof TileMRUDimensionalTransciever)
-			{
+			if(tile instanceof TileMRUDimensionalTransciever) {
 				return new GuiMRUDimTransciever(new ContainerMRUDimTransciever(player.inventory, tile), tile);
 			}
+			if(tile instanceof TileMRUIntersector) {
+				return new GuiMRUIntersector(new ContainerMRUIntersector(player.inventory, tile), tile);
+			}
+			if(tile instanceof TileWorldMerger) {
+				return new GuiRayTower(new ContainerRayTower(player.inventory, tile), tile);
+			}
+			if(tile instanceof TileWeatherController) {
+				return new GuiWeatherController(new ContainerWeatherController(player.inventory, tile), (TileWeatherController)tile);
+			}
 		}
-		if(ID == Config.guiID[1])
-		{
+		if(ID == Config.guiID[1]) {
 			List<EntityDemon> demons = world.getEntitiesWithinAABB(EntityDemon.class, new AxisAlignedBB(x-1, y-1, z-1, x+1, y+1, z+1));
-			if(!demons.isEmpty())
-			{
+			if(!demons.isEmpty()) {
 				return new GuiDemon(new ContainerDemon(player, demons.get(0)));
 			}
 		}
@@ -562,15 +518,8 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void openBookGUIForPlayer()
-	{
+	public void openBookGUIForPlayer() {
 		Minecraft.getMinecraft().displayGuiScreen(new GuiResearchBook());
-	}
-
-	@Override
-	public void openPentacleGUIForPlayer(TileEntity tile)
-	{
-		Minecraft.getMinecraft().displayGuiScreen(new GuiPlayerPentacle(tile));
 	}
 
 	@Override
@@ -627,6 +576,8 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileDemonicPentacle.class, new RenderDemonicPentacle());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileMagicalChest.class, new RenderMagicalChest());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileMIM.class, new RenderMIM());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileWorldMerger.class, new RenderWorldMerger());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileWeatherController.class, new RenderWeatherController());
 		{
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEnderGenerator.class, new RenderEnderGenerator());
 			ClientRegistry.bindTileEntitySpecialRenderer(TileColdDistillator.class, new RenderColdDistillator());
@@ -662,7 +613,7 @@ public class ClientProxy extends CommonProxy {
 			return mruParticleIcon;
 		if(str.equals("particle_fogFX"))
 			return fogIcon;
-		if(str.contains("consSpellParticle")) {
+		if(str.startsWith("consSpellParticle")) {
 			int index = str.indexOf('_');
 			if(index != -1) {
 				int arrayNum = Integer.parseInt(str.substring(index+1));
@@ -768,10 +719,8 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void wingsAction(EntityPlayer e, ItemStack s)
-	{
-		if(GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump) && Minecraft.getMinecraft().inGameHasFocus)
-		{
+	public void wingsAction(EntityPlayer e, ItemStack s) {
+		if(GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump) && Minecraft.getMinecraft().inGameHasFocus) {
 			e.getEntityWorld().spawnParticle(EnumParticleTypes.REDSTONE, e.posX+MathUtils.randomDouble(e.getEntityWorld().rand)/2, e.posY-1+MathUtils.randomDouble(e.getEntityWorld().rand), e.posZ+MathUtils.randomDouble(e.getEntityWorld().rand)/2, 0, 1, 1);
 			e.motionY += 0.1F;
 			e.fallDistance = 0F;
@@ -788,8 +737,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void handlePositionChangePacket(DummyData[] packetData)
-	{
+	public void handlePositionChangePacket(DummyData[] packetData) {
 		double sX = Double.parseDouble(packetData[1].fieldValue);
 		double sY = Double.parseDouble(packetData[2].fieldValue);
 		double sZ = Double.parseDouble(packetData[3].fieldValue);
@@ -801,8 +749,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void handleSoundPlay(DummyData[] packetData)
-	{
+	public void handleSoundPlay(DummyData[] packetData) {
 		double sX = Double.parseDouble(packetData[1].fieldValue);
 		double sY = Double.parseDouble(packetData[2].fieldValue);
 		double sZ = Double.parseDouble(packetData[3].fieldValue);

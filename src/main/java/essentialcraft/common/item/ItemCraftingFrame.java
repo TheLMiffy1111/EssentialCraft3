@@ -31,28 +31,28 @@ public class ItemCraftingFrame extends Item implements IModelRegisterer {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4)
 	{
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-		InventoryCraftingFrame inv = new InventoryCraftingFrame(par1ItemStack);
+		super.addInformation(stack, player, list, par4);
+		InventoryCraftingFrame inv = new InventoryCraftingFrame(stack);
 		if(inv != null)
 		{
-			par3List.add("Current recipe:");
+			list.add("Current recipe:");
 			for(int i = 0; i < 9; ++i)
 			{
 				ItemStack stk = inv.getStackInSlot(i);
 
 				if(stk.isEmpty())
-					par3List.add(i+": Empty");
+					list.add(i+": Empty");
 				else
-					par3List.add(i+": "+stk.getDisplayName());
+					list.add(i+": "+stk.getDisplayName());
 			}
 
 			ItemStack stk = inv.getStackInSlot(9);
 			if(stk.isEmpty())
-				par3List.add("Result: None");
+				list.add("Result: None");
 			else
-				par3List.add("Result: "+stk.getDisplayName());
+				list.add("Result: "+stk.getDisplayName());
 		}
 	}
 

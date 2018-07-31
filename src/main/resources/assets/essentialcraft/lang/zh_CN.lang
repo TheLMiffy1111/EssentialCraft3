@@ -1043,7 +1043,7 @@ essentialcraft.page.magicalHopper_0.txt=这个神奇的装置会吸收3个范围
 
 essentialcraft.page.metadataManager_0.txt=这个方块会输入一个和其临近方块元数据相同强度的红石信号.但是它无法检测方块更新,所以对于小麦这样的方块你就需要给让装置检测到方块的更新才能检测到小麦的生长.
 
-essentialcraft.page.blockBreaker_0.txt=这个设备接收红石信号会破坏面前12格同样硬度的所有的方块,(瞬间破坏).它会收集破坏方块的掉落物并且从后方输出它们.
+essentialcraft.page.blockBreaker_0.txt=这个设备接收红石信号会破坏面前12格同样硬度的所有的方块,(瞬间破坏).
 
 essentialcraft.page.weaponMaker_0.txt=你已经知道MRU很危险了.但是MRU是一种辐射,对吧?你想想,你有可能制造一种发射MRU射线杀死所有活物的武器.
 essentialcraft.page.weaponMaker_1.txt=武器台桌让你制造枪支.打开它会看见一个有趣的GUI.有4种你可以制造的武器,按底部的>>>按钮来切换类型.

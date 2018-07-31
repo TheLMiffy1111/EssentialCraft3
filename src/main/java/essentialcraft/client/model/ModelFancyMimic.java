@@ -67,7 +67,7 @@ public class ModelFancyMimic implements IBakedModel {
 			}
 		}
 		if(layer == BlockRenderLayer.CUTOUT_MIPPED) {
-			ModelResourceLocation path = new ModelResourceLocation("essentialcraft:fancyBlock/mimic", "type=" + type);
+			ModelResourceLocation path = new ModelResourceLocation("essentialcraft:fancyblock/mimic", "type=" + type);
 			ret.addAll(mc.getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getModel(path).getQuads(state, side, rand));
 		}
 

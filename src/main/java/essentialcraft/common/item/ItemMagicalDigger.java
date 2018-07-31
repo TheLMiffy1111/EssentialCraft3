@@ -55,31 +55,31 @@ public class ItemMagicalDigger extends ItemPickaxe implements IModelRegisterer {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4)
 	{
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-		par3List.add(par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() + "/" + par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU() + " MRU");
+		super.addInformation(stack, player, list, par4);
+		list.add(stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() + "/" + stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU() + " MRU");
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List)
+	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(par2CreativeTabs)) {
 			ItemStack min = new ItemStack(this, 1, 0);
 			ItemStack max = new ItemStack(this, 1, 0);
 			min.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(0);
 			max.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(maxMRU);
-			par3List.add(min);
-			par3List.add(max);
+			list.add(min);
+			list.add(max);
 		}
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World par2World, EntityPlayer par3EntityPlayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
-		par3EntityPlayer.swingArm(hand);
-		par3EntityPlayer.swingProgress = 0.3F;
-		return super.onItemRightClick(par2World, par3EntityPlayer, hand);
+		player.swingArm(hand);
+		player.swingProgress = 0.3F;
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	@Override
@@ -89,9 +89,9 @@ public class ItemMagicalDigger extends ItemPickaxe implements IModelRegisterer {
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack par1ItemStack, IBlockState par2Block)
+	public float getStrVsBlock(ItemStack stack, IBlockState par2Block)
 	{
-		if(par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() >= 9)
+		if(stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() >= 9)
 		{
 			return 32.0F;
 		}
@@ -104,11 +104,11 @@ public class ItemMagicalDigger extends ItemPickaxe implements IModelRegisterer {
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, IBlockState par3, BlockPos par4, EntityLivingBase par7EntityLivingBase)
+	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState par3, BlockPos par4, EntityLivingBase par7EntityLivingBase)
 	{
-		if(par7EntityLivingBase instanceof EntityPlayer && !par7EntityLivingBase.isSneaking() && this.canBreak(par1ItemStack))
+		if(par7EntityLivingBase instanceof EntityPlayer && !par7EntityLivingBase.isSneaking() && this.canBreak(stack))
 		{
-			this.break3x3x3Blocks((EntityPlayer)par7EntityLivingBase, new Coord3D(par4.getX(),par4.getY(),par4.getZ()),par1ItemStack,par2World.getBlockState(par4).getBlock());
+			this.break3x3x3Blocks((EntityPlayer)par7EntityLivingBase, new Coord3D(par4.getX(),par4.getY(),par4.getZ()),stack,world.getBlockState(par4).getBlock());
 		}
 		return true;
 	}

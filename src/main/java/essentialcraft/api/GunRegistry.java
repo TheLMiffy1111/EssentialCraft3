@@ -1,7 +1,7 @@
 package essentialcraft.api;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import DummyCore.Utils.DummyData;
@@ -65,8 +65,8 @@ public class GunRegistry {
 		public String id;
 		public ItemStack recipe = ItemStack.EMPTY;
 		public boolean sniper;
-		public Hashtable<GunType,ArrayList<DummyData>> materialData = new Hashtable<GunType,ArrayList<DummyData>>();
-		public Hashtable<String,String> textures = new Hashtable<String,String>();
+		public HashMap<GunType,ArrayList<DummyData>> materialData = new HashMap<GunType,ArrayList<DummyData>>();
+		public HashMap<String,String> textures = new HashMap<String,String>();
 
 		public ScopeMaterial(String s, boolean sniper)
 		{
@@ -139,10 +139,10 @@ public class GunRegistry {
 
 	public static class LenseMaterial
 	{
-		public Hashtable<GunType,ArrayList<DummyData>> materialData = new Hashtable<GunType,ArrayList<DummyData>>();
+		public HashMap<GunType,ArrayList<DummyData>> materialData = new HashMap<GunType,ArrayList<DummyData>>();
 		public String id;
 		public ItemStack recipe = ItemStack.EMPTY;
-		public Hashtable<String,String> textures = new Hashtable<String,String>();
+		public HashMap<String,String> textures = new HashMap<String,String>();
 
 		public LenseMaterial(String s)
 		{
@@ -205,12 +205,12 @@ public class GunRegistry {
 
 	public static class GunMaterial
 	{
-		public Hashtable<GunType,ArrayList<DummyData>> materialData = new Hashtable<GunType,ArrayList<DummyData>>();
+		public HashMap<GunType,ArrayList<DummyData>> materialData = new HashMap<GunType,ArrayList<DummyData>>();
 		public String id;
 		public ItemStack recipe = ItemStack.EMPTY;
-		public Hashtable<String,String> baseTextures = new Hashtable<String,String>();
-		public Hashtable<String,String> handleTextures = new Hashtable<String,String>();
-		public Hashtable<String,String> deviceTextures = new Hashtable<String,String>();
+		public HashMap<String,String> baseTextures = new HashMap<String,String>();
+		public HashMap<String,String> handleTextures = new HashMap<String,String>();
+		public HashMap<String,String> deviceTextures = new HashMap<String,String>();
 
 		public GunMaterial(String s)
 		{

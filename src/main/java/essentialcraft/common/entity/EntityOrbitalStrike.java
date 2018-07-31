@@ -86,7 +86,7 @@ public class EntityOrbitalStrike extends Entity {
 
 		if(delay <= 0 && !this.isDead)
 		{
-			List<EntityLivingBase> allEntities = this.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).expand(2, 2, 2));
+			List<EntityLivingBase> allEntities = this.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).grow(2, 2, 2));
 			for(int i = 0; i < allEntities.size(); ++i)
 			{
 

@@ -27,35 +27,30 @@ public class BlockBlockBreaker extends Block implements IModelRegisterer {
 	}
 
 	@Override
-	public boolean canProvidePower(IBlockState s)
-	{
+	public boolean canProvidePower(IBlockState s) {
 		return true;
 	}
 
 	@Override
-	public void onNeighborChange(IBlockAccess w, BlockPos p, BlockPos n)
-	{
-		if(w instanceof World && ((World)w).isBlockIndirectlyGettingPowered(p) > 0)
-		{
+	public void neighborChanged(IBlockState s, World w, BlockPos p, Block n, BlockPos fp) {
+		if(!w.isRemote && w.isBlockIndirectlyGettingPowered(p) > 0) {
 			EnumFacing d = w.getBlockState(p).getValue(FACING);
-			Block broken = w.getBlockState(p.add(d.getFrontOffsetX(), d.getFrontOffsetY(), d.getFrontOffsetZ())).getBlock();
-			if(!broken.isAir(w.getBlockState(p.add(d.getFrontOffsetX(), d.getFrontOffsetY(), d.getFrontOffsetZ())), w, p.add(d.getFrontOffsetX(), d.getFrontOffsetY(), d.getFrontOffsetZ())))
-			{
-				float hardness = broken.getBlockHardness(w.getBlockState(p.add(d.getFrontOffsetX(), d.getFrontOffsetY(), d.getFrontOffsetZ())), (World)w, p.add(d.getFrontOffsetX(), d.getFrontOffsetY(), d.getFrontOffsetZ()));
-				if(hardness >= 0 && hardness <= 10)
-				{
-					for(int i = 1; i < 13; ++i)
-					{
-						BlockPos dP = p.add(d.getFrontOffsetX()*i, d.getFrontOffsetY()*i, d.getFrontOffsetZ()*i);
+			Block broken = w.getBlockState(p.offset(d)).getBlock();
+			if(!broken.isAir(w.getBlockState(p.offset(d)), w, p.offset(d))) {
+				float hardness = broken.getBlockHardness(w.getBlockState(p.offset(d)), w, p.offset(d));
+				if(hardness >= 0 && hardness <= 10) {
+					for(int i = 1; i < 13; ++i) {
+						BlockPos dP = p.offset(d, i);
 						Block b = w.getBlockState(dP).getBlock();
-						if(b.getBlockHardness(w.getBlockState(dP), (World)w, dP) == hardness)
-						{
-							b.breakBlock((World)w, dP, w.getBlockState(dP));
-							b.onBlockDestroyedByPlayer((World)w, dP, w.getBlockState(dP));
-							b.dropBlockAsItem((World)w, dP, w.getBlockState(dP), 0);
-							((World)w).setBlockToAir(dP);
-						}else
+						if(b.getBlockHardness(w.getBlockState(dP), w, dP) == hardness) {
+							b.breakBlock(w, dP, w.getBlockState(dP));
+							b.onBlockDestroyedByPlayer(w, dP, w.getBlockState(dP));
+							b.dropBlockAsItem(w, dP, w.getBlockState(dP), 0);
+							w.setBlockToAir(dP);
+						}
+						else {
 							break;
+						}
 					}
 				}
 			}

@@ -155,15 +155,15 @@ public class ItemWindTablet extends ItemMRUGeneric implements IModelRegisterer {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4) {
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4) {
+		super.addInformation(stack, player, list, par4);
 		int currentWindRev = WindRelations.getPlayerWindRelations(Minecraft.getMinecraft().player);
 		int maxWindRev = 3500;
 		String windName = "Owethanna Else Hugaida";
 		String hidden = "??????????????????????";
 		int revPos = MathUtils.pixelatedTextureSize(currentWindRev, maxWindRev, windName.length());
-		par3List.add("Wind Name:");
-		par3List.add(windName.substring(0, revPos)+hidden.substring(revPos));
+		list.add("Wind Name:");
+		list.add(windName.substring(0, revPos)+hidden.substring(revPos));
 	}
 
 	@Override

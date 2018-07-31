@@ -77,16 +77,16 @@ public class BlockRayTower extends BlockContainer implements IModelRegisterer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		if(par4EntityPlayer.isSneaking()) {
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		if(player.isSneaking()) {
 			return false;
 		}
-		if(!par1World.isRemote) {
+		if(!world.isRemote) {
 			if(par3.getValue(LAYER) == EnumLayer.BOTTOM) {
-				par4EntityPlayer.openGui(EssentialCraftCore.core, Config.guiID[0], par1World, par2.getX(), par2.getY(), par2.getZ());
+				player.openGui(EssentialCraftCore.core, Config.guiID[0], world, par2.getX(), par2.getY(), par2.getZ());
 			}
 			else {
-				par4EntityPlayer.openGui(EssentialCraftCore.core, Config.guiID[0], par1World, par2.getX(), par2.getY()-1, par2.getZ());
+				player.openGui(EssentialCraftCore.core, Config.guiID[0], world, par2.getX(), par2.getY()-1, par2.getZ());
 			}
 			return true;
 		}
@@ -94,17 +94,17 @@ public class BlockRayTower extends BlockContainer implements IModelRegisterer {
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
-		IInventory inv = (IInventory)par1World.getTileEntity(par2Pos);
-		InventoryHelper.dropInventoryItems(par1World, par2Pos, inv);
-		if(par1World.getBlockState(par2Pos.down()).getBlock() == this) {
-			par1World.setBlockToAir(par2Pos.down());
+	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
+		IInventory inv = (IInventory)world.getTileEntity(pos);
+		InventoryHelper.dropInventoryItems(world, pos, inv);
+		if(world.getBlockState(pos.down()).getBlock() == this) {
+			world.setBlockToAir(pos.down());
 		}
-		if(par1World.getBlockState(par2Pos.up()).getBlock() == this) {
-			par1World.setBlockToAir(par2Pos.up());
+		if(world.getBlockState(pos.up()).getBlock() == this) {
+			world.setBlockToAir(pos.up());
 		}
-		super.breakBlock(par1World, par2Pos, par3State);
-		par1World.removeTileEntity(par2Pos);
+		super.breakBlock(world, pos, blockstate);
+		world.removeTileEntity(pos);
 	}
 
 	@Override

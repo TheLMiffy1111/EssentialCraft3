@@ -30,14 +30,14 @@ public class BlockMagicianTable extends BlockContainer implements IModelRegister
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
-		TileMagicianTable table = (TileMagicianTable) par1World.getTileEntity(par2Pos);
-		InventoryHelper.dropInventoryItems(par1World, par2Pos, table);
+	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
+		TileMagicianTable table = (TileMagicianTable) world.getTileEntity(pos);
+		InventoryHelper.dropInventoryItems(world, pos, table);
 		if(table.upgrade != -1) {
 			ItemStack dropped = MagicianTableUpgrades.createStackByUpgradeID(table.upgrade);
-			InventoryHelper.spawnItemStack(par1World, par2Pos.getX(), par2Pos.getY(), par2Pos.getZ(), dropped);
+			InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), dropped);
 		}
-		super.breakBlock(par1World, par2Pos, par3State);
+		super.breakBlock(world, pos, blockstate);
 	}
 
 	@Override
@@ -63,20 +63,20 @@ public class BlockMagicianTable extends BlockContainer implements IModelRegister
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		ItemStack currentItem = par4EntityPlayer.getHeldItem(par5);
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		ItemStack currentItem = player.getHeldItem(par5);
 		if(currentItem.isEmpty() || !MagicianTableUpgrades.isItemUpgrade(currentItem)) {
-			TileMagicianTable table = (TileMagicianTable)par1World.getTileEntity(par2);
-			if(par4EntityPlayer.isSneaking()) {
+			TileMagicianTable table = (TileMagicianTable)world.getTileEntity(par2);
+			if(player.isSneaking()) {
 				if(table.upgrade != -1) {
 					ItemStack dropped = MagicianTableUpgrades.createStackByUpgradeID(table.upgrade);
 					if(!dropped.isEmpty()) {
-						if(!par1World.isRemote) {
-							EntityItem itm = new EntityItem(par1World, par2.getX()+0.5D, par2.getY()+1.5D, par2.getZ()+0.5D, dropped);
+						if(!world.isRemote) {
+							EntityItem itm = new EntityItem(world, par2.getX()+0.5D, par2.getY()+1.5D, par2.getZ()+0.5D, dropped);
 							itm.setPickupDelay(30);
 							table.upgrade = -1;
 							table.syncTick = 0;
-							par1World.spawnEntity(itm);
+							world.spawnEntity(itm);
 						}
 						return true;
 					}
@@ -84,18 +84,18 @@ public class BlockMagicianTable extends BlockContainer implements IModelRegister
 				return false;
 			}
 
-			if(!par1World.isRemote) {
-				par4EntityPlayer.openGui(EssentialCraftCore.core, Config.guiID[0], par1World, par2.getX(), par2.getY(), par2.getZ());
+			if(!world.isRemote) {
+				player.openGui(EssentialCraftCore.core, Config.guiID[0], world, par2.getX(), par2.getY(), par2.getZ());
 				return true;
 			}
 			return true;
 		}
-		else if(!par4EntityPlayer.isSneaking()) {
-			TileMagicianTable table = (TileMagicianTable) par1World.getTileEntity(par2);
+		else if(!player.isSneaking()) {
+			TileMagicianTable table = (TileMagicianTable) world.getTileEntity(par2);
 			if(table.upgrade == -1) {
 				table.upgrade = MagicianTableUpgrades.getUpgradeIDByItemStack(currentItem);
 				table.syncTick = 0;
-				par4EntityPlayer.inventory.decrStackSize(par4EntityPlayer.inventory.currentItem, 1);
+				player.inventory.decrStackSize(player.inventory.currentItem, 1);
 			}
 			return true;
 		}

@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 
 public class ItemGenericEC extends Item implements IModelRegisterer {
+
 	public static String[] names = {
 			"combinedMagicalAlloys", //0
 			"elementalCore", //1
@@ -115,12 +116,12 @@ public class ItemGenericEC extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack p_77654_1_, World p_77654_2_, EntityLivingBase base) {
+	public ItemStack onItemUseFinish(ItemStack stack, World world, EntityLivingBase base) {
 		if(base instanceof EntityPlayer) {
 			if(!((EntityPlayer)base).capabilities.isCreativeMode)
-				p_77654_1_.shrink(1);
+				stack.shrink(1);
 
-			if(!p_77654_2_.isRemote && p_77654_1_.getItemDamage() == 6) {
+			if(!world.isRemote && stack.getItemDamage() == 6) {
 				int addedEnergy = 0;
 				IBaublesItemHandler b = BaublesApi.getBaublesHandler((EntityPlayer)base);
 				if(b != null) {
@@ -135,25 +136,26 @@ public class ItemGenericEC extends Item implements IModelRegisterer {
 			}
 		}
 
-		return p_77654_1_.getCount() <= 0 ? new ItemStack(Items.GLASS_BOTTLE) : p_77654_1_;
+		return stack.getCount() <= 0 ? new ItemStack(Items.GLASS_BOTTLE) : stack;
 	}
 
 	@Override
-	public int getMaxItemUseDuration(ItemStack p_77626_1_) {
+	public int getMaxItemUseDuration(ItemStack stack) {
 		return 32;
 	}
 
 	@Override
-	public EnumAction getItemUseAction(ItemStack p_77661_1_) {
-		if(p_77661_1_.getItemDamage() == 6)
+	public EnumAction getItemUseAction(ItemStack stack) {
+		if(stack.getItemDamage() == 6) {
 			return EnumAction.DRINK;
-		return super.getItemUseAction(p_77661_1_);
+		}
+		return super.getItemUseAction(stack);
 	}
 
 	public static ItemStack getStkByName(String name) {
 		List<String> lst = Arrays.asList(names);
 		if(lst.contains(name)) {
-			ItemStack stk = new ItemStack(ItemsCore.genericItem,1,lst.indexOf(name));
+			ItemStack stk = new ItemStack(ItemsCore.genericItem, 1, lst.indexOf(name));
 			return stk;
 		}
 		return ItemStack.EMPTY;
@@ -161,22 +163,24 @@ public class ItemGenericEC extends Item implements IModelRegisterer {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
-		if(playerIn.getHeldItem(hand).getItemDamage() == 6)
+		if(playerIn.getHeldItem(hand).getItemDamage() == 6) {
 			playerIn.setActiveHand(hand);
+		}
 		return super.onItemRightClick(worldIn, playerIn, hand);
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack p_77667_1_) {
-		return getUnlocalizedName()+names[Math.min(p_77667_1_.getItemDamage(), names.length-1)];
+	public String getUnlocalizedName(ItemStack stack) {
+		return getUnlocalizedName()+names[Math.min(stack.getItemDamage(), names.length-1)];
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs p_150895_2_, NonNullList<ItemStack> p_150895_3_) {
-		if(this.isInCreativeTab(p_150895_2_))
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+		if(this.isInCreativeTab(tab)) {
 			for(int i = 0; i < names.length-1; ++i) {
-				p_150895_3_.add(new ItemStack(this,1,i));
+				list.add(new ItemStack(this,1,i));
 			}
+		}
 	}
 
 	@Override

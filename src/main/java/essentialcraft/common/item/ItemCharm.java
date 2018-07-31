@@ -72,15 +72,15 @@ public class ItemCharm extends ItemMRUGeneric implements IBauble, IModelRegister
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List) {
+	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> list) {
 		if(this.isInCreativeTab(par2CreativeTabs)) {
 			for(int var4 = 0; var4 < 10; ++var4) {
 				ItemStack min = new ItemStack(this, 1, var4);
 				ItemStack max = new ItemStack(this, 1, var4);
 				min.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(0);
 				max.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(maxMRU);
-				par3List.add(min);
-				par3List.add(max);
+				list.add(min);
+				list.add(max);
 			}
 		}
 	}
@@ -166,8 +166,8 @@ public class ItemCharm extends ItemMRUGeneric implements IBauble, IModelRegister
 	}
 
 	@Override
-	public String getItemStackDisplayName(ItemStack par1ItemStack) {
-		return "Charm Of "+name[Math.min(par1ItemStack.getItemDamage(), name.length-1)];
+	public String getItemStackDisplayName(ItemStack stack) {
+		return "Charm Of "+name[Math.min(stack.getItemDamage(), name.length-1)];
 	}
 
 	@Override

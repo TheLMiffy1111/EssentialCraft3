@@ -30,7 +30,7 @@ public class TileMRUCoilHardener extends TileEntity implements ITickable {
 				}
 				if(getWorld().getBlockState(dp).getBlock() == BlocksCore.mruCoil) {
 					TileMRUCoil tile = (TileMRUCoil)getWorld().getTileEntity(dp);
-					if(tile.isStructureCorrect()) {
+					if(tile.canWork()) {
 						EnumFacing fDir = EnumFacing.getHorizontal(getWorld().rand.nextInt(4));
 						localLightning = new Lightning(getWorld().rand, new Coord3D(0.5F+fDir.getFrontOffsetX()/2.3F, 0, 0.5F+fDir.getFrontOffsetZ()/2.3F), new Coord3D(0.5F+fDir.getFrontOffsetX()/2.3F, 1, 0.5F+fDir.getFrontOffsetZ()/2.3F), 0.03F, 1.0F, 0.1F, 0.8F);
 						getWorld().playSound(pos.getX()+0.5F+fDir.getFrontOffsetX()/2.3F, pos.getY()+0.5F, pos.getZ()+0.5F+fDir.getFrontOffsetZ()/2.3F, SoundRegistry.machineGenElectricity, SoundCategory.BLOCKS, 0.1F, 1F, false);
@@ -44,7 +44,6 @@ public class TileMRUCoilHardener extends TileEntity implements ITickable {
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-		return bb;
+		return INFINITE_EXTENT_AABB;
 	}
 }

@@ -4,6 +4,7 @@ import DummyCore.Client.IModelRegisterer;
 import essentialcraft.common.mod.EssentialCraftCore;
 import essentialcraft.common.tile.TileAdvancedBlockBreaker;
 import essentialcraft.utils.cfg.Config;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -36,13 +37,12 @@ public class BlockAdvBlockBreaker extends BlockContainer implements IModelRegist
 	}
 
 	@Override
-	public boolean canProvidePower(IBlockState s)
-	{
+	public boolean canProvidePower(IBlockState s) {
 		return true;
 	}
 
 	@Override
-	public void onNeighborChange(IBlockAccess w, BlockPos p, BlockPos n)  {
+	public void neighborChanged(IBlockState s, World w, BlockPos p, Block n, BlockPos fp) {
 		if(w instanceof World && ((World)w).isBlockIndirectlyGettingPowered(p) > 0) {
 			((TileAdvancedBlockBreaker)w.getTileEntity(p)).breakBlocks();
 		}
@@ -61,10 +61,10 @@ public class BlockAdvBlockBreaker extends BlockContainer implements IModelRegist
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
-		IInventory inv = (IInventory)par1World.getTileEntity(par2Pos);
-		InventoryHelper.dropInventoryItems(par1World, par2Pos, inv);
-		super.breakBlock(par1World, par2Pos, par3State);
+	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
+		IInventory inv = (IInventory)world.getTileEntity(pos);
+		InventoryHelper.dropInventoryItems(world, pos, inv);
+		super.breakBlock(world, pos, blockstate);
 	}
 
 	@Override
@@ -73,12 +73,12 @@ public class BlockAdvBlockBreaker extends BlockContainer implements IModelRegist
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		if(par4EntityPlayer.isSneaking()) {
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		if(player.isSneaking()) {
 			return false;
 		}
-		if(!par1World.isRemote) {
-			par4EntityPlayer.openGui(EssentialCraftCore.core, Config.guiID[0], par1World, par2.getX(), par2.getY(), par2.getZ());
+		if(!world.isRemote) {
+			player.openGui(EssentialCraftCore.core, Config.guiID[0], world, par2.getX(), par2.getY(), par2.getZ());
 			return true;
 		}
 		return true;

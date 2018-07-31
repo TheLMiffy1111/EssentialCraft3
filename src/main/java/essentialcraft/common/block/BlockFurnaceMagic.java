@@ -51,10 +51,10 @@ public class BlockFurnaceMagic extends BlockContainer implements IModelRegistere
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
-		IInventory inv = (IInventory)par1World.getTileEntity(par2Pos);
-		InventoryHelper.dropInventoryItems(par1World, par2Pos, inv);
-		super.breakBlock(par1World, par2Pos, par3State);
+	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
+		IInventory inv = (IInventory)world.getTileEntity(pos);
+		InventoryHelper.dropInventoryItems(world, pos, inv);
+		super.breakBlock(world, pos, blockstate);
 	}
 
 	@Override
@@ -74,12 +74,12 @@ public class BlockFurnaceMagic extends BlockContainer implements IModelRegistere
 	}
 
 	@Override
-	public void getSubBlocks(CreativeTabs p_149666_2_, NonNullList<ItemStack> p_149666_3_)
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
-		p_149666_3_.add(new ItemStack(this, 1, 0));
-		p_149666_3_.add(new ItemStack(this, 1, 4));
-		p_149666_3_.add(new ItemStack(this, 1, 8));
-		p_149666_3_.add(new ItemStack(this, 1, 12));
+		list.add(new ItemStack(this, 1, 0));
+		list.add(new ItemStack(this, 1, 4));
+		list.add(new ItemStack(this, 1, 8));
+		list.add(new ItemStack(this, 1, 12));
 	}
 
 	@Override
@@ -149,12 +149,12 @@ public class BlockFurnaceMagic extends BlockContainer implements IModelRegistere
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		if(par4EntityPlayer.isSneaking()) {
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		if(player.isSneaking()) {
 			return false;
 		}
-		if(!par1World.isRemote) {
-			par4EntityPlayer.openGui(EssentialCraftCore.core, Config.guiID[0], par1World, par2.getX(), par2.getY(), par2.getZ());
+		if(!world.isRemote) {
+			player.openGui(EssentialCraftCore.core, Config.guiID[0], world, par2.getX(), par2.getY(), par2.getZ());
 			return true;
 		}
 		return true;

@@ -12,17 +12,12 @@ import net.minecraftforge.client.model.ModelLoader;
 
 public class BlockColdStone extends Block implements IColdBlock, IModelRegisterer {
 
-	public BlockColdStone(Material p_i45394_1_) {
-		super(p_i45394_1_);
-	}
-
 	public BlockColdStone() {
 		super(Material.ICE);
 	}
 
 	@Override
-	public float getColdModifier(IBlockAccess w, BlockPos pos)
-	{
+	public float getColdModifier(IBlockAccess w, BlockPos pos) {
 		return 0.5F;
 	}
 

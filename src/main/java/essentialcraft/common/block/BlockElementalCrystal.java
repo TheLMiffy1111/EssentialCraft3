@@ -1,12 +1,13 @@
 package essentialcraft.common.block;
 
-import java.util.Random;
+import java.util.ArrayList;
+
+import com.google.common.collect.Lists;
 
 import DummyCore.Client.IModelRegisterer;
 import DummyCore.Client.ModelUtils;
 import DummyCore.Utils.MiscUtils;
 import essentialcraft.common.tile.TileElementalCrystal;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -16,13 +17,17 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -30,6 +35,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -51,25 +57,27 @@ public class BlockElementalCrystal extends BlockContainer implements IModelRegis
 	@Override
 	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
 		ItemStack is = new ItemStack(this, 1);
-		TileElementalCrystal c = (TileElementalCrystal)world.getTileEntity(pos);
-		if(c != null) {
-			MiscUtils.getStackTag(is).setFloat("size", c.size);
-			MiscUtils.getStackTag(is).setFloat("fire", c.fire);
-			MiscUtils.getStackTag(is).setFloat("water", c.water);
-			MiscUtils.getStackTag(is).setFloat("earth", c.earth);
-			MiscUtils.getStackTag(is).setFloat("air", c.air);
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof TileElementalCrystal) {
+			TileElementalCrystal crystal = (TileElementalCrystal)te;
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setDouble("size", crystal.size);
+			nbt.setDouble("fire", crystal.fire);
+			nbt.setDouble("water", crystal.water);
+			nbt.setDouble("earth", crystal.earth);
+			nbt.setDouble("air", crystal.air);
+			is.setTagCompound(nbt);
 		}
 		return is;
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState s)
-	{
+	public boolean isFullCube(IBlockState s) {
 		return false;
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileElementalCrystal();
 	}
 
@@ -79,46 +87,68 @@ public class BlockElementalCrystal extends BlockContainer implements IModelRegis
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		ItemStack is = new ItemStack(this, 1);
-		TileElementalCrystal c = (TileElementalCrystal)world.getTileEntity(pos);
-		if(c != null) {
-			MiscUtils.getStackTag(is).setFloat("size", c.size);
-			MiscUtils.getStackTag(is).setFloat("fire", c.fire);
-			MiscUtils.getStackTag(is).setFloat("water", c.water);
-			MiscUtils.getStackTag(is).setFloat("earth", c.earth);
-			MiscUtils.getStackTag(is).setFloat("air", c.air);
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof TileElementalCrystal) {
+			double size = 0;
+			double fire = 0;
+			double water = 0;
+			double earth = 0;
+			double air = 0;
+			NBTTagCompound nbt = stack.getTagCompound();
+			if(nbt != null) {
+				size = nbt.getDouble("size");
+				fire = nbt.getDouble("fire");
+				water = nbt.getDouble("water");
+				earth = nbt.getDouble("earth");
+				air = nbt.getDouble("air");
+			}
+			TileElementalCrystal crystal = (TileElementalCrystal)te;
+			crystal.size = size;
+			crystal.fire = fire;
+			crystal.water = water;
+			crystal.earth = earth;
+			crystal.air = air;
 		}
+	}
 
-		spawnAsEntity(world, pos, is);
-
-		world.removeTileEntity(pos);
+	@Override
+	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, ItemStack stack) {
+		player.addStat(StatList.getBlockStats(this));
+		player.addExhaustion(0.005F);
+		if(world.isRemote) {
+			return;
+		}
+		ArrayList<ItemStack> items = Lists.<ItemStack>newArrayList();
+		ItemStack is = new ItemStack(this, 1);
+		if(te instanceof TileElementalCrystal) {
+			TileElementalCrystal crystal = (TileElementalCrystal)te;
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setDouble("size", crystal.size);
+			nbt.setDouble("fire", crystal.fire);
+			nbt.setDouble("water", crystal.water);
+			nbt.setDouble("earth", crystal.earth);
+			nbt.setDouble("air", crystal.air);
+			is.setTagCompound(nbt);
+		}
+		items.add(is);
+		ForgeEventFactory.fireBlockHarvesting(items, world, pos, state, 0, 1F, true, player);
+		for(ItemStack item : items) {
+			spawnAsEntity(world, pos, item);
+		}
 	}
 
 	@Override
 	public int getLightValue(IBlockState s, IBlockAccess world, BlockPos pos) {
-		try {
-			Block block = s.getBlock();
-			if(block == this) {
-				TileElementalCrystal tile = (TileElementalCrystal)world.getTileEntity(pos);
-				float size = tile.size;
-
-				float floatSize = size/100F;
-
-				int lightSize = (int) (floatSize*15);
-
-				return lightSize;
-			}
-			return getLightValue(s);
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof TileElementalCrystal) {
+			TileElementalCrystal crystal = (TileElementalCrystal)te;
+			double size = crystal.size;
+			double floatSize = size/100;
+			int light = (int)(floatSize*15);
+			return light;
 		}
-		catch(Exception e){
-			return getLightValue(s);
-		}
-	}
-
-	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-		return null;
+		return getLightValue(s);
 	}
 
 	@Override
@@ -144,6 +174,48 @@ public class BlockElementalCrystal extends BlockContainer implements IModelRegis
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, FACING);
+	}
+
+	@Override
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
+		list.add(new ItemStack(this, 1));
+		for(int i = 0; i < 5; ++i) {
+			for(int j = 0; j < 4; ++j) {
+				ItemStack crystalStack = new ItemStack(this, 1);
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setDouble("size", i*25);
+				double[] elements = {0, 0, 0, 0};
+				elements[j] = 100F;
+				tag.setDouble("fire", elements[0]);
+				tag.setDouble("water", elements[1]);
+				tag.setDouble("earth", elements[2]);
+				tag.setDouble("air", elements[3]);
+				crystalStack.setTagCompound(tag);
+				list.add(crystalStack);
+			}{
+				ItemStack crystalStack = new ItemStack(this, 1);
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setDouble("size", i*25);
+				double[] elements = {100, 100, 100, 100};
+				tag.setDouble("fire", elements[0]);
+				tag.setDouble("water", elements[1]);
+				tag.setDouble("earth", elements[2]);
+				tag.setDouble("air", elements[3]);
+				crystalStack.setTagCompound(tag);
+				list.add(crystalStack);
+			}{
+				ItemStack crystalStack = new ItemStack(this, 1);
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setDouble("size", i*25);
+				double[] elements = {0, 0, 0, 0};
+				tag.setDouble("fire", elements[0]);
+				tag.setDouble("water", elements[1]);
+				tag.setDouble("earth", elements[2]);
+				tag.setDouble("air", elements[3]);
+				crystalStack.setTagCompound(tag);
+				list.add(crystalStack);
+			}
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -1,6 +1,6 @@
 package essentialcraft.common.registry;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Random;
 
 import DummyCore.Utils.MiscUtils;
@@ -24,7 +24,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class ResearchRegistry {
 
-	public static Hashtable<String, Integer> stringIDS = new Hashtable<String, Integer>();
+	public static HashMap<String, Integer> stringIDS = new HashMap<String, Integer>();
 
 	public static void registerBasicCategory()
 	{

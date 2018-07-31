@@ -36,7 +36,7 @@ public class RenderHologram extends RenderBiped<EntityHologram>
 	}
 
 	@Override
-	protected void preRenderCallback(EntityHologram p_77041_1_, float p_77041_2_)  {
+	protected void preRenderCallback(EntityHologram entity, float partialTicks)  {
 		float s = 1.0F;
 		GlStateManager.scale(s, s, s);
 
@@ -48,13 +48,13 @@ public class RenderHologram extends RenderBiped<EntityHologram>
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityHologram p_110775_1_) {
+	protected ResourceLocation getEntityTexture(EntityHologram entity) {
 		return textures;
 	}
 
 	@Override
-	public void doRender(EntityHologram h, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_) {
-		super.doRender(h, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
+	public void doRender(EntityHologram h, double x, double y, double z, float entityYaw, float partialTicks) {
+		super.doRender(h, x, y, z, entityYaw, partialTicks);
 
 		int meta = 76;
 
@@ -73,7 +73,7 @@ public class RenderHologram extends RenderBiped<EntityHologram>
 		if(h.attackID == 3)
 			meta = 71;
 
-		DrawUtils.renderItemStack_Full(new ItemStack(ItemsCore.genericItem,1,meta), p_76986_2_, p_76986_4_, p_76986_6_, (h.ticksExisted+p_76986_9_)%360, 0, 1, 1, 1, 0, 2.4F, 0);
+		DrawUtils.renderItemStack_Full(new ItemStack(ItemsCore.genericItem,1,meta), x, y, z, (h.ticksExisted+partialTicks)%360, 0, 1, 1, 1, 0, 2.4F, 0);
 	}
 
 	public static class Factory implements IRenderFactory<EntityHologram> {

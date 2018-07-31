@@ -23,10 +23,10 @@ public class RenderMRURay extends Render<EntityMRURay> {
 	private static final ResourceLocation field_147523_b = new ResourceLocation("textures/entity/beacon_beam.png");
 
 	@Override
-	public void doRender(EntityMRURay p_76986_1_, double p_147500_2_,
-			double p_147500_4_, double p_147500_6_, float p_147500_8_,
-			float p_76986_9_) {
-		EntityMRURay ray = p_76986_1_;
+	public void doRender(EntityMRURay entity, double x,
+			double y, double z, float entityYaw,
+			float partialTicks) {
+		EntityMRURay ray = entity;
 
 		if(ray.pX == 0 && ray.pY == 0 && ray.pZ == 0)
 			return;
@@ -58,18 +58,16 @@ public class RenderMRURay extends Render<EntityMRURay> {
 			g = 0.3F;
 			b = 0.3F;
 		}
-		renderBeam(p_147500_8_,p_147500_2_,p_147500_4_,p_147500_6_,1D-ray.ticksExisted/60D,0,0,ray.pX-ray.posX,ray.pY-ray.posY,ray.pZ-ray.posZ,r,g,b,r,g,b,(float) (0.1F * (1 + (double)ray.ticksExisted/60)));
+		renderBeam(partialTicks,x,y,z,1D-ray.ticksExisted/60D,0,0,ray.pX-ray.posX,ray.pY-ray.posY,ray.pZ-ray.posZ,r,g,b,r,g,b,(float) (0.1F * (1 + (double)ray.ticksExisted/60)));
 
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityMRURay p_110775_1_) {
+	protected ResourceLocation getEntityTexture(EntityMRURay entity) {
 		return field_147523_b;
 	}
 
-	public static void renderBeam(float partialTicks,double x, double y, double z, double posX, double posY, double posZ, double offsetX, double offsetY, double offsetZ, float colorR, float colorG, float colorB, float colorRB, float colorGB, float colorBB, float size)
-	{
-		//Does not render, help
+	public static void renderBeam(float partialTicks, double x, double y, double z, double posX, double posY, double posZ, double offsetX, double offsetY, double offsetZ, float colorR, float colorG, float colorB, float colorRB, float colorGB, float colorBB, float size) {
 		GlStateManager.pushMatrix();
 		GlStateManager.disableLighting();
 		GlStateManager.enableBlend();

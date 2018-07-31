@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MiscUtils;
 import essentialcraft.api.ApiCore;
 import essentialcraft.common.block.BlocksCore;
@@ -24,8 +22,7 @@ public class TileCrystalFormer extends TileMRUGeneric {
 	public static int genCorruption = 2;
 
 	public TileCrystalFormer() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(8);
 	}
 
@@ -45,7 +42,7 @@ public class TileCrystalFormer extends TileMRUGeneric {
 				mruStorage.extractMRU(mruUsage, true);
 				++progressLevel;
 				if(generatesCorruption)
-					ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+					ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, genCorruption);
 				if(progressLevel >= requiredTime) {
 					progressLevel = 0;
 					createItem();
@@ -112,28 +109,12 @@ public class TileCrystalFormer extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("CrystalFormerSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage:100",
-					"Ticks required to create a crystal:1000",
-					"Can this device actually generate corruption:true",
-					"The amount of corruption generated each tick(do not set to 0!):2"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			requiredTime = Integer.parseInt(data[2].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[3].fieldValue);
-			genCorruption = Integer.parseInt(data[4].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.crystalformer";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 100).setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			requiredTime = cfg.get(category, "TicksRequired", 1000, "Ticks required to create a crystal").setMinValue(0).getInt();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", true).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 2, "Max amount of corruption generated per tick").setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;
@@ -146,7 +127,7 @@ public class TileCrystalFormer extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_1_ == 0 ? isBoundGem(p_94041_2_) : p_94041_1_ >= 2 && p_94041_1_ <= 4 ? p_94041_2_.getItem() == Items.WATER_BUCKET : p_94041_1_ >= 5 && p_94041_1_ <= 6 ? isGlassBlock(p_94041_2_) : p_94041_1_ == 7 ? p_94041_2_.getItem() == Items.DIAMOND : false;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot == 0 ? isBoundGem(stack) : slot >= 2 && slot <= 4 ? stack.getItem() == Items.WATER_BUCKET : slot >= 5 && slot <= 6 ? isGlassBlock(stack) : slot == 7 ? stack.getItem() == Items.DIAMOND : false;
 	}
 }

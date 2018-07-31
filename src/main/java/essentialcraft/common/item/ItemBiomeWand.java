@@ -86,10 +86,10 @@ public class ItemBiomeWand extends ItemMRUGeneric implements IModelRegisterer, I
 	}
 
 	@Override
-	public int getColorFromItemstack(ItemStack par1ItemStack, int par2)
+	public int getColorFromItemstack(ItemStack stack, int par2)
 	{
-		if(isBiomeSaved(par1ItemStack))
-			return Biome.getBiome(getBiomeID(par1ItemStack)).getFoliageColorAtPos(BlockPos.ORIGIN);
+		if(isBiomeSaved(stack))
+			return Biome.getBiome(getBiomeID(stack)).getFoliageColorAtPos(BlockPos.ORIGIN);
 		return 0xffffff;
 	}
 

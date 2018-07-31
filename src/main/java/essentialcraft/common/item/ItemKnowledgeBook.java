@@ -29,22 +29,22 @@ public class ItemKnowledgeBook extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World par2World, EntityPlayer par3EntityPlayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
 		EssentialCraftCore.proxy.openBookGUIForPlayer();
-		return super.onItemRightClick(par2World, par3EntityPlayer, hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4)
 	{
-		NBTTagCompound theTag = MiscUtils.getStackTag(par1ItemStack);
-		par3List.add("\u00a76" + I18n.translateToLocal("essentialcraft.txt.book.containedKnowledge"));
+		NBTTagCompound theTag = MiscUtils.getStackTag(stack);
+		list.add("\u00a76" + I18n.translateToLocal("essentialcraft.txt.book.containedKnowledge"));
 		int tier = theTag.getInteger("tier");
 		for(int i = 0; i <= tier; ++i)
 		{
-			par3List.add("\u00a77-\u00a7o" + I18n.translateToLocal("essentialcraft.txt.book.tier_"+i));
+			list.add("\u00a77-\u00a7o" + I18n.translateToLocal("essentialcraft.txt.book.tier_"+i));
 		}
 	}
 

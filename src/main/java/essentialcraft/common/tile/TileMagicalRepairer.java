@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.utils.common.ECUtils;
 import net.minecraft.item.ItemStack;
@@ -16,8 +14,7 @@ public class TileMagicalRepairer extends TileMRUGeneric {
 	public static int mruUsage = 70;
 
 	public TileMagicalRepairer() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(2);
 	}
 
@@ -37,7 +34,7 @@ public class TileMagicalRepairer extends TileMRUGeneric {
 				mruStorage.extractMRU(mruUsage, true);
 				repareItem.setItemDamage(repareItem.getItemDamage() - 1);
 				if(generatesCorruption)
-					ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+					ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, (genCorruption));
 			}
 		}
 	}
@@ -56,26 +53,11 @@ public class TileMagicalRepairer extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MagicalRepairerSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage:70",
-					"Can this device actually generate corruption:true",
-					"The amount of corruption generated each tick(do not set to 0!):3"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[2].fieldValue);
-			genCorruption = Integer.parseInt(data[3].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.magicalrepairer";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 500).setMinValue(70).setMaxValue(cfgMaxMRU).getInt();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", true).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 3, "Max amount of corruption generated per tick").setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;

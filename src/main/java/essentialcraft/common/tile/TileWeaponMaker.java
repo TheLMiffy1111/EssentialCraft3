@@ -20,7 +20,7 @@ public class TileWeaponMaker extends TileMRUGeneric {
 	public ItemStack previewStack = ItemStack.EMPTY;
 
 	public TileWeaponMaker() {
-		super();
+		super(0);
 		slot0IsBoundGem = false;
 		setSlotsNum(19);
 	}
@@ -413,8 +413,8 @@ public class TileWeaponMaker extends TileMRUGeneric {
 	}
 
 	@Override
-	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		super.setInventorySlotContents(par1, par2ItemStack);
+	public void setInventorySlotContents(int par1, ItemStack stack) {
+		super.setInventorySlotContents(par1, stack);
 		markDirty();
 	}
 
@@ -446,19 +446,19 @@ public class TileWeaponMaker extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		if(p_94041_1_ == 0)
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		if(slot == 0)
 			return false;
 
 		switch(index) {
 		case 0:
-			return p_94041_1_ <= 9;
+			return slot <= 9;
 		case 1:
-			return p_94041_1_ <= 12;
+			return slot <= 12;
 		case 2:
-			return p_94041_1_ <= 13;
+			return slot <= 13;
 		case 3:
-			return p_94041_1_ <= 18;
+			return slot <= 18;
 		}
 		return false;
 	}

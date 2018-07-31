@@ -4,24 +4,22 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemBlockMithrilineCrystal extends ItemBlock{
+public class ItemBlockMithrilineCrystal extends ItemBlock {
 
-	public ItemBlockMithrilineCrystal(Block p_i45328_1_) {
-		super(p_i45328_1_);
+	public ItemBlockMithrilineCrystal(Block block) {
+		super(block);
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 	}
 
 	@Override
-	public int getMetadata(int par1)
-	{
-		return par1;
+	public int getMetadata(int meta) {
+		return meta;
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack p_77667_1_)
-	{
-		int meta = p_77667_1_.getItemDamage()/3;
+	public String getUnlocalizedName(ItemStack stack) {
+		int meta = stack.getItemDamage()/3;
 		String added = "mithriline";
 		if(meta == 1)
 			added = "pale";
@@ -31,6 +29,6 @@ public class ItemBlockMithrilineCrystal extends ItemBlock{
 			added = "demonic";
 		if(meta == 4)
 			added = "shade";
-		return super.getUnlocalizedName(p_77667_1_)+"."+added;
+		return super.getUnlocalizedName(stack)+"."+added;
 	}
 }

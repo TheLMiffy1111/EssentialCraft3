@@ -21,9 +21,21 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileUltraFlowerBurner extends TileMRUGeneric {
+
+	public static int cfgMaxMRU = ApiCore.GENERATOR_MAX_MRU_GENERIC*10;
+	public static float cfgBalance = -1F;
+	public static int flowerBurnTime = 600;
+	public static int mruGeneratedFlower = 60;
+	public static int leavesBurnTime = 300;
+	public static int mruGeneratedLeaves = 70;
+	public static int tallgrassBurnTime = 100;
+	public static int mruGeneratedTallgrass = 20;
+	public static int logBurnTime = 2400;
+	public static int mruGeneratedLog = 100;
 
 	public BlockPos burnedFlower;
 	public int burnTime = 0, mruProduced = 0;
@@ -31,15 +43,19 @@ public class TileUltraFlowerBurner extends TileMRUGeneric {
 	private boolean firstTick = true;
 
 	public TileUltraFlowerBurner() {
-		super();
-		mruStorage.setMaxMRU(ApiCore.GENERATOR_MAX_MRU_GENERIC*10);
+		super(cfgMaxMRU);
 		slot0IsBoundGem = false;
 	}
 
 	@Override
 	public void update() {
-		if(!getWorld().isRemote && firstTick) {
-			mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+		if(firstTick) {
+			if(cfgBalance < 0) {
+				mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+			}
+			else {
+				mruStorage.setBalance(cfgBalance);
+			}
 		}
 		super.update();
 		firstTick = false;
@@ -189,5 +205,24 @@ public class TileUltraFlowerBurner extends TileMRUGeneric {
 	@Override
 	public int[] getOutputSlots() {
 		return new int[0];
+	}
+
+	public static void setupConfig(Configuration cfg) {
+		try {
+			String category = "tileentities.ultranaturalfurnace";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			cfgBalance = (float)cfg.get(category, "Balance", -1D, "Default balance (-1 is random)").setMinValue(-1D).setMaxValue(2D).getDouble();
+			flowerBurnTime = cfg.get(category, "TicksRequiredFlower", 600).setMinValue(0).getInt();
+			mruGeneratedFlower = cfg.get(category, "MRUGeneratedFlower", 60).setMinValue(0).getInt();
+			leavesBurnTime = cfg.get(category, "TicksRequiredLeaves", 300).setMinValue(0).getInt();
+			mruGeneratedLeaves = cfg.get(category, "MRUGeneratedLeaves", 70).setMinValue(0).getInt();
+			tallgrassBurnTime = cfg.get(category, "TicksRequiredGrass", 100).setMinValue(0).getInt();
+			mruGeneratedTallgrass = cfg.get(category, "MRUGeneratedGrass", 20).setMinValue(0).getInt();
+			logBurnTime = cfg.get(category, "TicksRequiredLog", 2400).setMinValue(0).getInt();
+			mruGeneratedLog = cfg.get(category, "MRUGeneratedLog", 100).setMinValue(0).getInt();
+		}
+		catch(Exception e) {
+			return;
+		}
 	}
 }

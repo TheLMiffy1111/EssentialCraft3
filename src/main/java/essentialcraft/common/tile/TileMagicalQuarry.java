@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.common.item.ItemGenericEC;
 import essentialcraft.common.item.ItemsCore;
@@ -21,12 +19,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -35,6 +33,9 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileMagicalQuarry extends TileMRUGeneric {
 
@@ -49,8 +50,8 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 	public static int genCorruption = 2;
 	public static boolean ignoreLiquids = true;
 	public static int mruUsage = 8;
-	public static float efficencyPerUpgrade = 0.5F;
-	public static float blockHardnessModifier = 9F;
+	public static double efficencyPerUpgrade = 0.5D;
+	public static double blockHardnessModifier = 9D;
 
 	public static final List<Object> voidList = new ArrayList<Object>();
 
@@ -72,8 +73,7 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 	}
 
 	public TileMagicalQuarry() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(5);
 	}
 
@@ -174,30 +174,16 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 		return false;
 	}
 
-	public boolean hasInventory() {
+	public IItemHandler getInventory() {
 		TileEntity t = getWorld().getTileEntity(pos.up());
-		if(t != null && t instanceof IInventory)
-			return hasSpaceInInv((IInventory)t);
-		return false;
-	}
-
-	public IInventory getInventory() {
-		TileEntity t = getWorld().getTileEntity(pos.up());
-		if(t != null && t instanceof IInventory)
-			return (IInventory)t;
+		if(t != null && t.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN)) {
+			return t.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+		}
 		return null;
 	}
 
-	public boolean hasSpaceInInv(IInventory inv) {
-		for(int i = 0; i < inv.getSizeInventory(); ++i) {
-			if(inv.getStackInSlot(i).isEmpty())
-				return true;
-		}
-		return false;
-	}
-
-	public float getEfficency() {
-		float f = efficencyPerUpgrade + 1;
+	public double getEfficency() {
+		double f = efficencyPerUpgrade + 1;
 		ItemStack s = ItemGenericEC.getStkByName("efficencyUpgrade");
 		for(int i = 0; i < getSizeInventory(); ++i) {
 			if(!getStackInSlot(i).isEmpty() && getStackInSlot(i).isItemEqual(s))
@@ -268,7 +254,7 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 				return true;
 			}
 			else {
-				float required = b.getBlockHardness(getWorld().getBlockState(mining),getWorld(), mining)*blockHardnessModifier;
+				double required = b.getBlockHardness(getWorld().getBlockState(mining),getWorld(), mining)*blockHardnessModifier;
 				if(mruStorage.getMRU() >= (int)(mruUsage/4*getEfficency())) {
 					mruStorage.extractMRU((int)(mruUsage/4*getEfficency()), true);
 					progressLevel += getEfficency();
@@ -291,7 +277,7 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 
 					getWorld().setBlockToAir(mining);
 					if(generatesCorruption)
-						ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+						ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, (genCorruption));
 
 					quarryFakePlayer = null;
 				}
@@ -301,7 +287,7 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 	}
 
 	public boolean isMainColomnMined() {
-		int r = 2;
+		int r = 3;
 		while(++r <= pos.getY()-2) {
 			Block b = getWorld().getBlockState(pos.down(r)).getBlock();
 			if(b != null && b.getBlockHardness(getWorld().getBlockState(pos.down(r)),getWorld(),pos.down(r)) >= 0 && b != Blocks.AIR && !(b instanceof BlockLiquid && ignoreLiquids) && !(b instanceof IFluidBlock && ignoreLiquids) && canMineBlock(b) && canMineBlock(b))
@@ -311,7 +297,7 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 	}
 
 	public int genMiningColomnY(int current) {
-		int r = 2;
+		int r = 3;
 		while(++r <= pos.getY()-2) {
 			Block b = getWorld().getBlockState(pos.down(r)).getBlock();
 			if(b != null && b.getBlockHardness(getWorld().getBlockState(pos.down(r)),getWorld(),pos.down(r)) >= 0 && b != Blocks.AIR && !(b instanceof BlockLiquid && ignoreLiquids) && !(b instanceof IFluidBlock && ignoreLiquids) && canMineBlock(b))
@@ -339,10 +325,9 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 	public void mine() {
 		if(canWork() && !getWorld().isRemote) {
 			if(isMainColomnMined()) {
-
 				if(!flag) {
 					flag = true;
-					miningY = pos.getY()-3;
+					miningY = pos.getY()-4;
 				}
 				flag = isMainColomnMined();
 
@@ -415,10 +400,10 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 				}
 				item.setPositionAndRotation(0, 0, 0, 0, 0);
 				item.setDead();
-				if(hasInventoryUpgrade() && hasInventory())
+				if(hasInventoryUpgrade())
 					insertItem(s);
 				else
-					splitItem(s);
+					spitItem(s);
 			}
 		}
 	}
@@ -427,65 +412,62 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 		return s.isEmpty() || voidList.contains(s.getItem() instanceof ItemBlock ? Block.getBlockFromItem(s.getItem()) : s.getItem());
 	}
 
-	public void splitItem(ItemStack s) {
+	public void spitItem(ItemStack s) {
 		EntityItem item = new EntityItem(getWorld(), pos.getX(), pos.getY(), pos.getZ(), s);
 		item.setPositionAndRotation(pos.getX()+0.5D, pos.getY()+2, pos.getZ()+0.5D, 0, 0);
 		getWorld().spawnEntity(item);
 	}
 
-	public void insertItem(ItemStack s) {
-		if(s.isEmpty())
+	public void insertItem(ItemStack stack) {
+		if(stack.isEmpty())
 			return;
 
-		if(hasSpaceInInv(getInventory())) {
-			for(int i = 0; i < getInventory().getSizeInventory(); ++i) {
-				ItemStack stk = getInventory().getStackInSlot(i);
-				if(!stk.isEmpty() && stk.isItemEqual(s) && stk.getCount() + s.getCount() <= stk.getMaxStackSize()) {
-					stk.setCount(s.getCount());
-					return;
+		IItemHandler destInventory = getInventory();
+		if(destInventory != null) {
+			for(int slot = 0; slot < destInventory.getSlots() && !stack.isEmpty(); slot++) {
+				ItemStack itemstack = destInventory.getStackInSlot(slot);
+
+				if(destInventory.insertItem(slot, stack, true).isEmpty()) {
+					boolean insertedItem = false;
+					boolean inventoryWasEmpty = isEmpty(destInventory);
+
+					if(itemstack.isEmpty()) {
+						destInventory.insertItem(slot, stack, false);
+						stack = ItemStack.EMPTY;
+						insertedItem = true;
+					}
+					else if(ItemHandlerHelper.canItemStacksStack(itemstack, stack)) {
+						int originalSize = stack.getCount();
+						stack = destInventory.insertItem(slot, stack, false);
+						insertedItem = originalSize < stack.getCount();
+					}
 				}
 			}
-			for(int i = 0; i < getInventory().getSizeInventory(); ++i) {
-				ItemStack stk = getInventory().getStackInSlot(i);
-				if(stk.isEmpty()) {
-					getInventory().setInventorySlotContents(i, s);
-					return;
-				}
-			}
-			splitItem(s);
 		}
-		else
-			splitItem(s);
+
+		spitItem(stack);
+	}
+
+	private static boolean isEmpty(IItemHandler itemHandler) {
+		for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
+			ItemStack stackInSlot = itemHandler.getStackInSlot(slot);
+			if(stackInSlot.getCount() > 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MagicalQuarrySettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage:8",
-					"Should not mine liquids:true",
-					"Can this device actually generate corruption:true",
-					"The amount of corruption generated each tick(do not set to 0!):2",
-					"Efficency added to the device per upgrade:0.5",
-					"Block hardness modifier:9.0"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			ignoreLiquids = Boolean.parseBoolean(data[2].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[3].fieldValue);
-			genCorruption = Integer.parseInt(data[4].fieldValue);
-			efficencyPerUpgrade = Float.parseFloat(data[5].fieldValue);
-			blockHardnessModifier = Float.parseFloat(data[6].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.magicalquarry";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 8).setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			ignoreLiquids = cfg.get(category, "IgnoreLiquids", true).getBoolean();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", true).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 2, "Max amount of corruption generated per tick").setMinValue(0).getInt();
+			efficencyPerUpgrade = cfg.get(category, "EfficiencyPerUpgrade", 0.5D).setMinValue(Double.MIN_NORMAL).getDouble();
+			blockHardnessModifier = cfg.get(category, "BlockHardnessModifier", 9D).setMinValue(0D).getDouble();
 		}
 		catch(Exception e) {
 			return;
@@ -499,8 +481,7 @@ public class TileMagicalQuarry extends TileMRUGeneric {
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		AxisAlignedBB bb = INFINITE_EXTENT_AABB;
-		return bb;
+		return INFINITE_EXTENT_AABB;
 	}
 
 	public static GameProfile quarryFakePlayerProfile = new GameProfile(UUID.fromString("5cd89d0b-e9ba-0000-89f4-badbb05963dd"), "[EC3]Quarry");

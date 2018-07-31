@@ -55,44 +55,40 @@ public class BlockRightClicker extends BlockContainer implements IModelRegistere
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState s)
-	{
+	public EnumBlockRenderType getRenderType(IBlockState s) {
 		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
-	{
+	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
 		return true;
 	}
 
 	@Override
-	public boolean isOpaqueCube(IBlockState s)
-	{
+	public boolean isOpaqueCube(IBlockState s) {
 		return false;
 	}
 
 	@Override
-	public int damageDropped(IBlockState meta)
-	{
+	public int damageDropped(IBlockState meta) {
 		return meta.getValue(TYPE).getIndex();
 	}
 
 	@Override
-	public void getSubBlocks(CreativeTabs p_149666_2_, NonNullList<ItemStack> p_149666_3_) {
-		p_149666_3_.add(new ItemStack(this, 1, 0));
-		p_149666_3_.add(new ItemStack(this, 1, 1));
-		p_149666_3_.add(new ItemStack(this, 1, 2));
-		p_149666_3_.add(new ItemStack(this, 1, 3));
-		p_149666_3_.add(new ItemStack(this, 1, 4));
-		p_149666_3_.add(new ItemStack(this, 1, 5));
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
+		list.add(new ItemStack(this, 1, 0));
+		list.add(new ItemStack(this, 1, 1));
+		list.add(new ItemStack(this, 1, 2));
+		list.add(new ItemStack(this, 1, 3));
+		list.add(new ItemStack(this, 1, 4));
+		list.add(new ItemStack(this, 1, 5));
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
-		IInventory inv = (IInventory)par1World.getTileEntity(par2Pos);
-		InventoryHelper.dropInventoryItems(par1World, par2Pos, inv);
-		super.breakBlock(par1World, par2Pos, par3State);
+	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
+		IInventory inv = (IInventory)world.getTileEntity(pos);
+		InventoryHelper.dropInventoryItems(world, pos, inv);
+		super.breakBlock(world, pos, blockstate);
 	}
 
 	@Override
@@ -101,8 +97,7 @@ public class BlockRightClicker extends BlockContainer implements IModelRegistere
 	}
 
 	@Override
-	public void onBlockPlacedBy(World w, BlockPos p, IBlockState s, EntityLivingBase placer, ItemStack p_149689_6_)
-	{
+	public void onBlockPlacedBy(World w, BlockPos p, IBlockState s, EntityLivingBase placer, ItemStack p_149689_6_) {
 		int l = EnumFacing.getDirectionFromEntityLiving(p, placer).getIndex();
 		TileEntity tile = w.getTileEntity(p);
 		if(tile != null && tile instanceof TileRightClicker)
@@ -115,12 +110,12 @@ public class BlockRightClicker extends BlockContainer implements IModelRegistere
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		if(par4EntityPlayer.isSneaking()) {
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		if(player.isSneaking()) {
 			return false;
 		}
-		if(!par1World.isRemote) {
-			par4EntityPlayer.openGui(EssentialCraftCore.core, Config.guiID[0], par1World, par2.getX(), par2.getY(), par2.getZ());
+		if(!world.isRemote) {
+			player.openGui(EssentialCraftCore.core, Config.guiID[0], world, par2.getX(), par2.getY(), par2.getZ());
 			return true;
 		}
 		return true;

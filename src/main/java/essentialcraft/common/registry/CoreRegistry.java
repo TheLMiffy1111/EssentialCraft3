@@ -10,7 +10,6 @@ import essentialcraft.network.ECPacketDispatcher;
 import essentialcraft.network.PacketNBT;
 import essentialcraft.proxy.ClientProxy;
 import essentialcraft.proxy.CommonProxy;
-import essentialcraft.utils.cfg.Config;
 import essentialcraft.utils.common.ECEventHandler;
 import essentialcraft.utils.common.PlayerTickHandler;
 import essentialcraft.utils.common.PlayerTracker;
@@ -21,10 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class CoreRegistry {
 
-	public static CoreRegistry instance;
-
 	public static void register() {
-		Config.instance = new Config();
 		if(EssentialCraftCore.proxy != null)
 			NetworkRegistry.INSTANCE.registerGuiHandler(EssentialCraftCore.core, EssentialCraftCore.proxy);
 		else {

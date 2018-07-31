@@ -2,8 +2,6 @@ package essentialcraft.common.tile;
 
 import java.util.List;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.common.entity.EntitySolarBeam;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -15,9 +13,8 @@ public class TileSunRayAbsorber extends TileMRUGeneric {
 	public static int mruGenerated = 500;
 
 	public TileSunRayAbsorber() {
-		super();
+		super(cfgMaxMRU);
 		mruStorage.setBalance(cfgBalance);
-		mruStorage.setMaxMRU(cfgMaxMRU);
 		slot0IsBoundGem = false;
 	}
 
@@ -34,24 +31,10 @@ public class TileSunRayAbsorber extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("SunRayAbsorberSettings", "tileentities", new String[] {
-					"Max MRU:"+ApiCore.GENERATOR_MAX_MRU_GENERIC*10,
-					"Default balance:2",
-					"MRU generated per tick:500",
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			cfgBalance = Float.parseFloat(data[1].fieldValue);
-			mruGenerated = Integer.parseInt(data[2].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.sunrayabsorber";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC*10).setMinValue(1).getInt();
+			cfgBalance = cfg.get(category, "Balance", 2D).setMinValue(0D).setMaxValue(2D).getInt();
+			mruGenerated = cfg.get(category, "MRUGenerated", 500).setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;

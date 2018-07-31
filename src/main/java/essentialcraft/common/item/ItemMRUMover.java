@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 public class ItemMRUMover extends Item implements IModelRegisterer {
 
 	@Override
-	public int getMaxItemUseDuration(ItemStack par1ItemStack)
+	public int getMaxItemUseDuration(ItemStack stack)
 	{
 		return 72000;
 	}
@@ -33,7 +33,7 @@ public class ItemMRUMover extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack)
+	public EnumAction getItemUseAction(ItemStack stack)
 	{
 		return EnumAction.BOW;
 	}
@@ -76,10 +76,10 @@ public class ItemMRUMover extends Item implements IModelRegisterer {
 
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World par2World, EntityPlayer par3EntityPlayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
-		par3EntityPlayer.setActiveHand(hand);
-		return super.onItemRightClick(par2World, par3EntityPlayer, hand);
+		player.setActiveHand(hand);
+		return super.onItemRightClick(world, player, hand);
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package essentialcraft.client.render;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -125,7 +125,7 @@ public class RenderHandlerEC {
 	public static final IModelCustom board = AdvancedModelLoader.loadModel(new ResourceLocation("essentialcraft","models/item/board.obj"));
 	public static final ResourceLocation boardTextures = new ResourceLocation("essentialcraft","textures/models/board.png");
 
-	public static Hashtable<IInventory, Hashtable<Integer,List<EnumFacing>>> slotsTable = new Hashtable<IInventory, Hashtable<Integer, List<EnumFacing>>>();
+	public static HashMap<IInventory, HashMap<Integer,List<EnumFacing>>> slotsTable = new HashMap<IInventory, HashMap<Integer, List<EnumFacing>>>();
 
 	public void renderParadox()
 	{
@@ -640,7 +640,7 @@ public class RenderHandlerEC {
 							ISidedInventory sided = (ISidedInventory) inv;
 							if(RenderHandlerEC.slotsTable.isEmpty() || !RenderHandlerEC.slotsTable.containsKey(inv)) {
 								RenderHandlerEC.slotsTable.clear();
-								Hashtable<Integer, List<EnumFacing>> accessibleSlots = new Hashtable<Integer, List<EnumFacing>>();
+								HashMap<Integer, List<EnumFacing>> accessibleSlots = new HashMap<Integer, List<EnumFacing>>();
 								for(int j = 0; j < 6; ++j) {
 									EnumFacing d = EnumFacing.getFront(j);
 									int[] slots = sided.getSlotsForFace(d);
@@ -675,7 +675,7 @@ public class RenderHandlerEC {
 								GlStateManager.popMatrix();
 								if(slt.inventory instanceof ISidedInventory) {
 									if(RenderHandlerEC.slotsTable.containsKey(inv)) {
-										Hashtable<Integer, List<EnumFacing>> accessibleSlots = RenderHandlerEC.slotsTable.get(inv);
+										HashMap<Integer, List<EnumFacing>> accessibleSlots = RenderHandlerEC.slotsTable.get(inv);
 										if(accessibleSlots.containsKey(slt.slotNumber)) {
 											List<EnumFacing> lst = accessibleSlots.get(slt.slotNumber);
 											if(lst != null && !lst.isEmpty()) {

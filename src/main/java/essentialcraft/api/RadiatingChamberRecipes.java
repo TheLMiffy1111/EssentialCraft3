@@ -2,7 +2,7 @@ package essentialcraft.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class RadiatingChamberRecipes {
 
-	public static final Hashtable<List<UnformedItemStack>,List<RadiatingChamberRecipe>> RECIPES = new Hashtable<List<UnformedItemStack>, List<RadiatingChamberRecipe>>();
+	public static final HashMap<List<UnformedItemStack>,List<RadiatingChamberRecipe>> RECIPES = new HashMap<List<UnformedItemStack>, List<RadiatingChamberRecipe>>();
 	public static final List<List<UnformedItemStack>> CRAFT_MATRIX_LIST = new ArrayList<List<UnformedItemStack>>();
 
 	public static RadiatingChamberRecipe getRecipeByResult(ItemStack result) {

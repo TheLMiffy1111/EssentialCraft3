@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.common.entity.EntitySolarBeam;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
@@ -10,7 +8,7 @@ import net.minecraftforge.common.config.Configuration;
 
 public class TileSolarPrism extends TileEntity implements ITickable {
 
-	public static float solarBeamChance = 0.025F;
+	public static double solarBeamChance = 0.025D;
 	public static boolean requiresUnabstructedSky = true;
 	public static boolean requiresMidday = true;
 	public static boolean ignoreRain = false;
@@ -33,7 +31,7 @@ public class TileSolarPrism extends TileEntity implements ITickable {
 			return;
 		}
 		if(!getWorld().isRemote) {
-			if(getWorld().rand.nextFloat() <= solarBeamChance && (getWorld().canBlockSeeSky(pos) || !requiresUnabstructedSky) && (getWorld().getWorldTime() % 24000 >= 5000 && getWorld().getWorldTime() % 24000 <= 7000 || !requiresMidday) && (!getWorld().isRaining() || ignoreRain)) {
+			if(getWorld().rand.nextDouble() <= solarBeamChance && (getWorld().canBlockSeeSky(pos) || !requiresUnabstructedSky) && (getWorld().getWorldTime() % 24000 >= 5000 && getWorld().getWorldTime() % 24000 <= 7000 || !requiresMidday) && (!getWorld().isRaining() || ignoreRain)) {
 				int y = pos.getY()-1;
 				BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos(pos.down());
 				while(y > 0 && getWorld().isAirBlock(p)) {
@@ -50,26 +48,11 @@ public class TileSolarPrism extends TileEntity implements ITickable {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("SolarPrismSettings", "tileentities", new String[] {
-					"Chance each tick to create a solar beam:0.025",
-					"Requires unobstructed sky:true",
-					"Requires midday:true",
-					"Is rain ignored:false"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			solarBeamChance = Float.parseFloat(data[0].fieldValue);
-			requiresUnabstructedSky = Boolean.parseBoolean(data[1].fieldValue);
-			requiresMidday = Boolean.parseBoolean(data[2].fieldValue);
-			ignoreRain = Boolean.parseBoolean(data[3].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.solarprism";
+			solarBeamChance = cfg.get(category, "SolarBeamChance", 0.025D, "Chance each tick to create a solar beam").setMinValue(0D).getDouble();
+			requiresUnabstructedSky = cfg.get(category, "RequiresUnobstructedSky", true).getBoolean();
+			requiresMidday = cfg.get(category, "RequiresMidday", true).getBoolean();
+			ignoreRain = cfg.get(category, "IgnoreRain", false).getBoolean();
 		}
 		catch(Exception e) {
 			return;

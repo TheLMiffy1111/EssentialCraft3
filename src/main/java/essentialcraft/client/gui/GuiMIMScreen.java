@@ -1,7 +1,7 @@
 package essentialcraft.client.gui;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
@@ -47,7 +47,7 @@ public class GuiMIMScreen extends GuiContainer{
 	GuiTextField search;
 	GuiTextField stackSize;
 	int[] btnActions = {1,-1,2,-2,4,-4,5,-5,8,-8,10,-10,16,-16,32,-32,50,-50,64,-64,100,-100,128,-128,Integer.MAX_VALUE,-Integer.MAX_VALUE};
-	Hashtable<ItemStack,CraftingPattern> craftsByItemStack = new Hashtable<ItemStack,CraftingPattern>();
+	HashMap<ItemStack,CraftingPattern> craftsByItemStack = new HashMap<ItemStack,CraftingPattern>();
 
 	public static boolean packetArrived = true;
 	final ResourceLocation textures = new ResourceLocation("essentialcraft","textures/gui/mimScreen.png");

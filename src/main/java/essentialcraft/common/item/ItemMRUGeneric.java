@@ -33,20 +33,20 @@ public class ItemMRUGeneric extends Item {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4) {
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-		par3List.add(par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() + "/" + par1ItemStack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU() + " MRU");
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4) {
+		super.addInformation(stack, player, list, par4);
+		list.add(stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMRU() + "/" + stack.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).getMaxMRU() + " MRU");
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List) {
+	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> list) {
 		if(this.isInCreativeTab(par2CreativeTabs)) {
 			ItemStack min = new ItemStack(this, 1, 0);
 			ItemStack max = new ItemStack(this, 1, 0);
 			min.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(0);
 			max.getCapability(MRU_HANDLER_ITEM_CAPABILITY, null).setMRU(maxMRU);
-			par3List.add(min);
-			par3List.add(max);
+			list.add(min);
+			list.add(max);
 		}
 	}
 

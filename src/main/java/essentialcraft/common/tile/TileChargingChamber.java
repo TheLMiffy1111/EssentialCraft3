@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.api.IMRUHandlerItem;
 import essentialcraft.common.capabilities.mru.CapabilityMRUHandler;
@@ -13,11 +11,10 @@ public class TileChargingChamber extends TileMRUGeneric {
 
 	public static Capability<IMRUHandlerItem> MRU_HANDLER_ITEM_CAPABILITY = CapabilityMRUHandler.MRU_HANDLER_ITEM_CAPABILITY;
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
-	public static float reqMRUModifier = 1.0F;
+	public static double reqMRUModifier = 1D;
 
 	public TileChargingChamber() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(2);
 	}
 
@@ -39,12 +36,12 @@ public class TileChargingChamber extends TileMRUGeneric {
 				int p = (int)((double)maxMRU/20);
 				if(mru < maxMRU) {
 					if(mru+p < maxMRU) {
-						int amount = mruStorage.extractMRU((int)(p*reqMRUModifier), true);
+						int amount = (int)(mruStorage.extractMRU((int)(p*reqMRUModifier), true)/reqMRUModifier);
 						mruHandler.addMRU(amount, true);
 					}
 					else {
 						int k = maxMRU - mru;
-						int amount = mruStorage.extractMRU((int)(k*reqMRUModifier), true);
+						int amount = (int)(mruStorage.extractMRU((int)(k*reqMRUModifier), true)/reqMRUModifier);
 						mruHandler.addMRU(amount, true);
 					}
 				}
@@ -54,20 +51,9 @@ public class TileChargingChamber extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("ChargingChamberSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"Charge cost Modifier:1.0"
-			}, "Settings of the given Device.");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-			cfgMaxMRU = (int)Float.parseFloat(data[0].fieldValue);
-			reqMRUModifier=Float.parseFloat(data[1].fieldValue);
-			cfg.save();
+			String category = "tileentities.chargingchamber";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			reqMRUModifier = cfg.get(category, "ChargeCostModifier", 1D).setMinValue(Double.MIN_NORMAL).getDouble();
 		}
 		catch(Exception e) {
 			return;

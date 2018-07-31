@@ -17,21 +17,19 @@ public class RenderWindRune extends TileEntitySpecialRenderer<TileWindRune>
 	public static final ResourceLocation rune = new ResourceLocation("essentialcraft:textures/models/windrune.png");
 	public static final IModelCustom model = AdvancedModelLoader.loadModel(new ResourceLocation("essentialcraft:models/block/rune.obj"));
 
-	public void doRender(TileWindRune p, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
-	{
+	public void doRender(TileWindRune p, double x, double y, double z, float partialTicks) {
 		RenderHelper.disableStandardItemLighting();
 
 		GlStateManager.pushMatrix();
 		Minecraft.getMinecraft().renderEngine.bindTexture(rune);
-		GlStateManager.translate(p_76986_2_+0.5F, p_76986_4_-0.2F, p_76986_6_+0.5F);
+		GlStateManager.translate(x+0.5F, y-0.2F, z+0.5F);
 
-		if(p.tier == -1)
-		{
+		if(p.tier == -1) {
 			GlStateManager.popMatrix();
 			return;
 		}
 
-		float movement = (p.getWorld().getWorldTime()+p_76986_8_)%60+p_76986_8_;
+		float movement = (p.getWorld().getWorldTime()+partialTicks)%60+partialTicks;
 
 		if(movement > 30)
 			movement = 60F - movement;
@@ -39,8 +37,7 @@ public class RenderWindRune extends TileEntitySpecialRenderer<TileWindRune>
 		float c = movement/30F;
 		if(c < 0.2F)c = 0.2F;
 
-		if(p.tier == 0)
-		{
+		if(p.tier == 0) {
 			GlStateManager.color(c, c, c);
 		}
 
@@ -51,7 +48,12 @@ public class RenderWindRune extends TileEntitySpecialRenderer<TileWindRune>
 	}
 
 	@Override
-	public void render(TileWindRune p_147500_1_, double p_147500_2_, double p_147500_4_, double p_147500_6_, float p_147500_8_, int destroyStage, float alpha) {
-		this.doRender(p_147500_1_, p_147500_2_, p_147500_4_, p_147500_6_, p_147500_8_, 0);
+	public void render(TileWindRune tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		this.doRender(tile, x, y, z, partialTicks);
+	}
+
+	@Override
+	public boolean isGlobalRenderer(TileWindRune te) {
+		return true;
 	}
 }

@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.api.RadiatingChamberRecipe;
 import essentialcraft.api.RadiatingChamberRecipes;
@@ -16,11 +14,10 @@ public class TileRadiatingChamber extends TileMRUGeneric {
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
 	public static boolean generatesCorruption = true;
 	public static int genCorruption = 1;
-	public static float mruUsage = 1F;
+	public static double mruUsage = 1D;
 
 	public TileRadiatingChamber() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(4);
 	}
 
@@ -56,7 +53,7 @@ public class TileRadiatingChamber extends TileMRUGeneric {
 				if(mruStorage.getMRU() >= mruReq && progressLevel < currentRecipe.mruRequired) {
 					progressLevel += 1;
 					if(generatesCorruption)
-						ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+						ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, (genCorruption));
 					mruStorage.extractMRU(mruReq, true);
 					if(progressLevel >= currentRecipe.mruRequired) {
 						progressLevel = 0;
@@ -81,8 +78,7 @@ public class TileRadiatingChamber extends TileMRUGeneric {
 		return false;
 	}
 
-	public void craft()
-	{
+	public void craft() {
 		if(canFunction(currentRecipe)) {
 			ItemStack stk = currentRecipe.result.copy();
 
@@ -98,26 +94,11 @@ public class TileRadiatingChamber extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("RadiatingChamberSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage Modifier:1.0",
-					"Can this device actually generate corruption:true",
-					"The amount of corruption generated each tick(do not set to 0!):1"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Float.parseFloat(data[1].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[2].fieldValue);
-			genCorruption = Integer.parseInt(data[3].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.radiatingchamber";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsageModifier", 1D).setMinValue(0D).getDouble();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", true).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 1, "Max amount of corruption generated per tick").setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;

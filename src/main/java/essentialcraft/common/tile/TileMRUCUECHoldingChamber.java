@@ -1,14 +1,11 @@
 package essentialcraft.common.tile;
 
-import java.util.UUID;
-
 import essentialcraft.api.EnumStructureType;
 import essentialcraft.api.IStructurePiece;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileMRUCUECHoldingChamber extends TileEntity implements IStructurePiece {
 	public TileMRUCUECController controller;
-	public UUID uuid = UUID.randomUUID();
 
 	@Override
 	public EnumStructureType getStructure() {

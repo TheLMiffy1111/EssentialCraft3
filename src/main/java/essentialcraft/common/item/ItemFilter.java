@@ -38,26 +38,26 @@ public class ItemFilter extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List)
+	public void getSubItems(CreativeTabs par2CreativeTabs, NonNullList<ItemStack> list)
 	{
 		if(this.isInCreativeTab(par2CreativeTabs))
 			for(int var4 = 0; var4 < 4; ++var4)
 			{
 				ItemStack min = new ItemStack(this, 1, var4);
-				par3List.add(min);
+				list.add(min);
 			}
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4)
 	{
-		if(par1ItemStack.getItemDamage() == 1 || par1ItemStack.getItemDamage() == 3)
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.desc.advanced"));
-		if(par1ItemStack.getItemDamage() > 1)
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.desc.blacklist"));
+		if(stack.getItemDamage() == 1 || stack.getItemDamage() == 3)
+			list.add(I18n.translateToLocal("essentialcraft.txt.desc.advanced"));
+		if(stack.getItemDamage() > 1)
+			list.add(I18n.translateToLocal("essentialcraft.txt.desc.blacklist"));
 		else
-			par3List.add(I18n.translateToLocal("essentialcraft.txt.desc.whitelist"));
+			list.add(I18n.translateToLocal("essentialcraft.txt.desc.whitelist"));
 	}
 
 	@Override

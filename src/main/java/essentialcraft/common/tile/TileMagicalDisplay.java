@@ -126,12 +126,12 @@ public class TileMagicalDisplay extends TileEntity implements IInventory, ITicka
 	}
 
 	@Override
-	public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
+	public void setInventorySlotContents(int par1, ItemStack stack)
 	{
-		items[par1] = par2ItemStack;
+		items[par1] = stack;
 
-		if (!par2ItemStack.isEmpty() && par2ItemStack.getCount() > getInventoryStackLimit()) {
-			par2ItemStack.setCount(getInventoryStackLimit());
+		if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit()) {
+			stack.setCount(getInventoryStackLimit());
 		}
 	}
 
@@ -162,7 +162,7 @@ public class TileMagicalDisplay extends TileEntity implements IInventory, ITicka
 	public void closeInventory(EntityPlayer p) {}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return true;
 	}
 

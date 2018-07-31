@@ -54,10 +54,10 @@ public class BlockMagicalDisplay extends BlockContainer implements IModelRegiste
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
-		IInventory inv = (IInventory)par1World.getTileEntity(par2Pos);
-		InventoryHelper.dropInventoryItems(par1World, par2Pos, inv);
-		super.breakBlock(par1World, par2Pos, par3State);
+	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
+		IInventory inv = (IInventory)world.getTileEntity(pos);
+		InventoryHelper.dropInventoryItems(world, pos, inv);
+		super.breakBlock(world, pos, blockstate);
 	}
 
 	@Override

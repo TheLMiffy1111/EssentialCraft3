@@ -1,0 +1,58 @@
+{
+    "forge_marker": 1,
+    "variants": {
+        "level": {
+            "0": {
+                "model": "essentialcraft:blazedtankfluid_0"
+            },
+            "1": {
+                "model": "essentialcraft:blazedtankfluid_1"
+            },
+            "2": {
+                "model": "essentialcraft:blazedtankfluid_2"
+            },
+            "3": {
+                "model": "essentialcraft:blazedtankfluid_3"
+            },
+            "4": {
+                "model": "essentialcraft:blazedtankfluid_4"
+            },
+            "5": {
+                "model": "essentialcraft:blazedtankfluid_5"
+            },
+            "6": {
+                "model": "essentialcraft:blazedtankfluid_6"
+            },
+            "7": {
+                "model": "essentialcraft:blazedtankfluid_7"
+            },
+            "8": {
+                "model": "essentialcraft:blazedtankfluid_8"
+            },
+            "9": {
+                "model": "essentialcraft:blazedtankfluid_9"
+            },
+            "10": {
+                "model": "essentialcraft:blazedtankfluid_10"
+            },
+            "11": {
+                "model": "essentialcraft:blazedtankfluid_11"
+            },
+            "12": {
+                "model": "essentialcraft:blazedtankfluid_12"
+            },
+            "13": {
+                "model": "essentialcraft:blazedtankfluid_13"
+            },
+            "14": {
+                "model": "essentialcraft:blazedtankfluid_14"
+            },
+            "15": {
+                "model": "essentialcraft:blazedtankfluid_15"
+            },
+            "16": {
+                "model": "essentialcraft:blazedtankfluid_16"
+            }
+        }
+    }
+}

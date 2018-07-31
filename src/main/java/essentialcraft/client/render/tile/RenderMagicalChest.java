@@ -17,22 +17,22 @@ public class RenderMagicalChest extends TileEntitySpecialRenderer<TileMagicalChe
 	public static final ModelChest chest = new ModelChest();
 	public static final ModelChest inventoryChest = new ModelChest();
 
-	public void doRender(TileMagicalChest p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
+	public void doRender(TileMagicalChest tile, double x, double y, double z, float partialTicks)
 	{
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.pushMatrix();
 
 		GlStateManager.enableRescaleNormal();
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		GlStateManager.translate((float)p_76986_2_, (float)p_76986_4_ + 1.0F, (float)p_76986_6_ + 1.0F);
+		GlStateManager.translate((float)x, (float)y + 1.0F, (float)z + 1.0F);
 		GlStateManager.scale(1.0F, -1.0F, -1.0F);
 		GlStateManager.translate(0.5F, 0.5F, 0.5F);
-		GlStateManager.rotate((float)p_76986_1_.rotation*90+180, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotate((float)tile.rotation*90+180, 0.0F, 1.0F, 0.0F);
 		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 
-		float f1 = p_76986_1_.prevLidAngle + (p_76986_1_.lidAngle - p_76986_1_.prevLidAngle) * p_76986_8_;
+		float f1 = tile.prevLidAngle + (tile.lidAngle - tile.prevLidAngle) * partialTicks;
 		chest.chestLid.rotateAngleX = -(f1 * (float)Math.PI / 2.0F);
-		this.bindTexture(p_76986_1_.getBlockMetadata() == 0 ? magicalTextures : voidTextures);
+		this.bindTexture(tile.getBlockMetadata() == 0 ? magicalTextures : voidTextures);
 		chest.renderAll();
 		GlStateManager.disableRescaleNormal();
 		GlStateManager.popMatrix();
@@ -40,7 +40,7 @@ public class RenderMagicalChest extends TileEntitySpecialRenderer<TileMagicalChe
 	}
 
 	@Override
-	public void render(TileMagicalChest p_147500_1_, double p_147500_2_,double p_147500_4_, double p_147500_6_, float p_147500_8_, int destroyStage, float alpha) {
-		this.doRender(p_147500_1_, p_147500_2_, p_147500_4_, p_147500_6_, p_147500_8_, 0);
+	public void render(TileMagicalChest tile, double x,double y, double z, float partialTicks, int destroyStage, float alpha) {
+		this.doRender(tile, x, y, z, partialTicks);
 	}
 }

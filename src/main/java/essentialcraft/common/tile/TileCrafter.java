@@ -12,8 +12,7 @@ import net.minecraft.item.crafting.CraftingManager;
 public class TileCrafter extends TileMRUGeneric {
 
 	public TileCrafter() {
-		super();
-		mruStorage.setMaxMRU(0);
+		super(0);
 		setSlotsNum(11);
 		slot0IsBoundGem = false;
 	}
@@ -130,12 +129,12 @@ public class TileCrafter extends TileMRUGeneric {
 		private ItemStack[] stackList;
 		private int inventoryWidth;
 
-		public InventoryCraftingNoContainer(int p_i1807_2_, int p_i1807_3_) {
-			super(null,p_i1807_2_,p_i1807_3_);
-			int k = p_i1807_2_ * p_i1807_3_;
+		public InventoryCraftingNoContainer(int width, int height) {
+			super(null, width, height);
+			int k = width * height;
 			stackList = new ItemStack[k];
 			Arrays.fill(stackList, ItemStack.EMPTY);
-			inventoryWidth = p_i1807_2_;
+			inventoryWidth = width;
 		}
 
 		@Override
@@ -144,14 +143,14 @@ public class TileCrafter extends TileMRUGeneric {
 		}
 
 		@Override
-		public ItemStack getStackInSlot(int p_70301_1_) {
-			return p_70301_1_ >= getSizeInventory() ? ItemStack.EMPTY : stackList[p_70301_1_];
+		public ItemStack getStackInSlot(int slot) {
+			return slot >= getSizeInventory() ? ItemStack.EMPTY : stackList[slot];
 		}
 
 		@Override
-		public ItemStack getStackInRowAndColumn(int p_70463_1_, int p_70463_2_) {
-			if(p_70463_1_ >= 0 && p_70463_1_ < inventoryWidth) {
-				int k = p_70463_1_ + p_70463_2_ * inventoryWidth;
+		public ItemStack getStackInRowAndColumn(int row, int column) {
+			if(row >= 0 && row < inventoryWidth) {
+				int k = row + column * inventoryWidth;
 				return getStackInSlot(k);
 			}
 			else {
@@ -160,10 +159,10 @@ public class TileCrafter extends TileMRUGeneric {
 		}
 
 		@Override
-		public ItemStack removeStackFromSlot(int p_70304_1_) {
-			if(!stackList[p_70304_1_].isEmpty()) {
-				ItemStack itemstack = stackList[p_70304_1_];
-				stackList[p_70304_1_] = ItemStack.EMPTY;
+		public ItemStack removeStackFromSlot(int slot) {
+			if(!stackList[slot].isEmpty()) {
+				ItemStack itemstack = stackList[slot];
+				stackList[slot] = ItemStack.EMPTY;
 				return itemstack;
 			}
 			else {
@@ -172,20 +171,20 @@ public class TileCrafter extends TileMRUGeneric {
 		}
 
 		@Override
-		public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_) {
-			if(!stackList[p_70298_1_].isEmpty()) {
+		public ItemStack decrStackSize(int slot, int amount) {
+			if(!stackList[slot].isEmpty()) {
 				ItemStack itemstack;
 
-				if(stackList[p_70298_1_].getCount() <= p_70298_2_) {
-					itemstack = stackList[p_70298_1_];
-					stackList[p_70298_1_] = ItemStack.EMPTY;
+				if(stackList[slot].getCount() <= amount) {
+					itemstack = stackList[slot];
+					stackList[slot] = ItemStack.EMPTY;
 					return itemstack;
 				}
 				else {
-					itemstack = stackList[p_70298_1_].splitStack(p_70298_2_);
+					itemstack = stackList[slot].splitStack(amount);
 
-					if(stackList[p_70298_1_].getCount() == 0) {
-						stackList[p_70298_1_] = ItemStack.EMPTY;
+					if(stackList[slot].getCount() == 0) {
+						stackList[slot] = ItemStack.EMPTY;
 					}
 
 					return itemstack;
@@ -197,8 +196,8 @@ public class TileCrafter extends TileMRUGeneric {
 		}
 
 		@Override
-		public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_) {
-			stackList[p_70299_1_] = p_70299_2_;
+		public void setInventorySlotContents(int slot, ItemStack stack) {
+			stackList[slot] = stack;
 		}
 
 	}
@@ -239,5 +238,4 @@ public class TileCrafter extends TileMRUGeneric {
 			}
 		}
 	}
-
 }

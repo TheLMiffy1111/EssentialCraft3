@@ -1,24 +1,24 @@
 package essentialcraft.common.tile;
 
 import java.util.List;
+import java.util.UUID;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
-import DummyCore.Utils.MiscUtils;
 import essentialcraft.api.ApiCore;
 import essentialcraft.utils.common.ECUtils;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
 
 public class TileMonsterHarvester extends TileMRUGeneric {
-	public static float rad = 12F;
-	public float rotation = 0F;
+
+	public static double rad = 12;
 	public int destrTick;
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
 	public static boolean generatesCorruption = false;
@@ -29,8 +29,7 @@ public class TileMonsterHarvester extends TileMRUGeneric {
 	public static boolean clearCopyInventory = true;
 
 	public TileMonsterHarvester() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(6);
 	}
 
@@ -42,7 +41,7 @@ public class TileMonsterHarvester extends TileMRUGeneric {
 			++destrTick;
 			if(destrTick >= mobDestructionTimer) {
 				destrTick = 0;
-				List<EntityLivingBase> lst = getWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos.getX()-16, pos.getY()-16, pos.getZ()-16, pos.getX()+17, pos.getY()+17, pos.getZ()+17));
+				List<EntityLivingBase> lst = getWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos).grow(rad, rad, rad));
 				if(!lst.isEmpty() && !getWorld().isRemote) {
 					for(int i = 0; i < lst.size(); ++i) {
 						EntityLivingBase e = lst.get(i);
@@ -53,7 +52,9 @@ public class TileMonsterHarvester extends TileMRUGeneric {
 								mruStorage.extractMRU(mruUsage, true);
 
 								if(!world.isRemote) {
-									EntityLivingBase copy = (EntityLivingBase)MiscUtils.cloneEntity(e);
+									EntityLivingBase copy = (EntityLivingBase)EntityList.newEntity(e.getClass(), getWorld());
+									copy.readFromNBT(e.writeToNBT(new NBTTagCompound()));
+									copy.setUniqueId(UUID.randomUUID());
 									getWorld().spawnEntity(copy);
 									if(clearCopyInventory) {
 										copy.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
@@ -73,7 +74,7 @@ public class TileMonsterHarvester extends TileMRUGeneric {
 									if(copy.getHealth() > 0)
 										copy.setDead();
 									if(generatesCorruption)
-										ECUtils.increaseCorruptionAt(getWorld(), pos, getWorld().rand.nextInt(genCorruption));
+										ECUtils.randomIncreaseCorruptionAt(getWorld(), pos, getWorld().rand, (genCorruption));
 								}
 							}
 						}
@@ -85,34 +86,15 @@ public class TileMonsterHarvester extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MonsterDuplicatorSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage Per Mob:100",
-					"Can this device actually generate corruption:false",
-					"The amount of corruption generated each tick(do not set to 0!):10",
-					"Radius to duplicate mobs within:12.0",
-					"Ticks required to duplicate mobs:1440",
-					"Allow duplication of bosses:false",
-					"Remove inventory of a duplicate before killing it:true"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			generatesCorruption = Boolean.parseBoolean(data[2].fieldValue);
-			genCorruption = Integer.parseInt(data[3].fieldValue);
-			rad = Float.parseFloat(data[4].fieldValue);
-			mobDestructionTimer = Integer.parseInt(data[5].fieldValue);
-			allowBossDuplication = Boolean.parseBoolean(data[6].fieldValue);
-			clearCopyInventory = Boolean.parseBoolean(data[7].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.monsterduplicator";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 100, "MRU Usage Per Mob").setMinValue(0).getInt();
+			generatesCorruption = cfg.get(category, "GenerateCorruption", false).getBoolean();
+			genCorruption = cfg.get(category, "MaxCorruptionGen", 10, "Max amount of corruption generated per tick").setMinValue(0).getInt();
+			rad = cfg.get(category, "Radius", 12D).setMinValue(0D).getDouble();
+			mobDestructionTimer = cfg.get(category, "TicksRequired", 1440).setMinValue(1).getInt();
+			allowBossDuplication = cfg.get(category, "AllowBossDuplication", false).getBoolean();
+			clearCopyInventory = cfg.get(category, "ClearInventory", true).getBoolean();
 		}
 		catch(Exception e) {
 			return;

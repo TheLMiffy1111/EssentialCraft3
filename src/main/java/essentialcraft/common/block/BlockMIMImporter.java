@@ -38,36 +38,34 @@ public class BlockMIMImporter extends BlockContainer implements IModelRegisterer
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState s, IBlockAccess p_149719_1_, BlockPos p_149719_2_)
-	{
+	public AxisAlignedBB getBoundingBox(IBlockState s, IBlockAccess p_149719_1_, BlockPos p_149719_2_) {
 		int metadata = s.getValue(FACING).getIndex();
-		if(metadata == 0)
-		{
+		if(metadata == 0) {
 			return new AxisAlignedBB(0.35F, 0F, 0.35F, 0.65F, 0.2F, 0.65F);
-		}else if(metadata == 1)
-		{
+		}
+		else if(metadata == 1) {
 			return new AxisAlignedBB(0.35F, 0.8F, 0.35F, 0.65F, 1F, 0.65F);
-		}else if(metadata == 2)
-		{
+		}
+		else if(metadata == 2) {
 			return new AxisAlignedBB(0.35F, 0.35F, 0F, 0.65F, 0.65F, 0.2F);
-		}else if(metadata == 3)
-		{
+		}
+		else if(metadata == 3) {
 			return new AxisAlignedBB(0.35F, 0.35F, 0.8F, 0.65F, 0.65F, 1F);
-		}else if(metadata == 4)
-		{
+		}
+		else if(metadata == 4) {
 			return new AxisAlignedBB(0F, 0.35F, 0.35F, 0.2F, 0.65F, 0.65F);
-		}else if(metadata == 5)
-		{
+		}
+		else if(metadata == 5) {
 			return new AxisAlignedBB(0.8F, 0.35F, 0.35F, 1F, 0.65F, 0.65F);
 		}
 		return super.getBoundingBox(s, p_149719_1_, p_149719_2_);
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos par2Pos, IBlockState par3State) {
-		IInventory inv = (IInventory)par1World.getTileEntity(par2Pos);
-		InventoryHelper.dropInventoryItems(par1World, par2Pos, inv);
-		super.breakBlock(par1World, par2Pos, par3State);
+	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
+		IInventory inv = (IInventory)world.getTileEntity(pos);
+		InventoryHelper.dropInventoryItems(world, pos, inv);
+		super.breakBlock(world, pos, blockstate);
 	}
 
 	@Override
@@ -99,12 +97,12 @@ public class BlockMIMImporter extends BlockContainer implements IModelRegisterer
 	}
 
 	@Override
-	public boolean onBlockActivated(World par1World, BlockPos par2, IBlockState par3, EntityPlayer par4EntityPlayer, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		if(par4EntityPlayer.isSneaking()) {
+	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
+		if(player.isSneaking()) {
 			return false;
 		}
-		if(!par1World.isRemote) {
-			par4EntityPlayer.openGui(EssentialCraftCore.core, Config.guiID[0], par1World, par2.getX(), par2.getY(), par2.getZ());
+		if(!world.isRemote) {
+			player.openGui(EssentialCraftCore.core, Config.guiID[0], world, par2.getX(), par2.getY(), par2.getZ());
 			return true;
 		}
 		return true;

@@ -1,0 +1,11 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "minecraft:cube_all",
+        "textures": { "all": "essentialcraft:blocks/transparentglass_ct" }
+    },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{}]
+    }
+}

@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MiscUtils;
 import essentialcraft.api.ApiCore;
 import essentialcraft.common.item.ItemSoulStone;
@@ -24,9 +22,8 @@ public class TileMatrixAbsorber extends TileMRUGeneric {
 	public static boolean requestImmidiateSync;
 
 	public TileMatrixAbsorber() {
-		super();
+		super(cfgMaxMRU);
 		mruStorage.setBalance(cfgBalance);
-		mruStorage.setMaxMRU(cfgMaxMRU);
 		slot0IsBoundGem = false;
 		setSlotsNum(1);
 	}
@@ -88,28 +85,12 @@ public class TileMatrixAbsorber extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MatrixAbsorberSettings", "tileentities", new String[]{
-					"Max MRU:"+ApiCore.GENERATOR_MAX_MRU_GENERIC/10,
-					"Default balance:1.0",
-					"MRU generated per tick:1",
-					"UBMRU Used per tick:10",
-					"Request Immidiate Data Sync:true"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			cfgBalance = Float.parseFloat(data[1].fieldValue);
-			mruGenerated = Integer.parseInt(data[2].fieldValue);
-			mruUsage = Integer.parseInt(data[3].fieldValue);
-			requestImmidiateSync = Boolean.parseBoolean(data[4].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.matrixabsorber";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC/10).setMinValue(1).getInt();
+			cfgBalance = (float)cfg.get(category, "Balance", 1D).setMinValue(0D).setMaxValue(2D).getDouble();
+			mruGenerated = cfg.get(category, "MRUGenerated", 1).setMinValue(0).getInt();
+			mruUsage = cfg.get(category, "UBMRUUsage", 10).setMinValue(0).getInt();
+			requestImmidiateSync = cfg.get(category, "RequestImmediateSync", true).getBoolean();
 		}
 		catch(Exception e) {
 			return;

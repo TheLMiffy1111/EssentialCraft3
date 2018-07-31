@@ -217,7 +217,7 @@ public class ItemBaublesSpecial extends Item implements IBauble, IUBMRUGainModif
 			double y = p.posY;
 			double z = p.posZ;
 
-			List<EntityMob> mobs = p.getEntityWorld().getEntitiesWithinAABB(EntityMob.class, new AxisAlignedBB(x-0.5D, y-0.5D, z-0.5D, x+0.5D, y+0.5D, z+0.5D).expand(6, 3, 6));
+			List<EntityMob> mobs = p.getEntityWorld().getEntitiesWithinAABB(EntityMob.class, new AxisAlignedBB(x-0.5D, y-0.5D, z-0.5D, x+0.5D, y+0.5D, z+0.5D).grow(6, 3, 6));
 			for(int i = 0; i < mobs.size(); ++i) {
 				EntityMob mob = mobs.get(i);
 				mob.attackEntityFrom(DamageSource.causePlayerDamage(p), 3);

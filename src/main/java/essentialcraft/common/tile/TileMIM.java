@@ -1,7 +1,7 @@
 package essentialcraft.common.tile;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import essentialcraft.api.ApiCore;
 import essentialcraft.common.item.ItemBoundGem;
@@ -10,9 +10,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.config.Configuration;
 
 public class TileMIM extends TileMRUGeneric {
 
+	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
+	
 	public ArrayList<ItemStack> current = new ArrayList<ItemStack>();
 	public ArrayList<CraftingPattern> crafts = new ArrayList<CraftingPattern>();
 	public ArrayList<TileMIMScreen> screens = new ArrayList<TileMIMScreen>();
@@ -21,8 +24,8 @@ public class TileMIM extends TileMRUGeneric {
 	boolean exporting;
 
 	public TileMIM() {
+		super(cfgMaxMRU);
 		setSlotsNum(55);
-		mruStorage.setMaxMRU(ApiCore.DEVICE_MAX_MRU_GENERIC);
 	}
 
 	@Override
@@ -264,8 +267,8 @@ public class TileMIM extends TileMRUGeneric {
 
 	public void rebuildAllItems() {
 		current.clear();
-		Hashtable<String,Integer> allItems = new Hashtable<String,Integer>();
-		Hashtable<String,ItemStack> foundByID = new Hashtable<String,ItemStack>();
+		HashMap<String,Integer> allItems = new HashMap<String,Integer>();
+		HashMap<String,ItemStack> foundByID = new HashMap<String,ItemStack>();
 		ArrayList<String> ids = new ArrayList<String>();
 
 		for(int i = 1; i < 7; ++i) {
@@ -325,6 +328,16 @@ public class TileMIM extends TileMRUGeneric {
 						crafts.addAll(((TileMIMCraftingManager)t).getAllRecipes());
 				}
 			}
+		}
+	}
+	
+	public static void setupConfig(Configuration cfg) {
+		try {
+			String category = "tileentities.magicalinventorymanager";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+		}
+		catch(Exception e) {
+			return;
 		}
 	}
 }

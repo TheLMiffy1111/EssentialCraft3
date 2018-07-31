@@ -9,9 +9,8 @@ public class TileRedstoneTransmitter extends TileMRUGeneric {
 	public int prevPower = 0;
 
 	public TileRedstoneTransmitter() {
-		super();
+		super(0);
 		setSlotsNum(1);
-		mruStorage.setMaxMRU(0);
 	}
 
 	public int getRedstonePower() {

@@ -3,7 +3,7 @@ package essentialcraft.api;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.collect.HashMultimap;
@@ -47,7 +47,7 @@ public class ApiCore {
 	/**
 	 * A list of reductions the armor can have
 	 */
-	public static final Hashtable<Item, ArrayList<Float>> ITEM_RESISTANCE_MAP = new Hashtable<Item, ArrayList<Float>>();
+	public static final HashMap<Item, ArrayList<Float>> ITEM_RESISTANCE_MAP = new HashMap<Item, ArrayList<Float>>();
 
 	/**
 	 * All categories the Book Of Knowledge can have
@@ -57,7 +57,7 @@ public class ApiCore {
 	/**
 	 * A list of all discoveries bound to generic ItemStack
 	 */
-	public static final Hashtable<String, DiscoveryEntry> IS_TO_DISCOVERY_MAP = new Hashtable<String, DiscoveryEntry>();
+	public static final HashMap<String, DiscoveryEntry> IS_TO_DISCOVERY_MAP = new HashMap<String, DiscoveryEntry>();
 
 	@CapabilityInject(IMRUHandler.class)
 	public static Capability<IMRUHandler> MRU_HANDLER_CAPABILITY = null;
@@ -97,9 +97,9 @@ public class ApiCore {
 		try
 		{
 			Class<?> ecUtilsClass = Class.forName("essentialcraft.utils.common.ECUtils");
-			Field hashTableFld = ecUtilsClass.getDeclaredField("STRUCTURE_TO_BLOCKS_MAP");
-			hashTableFld.setAccessible(true);
-			HashMultimap<EnumStructureType,Block> hashMap = (HashMultimap<EnumStructureType, Block>)hashTableFld.get(null);
+			Field hashMultimapFld = ecUtilsClass.getDeclaredField("STRUCTURE_TO_BLOCKS_MAP");
+			hashMultimapFld.setAccessible(true);
+			HashMultimap<EnumStructureType,Block> hashMap = (HashMultimap<EnumStructureType, Block>)hashMultimapFld.get(null);
 			hashMap.put(structure, registered);
 		}catch(Exception e)
 		{
@@ -190,7 +190,7 @@ public class ApiCore {
 	}
 
 	public static Entity getClosestMRUCUEntity(World w, BlockPos c, int radius) {
-		List<Entity> l = w.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(c).expand(radius, radius/2, radius), e->e.hasCapability(MRU_HANDLER_ENTITY_CAPABILITY, null));
+		List<Entity> l = w.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(c).grow(radius, radius/2, radius), e->e.hasCapability(MRU_HANDLER_ENTITY_CAPABILITY, null));
 		Entity ret = null;
 		if(!l.isEmpty()) {
 			double currentDistance = 0;

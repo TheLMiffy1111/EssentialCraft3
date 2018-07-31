@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderMagicalDisplay extends TileEntitySpecialRenderer<TileMagicalDisplay> {
 
-	public void doRender(TileMagicalDisplay display, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_) {
+	public void doRender(TileMagicalDisplay display, double x, double y, double z, float partialTicks) {
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.pushMatrix();
 
@@ -34,16 +34,16 @@ public class RenderMagicalDisplay extends TileEntitySpecialRenderer<TileMagicalD
 		if(!displayed.isEmpty()) {
 			GlStateManager.scale(scaleIndex, scaleIndex, scaleIndex);
 			if(display.type == 0 || metadata == 0 || metadata == 1) {
-				DrawUtils.renderItemStack_Full(displayed, p_76986_2_/scaleIndex, p_76986_4_/scaleIndex, p_76986_6_/scaleIndex, rotationX, rotationZ, 1, 1, 1, offsetX/scaleIndex, offsetY/scaleIndex, offsetZ/scaleIndex);
+				DrawUtils.renderItemStack_Full(displayed, x/scaleIndex, y/scaleIndex, z/scaleIndex, rotationX, rotationZ, 1, 1, 1, offsetX/scaleIndex, offsetY/scaleIndex, offsetZ/scaleIndex);
 			}
 			if(display.type == 1 && metadata != 0 && metadata != 1) {
 				offsetX = metadata == 3 ? 0.25F : metadata == 2 ? 0.75F : metadata == 4 ? 0.95F : 0.05F;
 				offsetY = metadata == 1 ? 0.04F : metadata == 0 ? 0.96F : 0.6F;
 				offsetZ = metadata == 4 ? 0.25F : metadata == 5 ? 0.75F : metadata == 2 ? 0.95F : 0.05F;
-				DrawUtils.renderItemStack_Full(displayed, p_76986_2_/scaleIndex, p_76986_4_/scaleIndex, p_76986_6_/scaleIndex, rotationX, rotationZ, 1, 1, 1, offsetX/scaleIndex, offsetY/scaleIndex, offsetZ/scaleIndex);
+				DrawUtils.renderItemStack_Full(displayed, x/scaleIndex, y/scaleIndex, z/scaleIndex, rotationX, rotationZ, 1, 1, 1, offsetX/scaleIndex, offsetY/scaleIndex, offsetZ/scaleIndex);
 				GlStateManager.scale(2F, 2F, 2F);
 				FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
-				GlStateManager.translate(p_76986_2_, p_76986_4_, p_76986_6_);
+				GlStateManager.translate(x, y, z);
 				String drawedName = displayed.getDisplayName();
 				GlStateManager.rotate(180, 1, 0, 0);
 				//GlStateManager.rotate(180, 0, 1, 0);
@@ -78,10 +78,10 @@ public class RenderMagicalDisplay extends TileEntitySpecialRenderer<TileMagicalD
 				offsetX = metadata == 3 ? 0.25F : metadata == 2 ? 0.75F : metadata == 4 ? 0.95F : 0.05F;
 				offsetY = 0.7F;
 				offsetZ = metadata == 4 ? 0.25F : metadata == 5 ? 0.75F : metadata == 2 ? 0.95F : 0.05F;
-				DrawUtils.renderItemStack_Full(displayed, p_76986_2_/scaleIndex, p_76986_4_/scaleIndex, p_76986_6_/scaleIndex, rotationX, rotationZ, 1, 1, 1, offsetX/scaleIndex, offsetY/scaleIndex, offsetZ/scaleIndex);
+				DrawUtils.renderItemStack_Full(displayed, x/scaleIndex, y/scaleIndex, z/scaleIndex, rotationX, rotationZ, 1, 1, 1, offsetX/scaleIndex, offsetY/scaleIndex, offsetZ/scaleIndex);
 				GlStateManager.scale(2F, 2F, 2F);
 				FontRenderer renderer = Minecraft.getMinecraft().fontRenderer;
-				GlStateManager.translate(p_76986_2_, p_76986_4_, p_76986_6_);
+				GlStateManager.translate(x, y, z);
 				String drawedName = displayed.getDisplayName();
 				GlStateManager.rotate(180, 1, 0, 0);
 				//GlStateManager.rotate(180, 0, 1, 0);
@@ -143,7 +143,7 @@ public class RenderMagicalDisplay extends TileEntitySpecialRenderer<TileMagicalD
 	}
 
 	@Override
-	public void render(TileMagicalDisplay p_147500_1_, double p_147500_2_, double p_147500_4_, double p_147500_6_, float p_147500_8_, int destroyStage, float alpha) {
-		this.doRender(p_147500_1_, p_147500_2_, p_147500_4_, p_147500_6_, p_147500_8_, 0);
+	public void render(TileMagicalDisplay tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		this.doRender(tile, x, y, z, partialTicks);
 	}
 }

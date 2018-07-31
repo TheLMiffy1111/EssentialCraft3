@@ -39,53 +39,53 @@ public class ItemSecret extends Item implements IModelRegisterer {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World world, List<String> par3List, ITooltipFlag par4) {
-		super.addInformation(par1ItemStack, world, par3List, par4);
-		int metadata = par1ItemStack.getItemDamage();
+	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag par4) {
+		super.addInformation(stack, world, list, par4);
+		int metadata = stack.getItemDamage();
 		switch(metadata) {
 		case 0: {
 			for(int i = 0; i < 5; ++i)
-				par3List.add(I18n.translateToLocal("essentialcraft.text.desc.secret_"+metadata+"_"+i));
+				list.add(I18n.translateToLocal("essentialcraft.text.desc.secret_"+metadata+"_"+i));
 			break;
 		}
 		case 1: {
 			for(int i = 0; i < 4; ++i)
-				par3List.add(I18n.translateToLocal("essentialcraft.text.desc.secret_"+metadata+"_"+i));
+				list.add(I18n.translateToLocal("essentialcraft.text.desc.secret_"+metadata+"_"+i));
 			break;
 		}
 		case 2: {
-			par3List.add("The branch seems to be made of "+ TextFormatting.WHITE+"iron");
-			par3List.add("However it is clearly a branch of a tree");
-			par3List.add("You feel better while holding it");
-			par3List.add("Maybe it can improve your "+TextFormatting.AQUA+"spells?");
+			list.add("The branch seems to be made of "+ TextFormatting.WHITE+"iron");
+			list.add("However it is clearly a branch of a tree");
+			list.add("You feel better while holding it");
+			list.add("Maybe it can improve your "+TextFormatting.AQUA+"spells?");
 			break;
 		}
 		case 3: {
-			par3List.add("This seems to be a regular stick");
-			par3List.add("But it gives you a strange feel of power");
-			par3List.add("You only know one thing");
-			par3List.add("Whoever controls the stick controls the "+TextFormatting.DARK_AQUA+"universe...");
+			list.add("This seems to be a regular stick");
+			list.add("But it gives you a strange feel of power");
+			list.add("You only know one thing");
+			list.add("Whoever controls the stick controls the "+TextFormatting.DARK_AQUA+"universe...");
 			break;
 		}
 		case 4: {
-			par3List.add("This stone is too smooth");
-			par3List.add("It makes you feel better");
-			par3List.add("It is also very silky");
-			par3List.add("Maybe some kind of "+TextFormatting.DARK_GREEN+"bird"+TextFormatting.GRAY+" would like it?");
+			list.add("This stone is too smooth");
+			list.add("It makes you feel better");
+			list.add("It is also very silky");
+			list.add("Maybe some kind of "+TextFormatting.DARK_GREEN+"bird"+TextFormatting.GRAY+" would like it?");
 			break;
 		}
 		case 5: {
-			par3List.add("This is a very strange figure");
-			par3List.add("It seems to be from the future");
-			par3List.add("You can't do anything with it");
-			par3List.add("But it seems a bit "+TextFormatting.DARK_GRAY+"damaged...");
+			list.add("This is a very strange figure");
+			list.add("It seems to be from the future");
+			list.add("You can't do anything with it");
+			list.add("But it seems a bit "+TextFormatting.DARK_GRAY+"damaged...");
 			break;
 		}
 		case 6: {
-			par3List.add("This is a very strange symbol");
-			par3List.add("It seems to be an image of something");
-			par3List.add("When you look at it you want to glory something");
-			par3List.add("There are letters on the bottom that say "+TextFormatting.LIGHT_PURPLE+"EZIC");
+			list.add("This is a very strange symbol");
+			list.add("It seems to be an image of something");
+			list.add("When you look at it you want to glory something");
+			list.add("There are letters on the bottom that say "+TextFormatting.LIGHT_PURPLE+"EZIC");
 			break;
 		}
 		}
@@ -93,8 +93,8 @@ public class ItemSecret extends Item implements IModelRegisterer {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-		ItemStack par1ItemStack = player.getHeldItem(hand);
-		int metadata = par1ItemStack.getItemDamage();
+		ItemStack stack = player.getHeldItem(hand);
+		int metadata = stack.getItemDamage();
 		switch(metadata) {
 		case 0: {
 			World wrld = player.getEntityWorld();
@@ -119,7 +119,7 @@ public class ItemSecret extends Item implements IModelRegisterer {
 					player.sendMessage(new TextComponentString("You feel lonely, like missing another half of you.").setStyle(style));
 					player.sendMessage(new TextComponentString("After some time you calm down.").setStyle(style));
 				}
-				return ActionResult.<ItemStack>newResult(EnumActionResult.SUCCESS, par1ItemStack);
+				return ActionResult.<ItemStack>newResult(EnumActionResult.SUCCESS, stack);
 			}
 		}
 		}
@@ -141,14 +141,14 @@ public class ItemSecret extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public boolean hasEffect(ItemStack par1ItemStack) {
-		int metadata = par1ItemStack.getItemDamage();
+	public boolean hasEffect(ItemStack stack) {
+		int metadata = stack.getItemDamage();
 		switch(metadata) {
 		case 0: {
-			return EssentialCraftCore.proxy.itemHasEffect(par1ItemStack);
+			return EssentialCraftCore.proxy.itemHasEffect(stack);
 		}
 		}
-		return super.hasEffect(par1ItemStack);
+		return super.hasEffect(stack);
 	}
 
 	@Override

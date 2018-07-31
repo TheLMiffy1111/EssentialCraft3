@@ -22,91 +22,86 @@ public class RenderMRUPresence extends Render<EntityMRUPresence> {
 		super(renderManager);
 	}
 
-	public void doActualRender(EntityMRUPresence par1Entity, double par2, double par4, double par6, float par8, float par9) {
-		float var4 = par1Entity.renderIndex;
-		float stability = par1Entity.mruStorage.getBalance();
-		float colorRRender = 0.0F;
-		float colorGRender = 1.0F;
-		float colorBRender = 1.0F;
-
-		float colorRNormal = 0.0F;
-		float colorGNormal = 1.0F;
-		float colorBNormal = 1.0F;
-
-		float colorRChaos = 1.0F;
-		float colorGChaos = 0.0F;
-		float colorBChaos = 0.0F;
-
-		float colorRFrozen = 0.0F;
-		float colorGFrozen = 0.0F;
-		float colorBFrozen = 1.0F;
-
-		int mru = par1Entity.mruStorage.getMRU();
-		if(stability!=1.0F)
-		{
-			if(stability<1.0F)
-			{
-				float diff = stability;
-				if(diff < 0.01F)
-					diff = 0.0F;
-				colorRRender = colorRNormal*diff + colorRFrozen*(1.0F-diff);
-				colorGRender = colorGNormal*diff + colorGFrozen*(1.0F-diff);
-				colorBRender = colorBNormal*diff + colorBFrozen*(1.0F-diff);
-			}
-			if(stability>1.0F)
-			{
-				float diff = 2.0F-stability;
-				if(diff < 0.01F)
-					diff = 0.0F;
-				colorRRender = colorRNormal*diff + colorRChaos*(1.0F-diff);
-				colorGRender = colorGNormal*diff + colorGChaos*(1.0F-diff);
-				colorBRender = colorBNormal*diff + colorBChaos*(1.0F-diff);
-			}
-		}
-		Random var6 = new Random(432L);
-
-
-		GlStateManager.pushMatrix();
-
-		GlStateManager.depthFunc(GL11.GL_ALWAYS);
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		GlStateManager.disableAlpha();
-
-		GlStateManager.translate(par2, par4, par6);
-
-		Minecraft.getMinecraft().renderEngine.bindTexture(RenderHandlerEC.whitebox);
-		GlStateManager.scale(0.0000075F*mru, 0.0000075F*mru, 0.0000075F*mru);
-		for(int var7 = 0; (float)var7 < par1Entity.mruStorage.getMRU()/50; ++var7) {
-			//GlStateManager.rotate(var6.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-			//GlStateManager.rotate(var6.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-			//GlStateManager.rotate(var6.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.rotate(var6.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotate(var6.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.rotate(var6.nextFloat() * 360.0F + var4 * 90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.color(colorRRender, colorGRender, colorBRender, 1F);
-			float var8 = var6.nextFloat() * 20F + 5F;
-			float var9 = var6.nextFloat() * 2F + 1F;
-			GlStateManager.glBegin(GL11.GL_TRIANGLE_FAN);
-			GlStateManager.glVertex3f(0, 0, 0);
-			GlStateManager.glVertex3f(-HALF_SQRT_3*var9, var8, -var9/2F);
-			GlStateManager.glVertex3f(HALF_SQRT_3*var9, var8, -var9/2F);
-			GlStateManager.glVertex3f(0, var8, var9);
-			GlStateManager.glVertex3f(-HALF_SQRT_3*var9, var8, -var9/2F);
-			GlStateManager.glEnd();
-		}
-
-		GlStateManager.disableBlend();
-		GlStateManager.enableAlpha();
-		GlStateManager.depthFunc(GL11.GL_LEQUAL);
-		GlStateManager.color(1, 1, 1, 1);
-		GlStateManager.popMatrix();
-	}
-
 	@Override
-	public void doRender(EntityMRUPresence par1Entity, double par2, double par4, double par6, float par8, float par9) {
+	public void doRender(EntityMRUPresence entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		if(ECUtils.canPlayerSeeMRU(Minecraft.getMinecraft().player)) {
-			doActualRender(par1Entity, par2, par4, par6, par8, par9);
+			float index = entity.renderIndex;
+			float stability = entity.mruStorage.getBalance();
+			float colorRRender = 0F;
+			float colorGRender = 1F;
+			float colorBRender = 1F;
+
+			float colorRNormal = 0F;
+			float colorGNormal = 1F;
+			float colorBNormal = 1F;
+
+			float colorRChaos = 1F;
+			float colorGChaos = 0F;
+			float colorBChaos = 0F;
+
+			float colorRFrozen = 0F;
+			float colorGFrozen = 0F;
+			float colorBFrozen = 1F;
+
+			int mru = entity.mruStorage.getMRU();
+			if(stability!=1F) {
+				if(stability<1F) {
+					float diff = stability;
+					if(diff < 0.01F) {
+						diff = 0F;
+					}
+					colorRRender = colorRNormal*diff + colorRFrozen*(1F-diff);
+					colorGRender = colorGNormal*diff + colorGFrozen*(1F-diff);
+					colorBRender = colorBNormal*diff + colorBFrozen*(1F-diff);
+				}
+				if(stability>1F) {
+					float diff = 2F-stability;
+					if(diff < 0.01F) {
+						diff = 0F;
+					}
+					colorRRender = colorRNormal*diff + colorRChaos*(1F-diff);
+					colorGRender = colorGNormal*diff + colorGChaos*(1F-diff);
+					colorBRender = colorBNormal*diff + colorBChaos*(1F-diff);
+				}
+			}
+			Random rand = new Random(432L);
+
+			GlStateManager.pushMatrix();
+			GlStateManager.depthFunc(GL11.GL_ALWAYS);
+			GlStateManager.enableBlend();
+			GlStateManager.disableAlpha();
+			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
+			GlStateManager.color(colorRRender, colorGRender, colorBRender, 0.5F);
+
+			GlStateManager.translate(x, y, z);
+
+			Minecraft.getMinecraft().renderEngine.bindTexture(RenderHandlerEC.whitebox);
+			GlStateManager.scale(0.0000075F*mru, 0.0000075F*mru, 0.0000075F*mru);
+			for(int i = 0; i < entity.mruStorage.getMRU()/25; ++i) {
+				//GlStateManager.rotate(rand.nextFloat() * 360F, 1F, 0F, 0F);
+				//GlStateManager.rotate(rand.nextFloat() * 360F, 0F, 1F, 0F);
+				//GlStateManager.rotate(rand.nextFloat() * 360F, 0F, 0F, 1F);
+				GlStateManager.rotate(rand.nextFloat() * 360F, 1F, 0F, 0F);
+				GlStateManager.rotate(rand.nextFloat() * 360F, 0F, 1F, 0F);
+				GlStateManager.rotate(rand.nextFloat() * 360F + index * 90F, 0F, 0F, 1F);
+				float f0 = rand.nextFloat() * 20F + 5F;
+				float f1 = rand.nextFloat() * 2F + 1F;
+				GlStateManager.glBegin(GL11.GL_TRIANGLE_FAN);
+				GlStateManager.glVertex3f(0, 0, 0);
+				GlStateManager.glVertex3f(-HALF_SQRT_3*f1, f0, -f1/2F);
+				GlStateManager.glVertex3f(HALF_SQRT_3*f1, f0, -f1/2F);
+				GlStateManager.glVertex3f(0, f0, f1);
+				GlStateManager.glVertex3f(-HALF_SQRT_3*f1, f0, -f1/2F);
+				GlStateManager.glEnd();
+			}
+
+			GlStateManager.color(1F, 1F, 1F, 1F);
+			GlStateManager.shadeModel(GL11.GL_FLAT);
+			GlStateManager.disableBlend();
+			GlStateManager.enableAlpha();
+			GlStateManager.depthFunc(GL11.GL_LEQUAL);
+			GlStateManager.popMatrix();
 		}
 	}
 

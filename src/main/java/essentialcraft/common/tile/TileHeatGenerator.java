@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MathUtils;
 import essentialcraft.api.ApiCore;
 import essentialcraft.api.IHotBlock;
@@ -17,32 +15,36 @@ import net.minecraftforge.common.config.Configuration;
 
 public class TileHeatGenerator extends TileMRUGeneric {
 
-	public int currentBurnTime, currentMaxBurnTime;
 	public static int cfgMaxMRU = ApiCore.GENERATOR_MAX_MRU_GENERIC;
 	public static float cfgBalance = -1F;
 	public static int mruGenerated = 20;
 
+	public int currentBurnTime, currentMaxBurnTime;
 	private boolean firstTick = true;
 
 	public TileHeatGenerator() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		slot0IsBoundGem = false;
 		setSlotsNum(2);
 	}
 
 	@Override
 	public void update() {
-		float mruGen = mruGenerated;
-		if(!getWorld().isRemote && cfgBalance == -1F && firstTick) {
-			mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+		if(firstTick) {
+			if(cfgBalance < 0) {
+				mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+			}
+			else {
+				mruStorage.setBalance(cfgBalance);
+			}
 		}
 		super.update();
 		firstTick = false;
 		if(getWorld().isBlockIndirectlyGettingPowered(pos) == 0) {
 			if(currentBurnTime > 0) {
 				--currentBurnTime;
-				float mruFactor = 1.0F;
+				double mruGen = mruGenerated;
+				double mruFactor = 1D;
 				Block[] b = new Block[4];
 				b[0] = getWorld().getBlockState(pos.east(2)).getBlock();
 				b[1] = getWorld().getBlockState(pos.west(2)).getBlock();
@@ -54,15 +56,15 @@ public class TileHeatGenerator extends TileMRUGeneric {
 					if(b[i] == Blocks.AIR)
 						mruFactor *= 0;
 					else if(b[i] == Blocks.NETHERRACK)
-						mruFactor *= 0.75F;
+						mruFactor *= 0.75D;
 					else if(b[i] == Blocks.LAVA)
-						mruFactor *= 0.95F;
+						mruFactor *= 0.95D;
 					else if(b[i] == Blocks.FIRE)
-						mruFactor *= 0.7F;
+						mruFactor *= 0.7D;
 					else if(b[i] instanceof IHotBlock)
 						mruFactor *= ((IHotBlock)b[i]).getHeatModifier(getWorld(), pos.add(ox[i], 0, oz[i]));
 					else
-						mruFactor *= 0.5F;
+						mruFactor *= 0.5D;
 				}
 
 				mruGen *= mruFactor;
@@ -125,24 +127,10 @@ public class TileHeatGenerator extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("HeatGeneratorSettings", "tileentities", new String[] {
-					"Max MRU:"+ApiCore.GENERATOR_MAX_MRU_GENERIC,
-					"Default balance(-1 is random):-1.0",
-					"Max MRU generated per tick:20"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			cfgBalance = Float.parseFloat(data[1].fieldValue);
-			mruGenerated = Integer.parseInt(data[2].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.heatgenerator";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			cfgBalance = (float)cfg.get(category, "Balance", -1D, "Default balance (-1 is random)").setMinValue(-1D).setMinValue(2D).getDouble();
+			mruGenerated = cfg.get(category, "MRUGenerated", 20, "Max MRU generated per tick").setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;
@@ -155,7 +143,7 @@ public class TileHeatGenerator extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_1_ == 0;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot == 0;
 	}
 }

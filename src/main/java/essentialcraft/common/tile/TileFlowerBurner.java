@@ -21,10 +21,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class TileFlowerBurner extends TileMRUGeneric {
 
-	public BlockPos burnedFlower;
-	public int burnTime = 0;
-
-	public static int cfgMaxMRU =  ApiCore.GENERATOR_MAX_MRU_GENERIC;
+	public static int cfgMaxMRU = ApiCore.GENERATOR_MAX_MRU_GENERIC;
 	public static float cfgBalance = -1F;
 	public static int mruGenerated = 10;
 	public static int flowerBurnTime = 600;
@@ -32,18 +29,24 @@ public class TileFlowerBurner extends TileMRUGeneric {
 	public static int tallgrassBurnTime = 150;
 	public static boolean createDeadBush = true;
 
+	public BlockPos burnedFlower;
+	public int burnTime = 0;
 	private boolean firstTick = true;
 
 	public TileFlowerBurner() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		slot0IsBoundGem = false;
 	}
 
 	@Override
 	public void update() {
-		if(!getWorld().isRemote && cfgBalance == -1F && firstTick) {
-			mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+		if(firstTick) {
+			if(cfgBalance < 0) {
+				mruStorage.setBalance(getWorld().rand.nextFloat()*2);
+			}
+			else {
+				mruStorage.setBalance(cfgBalance);
+			}
 		}
 		super.update();
 		firstTick = false;
@@ -137,32 +140,14 @@ public class TileFlowerBurner extends TileMRUGeneric {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("NatureFurnaceSettings", "tileentities", new String[] {
-					"Max MRU:"+ApiCore.GENERATOR_MAX_MRU_GENERIC,
-					"Default balance(-1 is random):-1.0",
-					"MRU generated per tick:10",
-					"Time required to burn a flower:600",
-					"Time required to burn a sapling:900",
-					"Time required to burn grass:150",
-					"Should leave Dead Bushes:true"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-			cfgBalance = Float.parseFloat(data[1].fieldValue);
-			mruGenerated = Integer.parseInt(data[2].fieldValue);
-			flowerBurnTime = Integer.parseInt(data[3].fieldValue);
-			saplingBurnTime = Integer.parseInt(data[4].fieldValue);
-			tallgrassBurnTime = Integer.parseInt(data[5].fieldValue);
-			createDeadBush = Boolean.parseBoolean(data[6].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.naturalfurnace";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.GENERATOR_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			cfgBalance = (float)cfg.get(category, "Balance", -1D, "Default balance (-1 is random)").setMinValue(-1D).setMaxValue(2D).getDouble();
+			mruGenerated = cfg.get(category, "MRUGenerated", 10, "MRU generated per tick").setMinValue(0).getInt();
+			flowerBurnTime = cfg.get(category, "TicksRequiredFlower", 600).setMinValue(0).getInt();
+			saplingBurnTime = cfg.get(category, "TicksRequiredSapling", 900).setMinValue(0).getInt();
+			tallgrassBurnTime = cfg.get(category, "TicksRequiredGrass", 150).setMinValue(0).getInt();
+			createDeadBush = cfg.get(category, "LeaveDeadBush", true).getBoolean();
 		}
 		catch(Exception e) {
 			return;

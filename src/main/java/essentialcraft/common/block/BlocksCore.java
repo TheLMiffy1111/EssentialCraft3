@@ -143,16 +143,16 @@ public class BlocksCore {
 
 		demonicPlating = new BlockDyeable(Material.ROCK, MapColor.RED).setHardness(3.0F).setResistance(100.0F).setUnlocalizedName("essentialcraft.demonicPlating");
 		registerBlockSimple(demonicPlating, "demonicPlating");
-		playerPentacle = registerBlockSimple(new BlockPlayerPentacle(), "playerPentacle",0,0,0);
-		windRune = registerBlockSimple(new BlockWindRune(), "windRune",3,10,0);
+		playerPentacle = registerBlockSimple(new BlockPlayerPentacle(), "playerPentacle", 0, 0, 0);
+		windRune = registerBlockSimple(new BlockWindRune(), "windRune", 3, 10, 0);
 		rightClicker = registerBlockSimple(new BlockRightClicker(), "rightClicker", 1, 1, 15);
-		redstoneTransmitter = registerBlockSimple(new BlockRedstoneTransmitter(), "redstoneTransmitter",0,0,0);
+		redstoneTransmitter = registerBlockSimple(new BlockRedstoneTransmitter(), "redstoneTransmitter", 0, 0, 0);
 		magicalHopper = registerBlockSimple(new BlockMagicalHopper(), "magicalHopper", 1, 1, 15);
 		metadataManager = registerBlockSimple(new BlockMetadataManager(), "metadataManager",1, 1, 15);
 		blockBreaker = registerBlockSimple(new BlockBlockBreaker(), "blockBreaker", 1, 1, 15);
 		compressed = new BlockCompressedDrops().setUnlocalizedName("essentialcraft.compressed").setHardness(0.4F).setResistance(1).setLightOpacity(15);
 		registerBlockSimple(new ItemBlockMeta(compressed), "compressed");
-		demonicPentacle = registerBlockSimple(new BlockDemonicPentacle(), "demonicPentacle",0,0,0);
+		demonicPentacle = registerBlockSimple(new BlockDemonicPentacle(), "demonicPentacle", 0, 0, 0);
 		weaponMaker = registerBlockSimple(new BlockWeaponMaker(), "weaponMaker", 1, 1, 15);
 		furnaceMagic = new BlockFurnaceMagic().setUnlocalizedName("essentialcraft.furnaceMagic").setHardness(1).setResistance(1).setLightOpacity(15);
 		registerBlockSimple(furnaceMagic, "furnaceMagic");
@@ -185,8 +185,12 @@ public class BlocksCore {
 		fire = new BlockEC(Material.FIRE).setHardness(-1).setResistance(-1).setLightLevel(0).setUnlocalizedName("fire");
 		registerBlockSimple(fire, "fire");
 
-		chunkLoader = registerBlockSimple(new BlockChunkLoader(),"chunkLoader",1,1,0);
-		dimTransciever = registerBlockSimple(new BlockDimensionalTransciever(),"dimTransciever",1,1,0);
+		chunkLoader = registerBlockSimple(new BlockChunkLoader(), "chunkLoader", 1, 1, 0);
+		dimTransciever = registerBlockSimple(new BlockDimensionalTransciever(), "dimTransciever", 1, 1, 0);
+		
+		intersector = registerBlockSimple(new BlockMRUIntersector(), "intersector", 1, 1, 15);		
+		worldMerger = registerBlockSimple(new BlockWorldMerger(), "worldMerger", 1, 1, 0);	
+		weatherController = registerBlockSimple(new BlockWeatherController(), "weatherController", 1, 1, 15);
 	}
 
 	public static void postInitLoad() {
@@ -370,6 +374,10 @@ public class BlocksCore {
 	public static Block mimic;
 	public static Block chunkLoader;
 	public static Block dimTransciever;
+
+	public static Block intersector;
+	public static Block worldMerger;
+	public static Block weatherController;
 
 	public static Block water;
 	public static Block lava;

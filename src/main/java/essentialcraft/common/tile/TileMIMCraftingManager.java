@@ -59,12 +59,13 @@ public class TileMIMCraftingManager extends TileMRUGeneric {
 	}
 
 	@Override
-	public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
-		super.setInventorySlotContents(par1, par2ItemStack);
+	public void setInventorySlotContents(int par1, ItemStack stack) {
+		super.setInventorySlotContents(par1, stack);
 		syncTick = 0;
 	}
 
 	public TileMIMCraftingManager() {
+		super(0);
 		setSlotsNum(54);
 		slot0IsBoundGem = false;
 	}

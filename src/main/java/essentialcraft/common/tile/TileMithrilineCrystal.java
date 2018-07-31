@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import DummyCore.Utils.MiscUtils;
 import DummyCore.Utils.Notifier;
 import DummyCore.Utils.TileStatTracker;
@@ -93,26 +91,11 @@ public class TileMithrilineCrystal extends TileEntity implements ITickable {
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("MithrilineCrystalSettings", "tileentities", new String[] {
-					"Enderstar pulse generated each tick:0.025",
-					"Enderstar pulse generated each tick in the end:0.1",
-					"Requires a direct view to the sky:true",
-					"Maximum enderstar pulse stored:10000"
-			}, "");
-			String dataString="";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			energyEachTick = Double.parseDouble(data[0].fieldValue);
-			energyEachTick_End = Double.parseDouble(data[1].fieldValue);
-			requiresUnobstructedSky = Boolean.parseBoolean(data[2].fieldValue);
-			maxEnergy = Double.parseDouble(data[3].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.mithrilinecrystal";
+			energyEachTick = cfg.get(category, "ESPEGenerated", 0.025D).setMinValue(0D).getDouble();
+			energyEachTick_End = cfg.get(category, "ESPEGeneratedEnd", 0.1D).setMinValue(0D).getDouble();
+			requiresUnobstructedSky = cfg.get(category, "RequiresUnobstructedSky", true).getBoolean();
+			maxEnergy = cfg.get(category, "MaxESPE", 10000D).setMinValue(Double.MIN_NORMAL).getDouble();
 		}
 		catch(Exception e) {
 			return;

@@ -3,6 +3,8 @@ package essentialcraft.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import DummyCore.Utils.MathUtils;
 import DummyCore.Utils.MiscUtils;
 import DummyCore.Utils.TessellatorWrapper;
@@ -192,7 +194,7 @@ public class GuiPlayerPentacle extends GuiScreen {
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlpha();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.shadeModel(7425);
+		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		GlStateManager.color(0.0F, 0.2F, 0.05F, opacityIndex);
 
 		ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
@@ -234,7 +236,7 @@ public class GuiPlayerPentacle extends GuiScreen {
 		this.drawTexturedModalRect(k-uv/6, l-uu/6, 0, 0, uv, uu);
 
 		GlStateManager.color(1F, 1F, 1F, 1F);
-		GlStateManager.shadeModel(7424);
+		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GlStateManager.disableBlend();
 		GlStateManager.enableAlpha();
 

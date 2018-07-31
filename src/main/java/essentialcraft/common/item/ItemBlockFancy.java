@@ -28,9 +28,9 @@ public class ItemBlockFancy extends ItemBlock {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, World par2EntityPlayer, List<String> par3List, ITooltipFlag par4)
+	public void addInformation(ItemStack stack, World player, List<String> list, ITooltipFlag par4)
 	{
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-		par3List.add(I18n.translateToLocal("essentialcraft.desc.fancy."+BlockFancy.overlays[par1ItemStack.getItemDamage()]));
+		super.addInformation(stack, player, list, par4);
+		list.add(I18n.translateToLocal("essentialcraft.desc.fancy."+BlockFancy.overlays[stack.getItemDamage()]));
 	}
 }

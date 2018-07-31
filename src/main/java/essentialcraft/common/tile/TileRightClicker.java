@@ -33,11 +33,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class TileRightClicker extends TileMRUGeneric {
+
+	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
+	
 	public boolean wasPowered = false;
 	public boolean firstTick = true;
 	public int rotation = 0;
@@ -78,9 +82,9 @@ public class TileRightClicker extends TileMRUGeneric {
 			else
 				setInventorySlotContents(1+i, ItemStack.EMPTY);
 
+			fakePlayer.inventory.setInventorySlotContents(fakePlayer.inventory.currentItem, ItemStack.EMPTY);
 			fakePlayer.inventory.currentItem += 1;
 		}
-		fakePlayer.inventory.setInventorySlotContents(fakePlayer.inventory.currentItem, ItemStack.EMPTY);
 		fakePlayer = null;
 	}
 
@@ -171,7 +175,7 @@ public class TileRightClicker extends TileMRUGeneric {
 				return false;
 
 			Block block = getWorld().getBlockState(p).getBlock();
-			List<EntityLivingBase> detectedEntities = getWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(x, y, z, x+1, y+1, z+1));
+			List<EntityLivingBase> detectedEntities = getWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(p));
 
 			Entity entity = detectedEntities.isEmpty() ? null : detectedEntities.get(getWorld().rand.nextInt(detectedEntities.size()));
 
@@ -211,24 +215,23 @@ public class TileRightClicker extends TileMRUGeneric {
 	}
 
 	public TileRightClicker() {
-		super();
+		super(cfgMaxMRU);
 		setSlotsNum(11);
-		mruStorage.setMaxMRU(ApiCore.DEVICE_MAX_MRU_GENERIC);
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-		super.readFromNBT(par1NBTTagCompound);
-		rotation = par1NBTTagCompound.getInteger("rotation");
-		wasPowered = par1NBTTagCompound.getBoolean("powered");
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		rotation = nbt.getInteger("rotation");
+		wasPowered = nbt.getBoolean("powered");
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound par1NBTTagCompound) {
-		super.writeToNBT(par1NBTTagCompound);
-		par1NBTTagCompound.setInteger("rotation", rotation);
-		par1NBTTagCompound.setBoolean("powered", wasPowered);
-		return par1NBTTagCompound;
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+		nbt.setInteger("rotation", rotation);
+		nbt.setBoolean("powered", wasPowered);
+		return nbt;
 	}
 
 	@Override
@@ -323,5 +326,15 @@ public class TileRightClicker extends TileMRUGeneric {
 
 	public static boolean isValidBlock(IBlockState state) {
 		return state.getRenderType() == EnumBlockRenderType.MODEL && state.getMaterial() != Material.AIR;
+	}
+
+	public static void setupConfig(Configuration cfg) {
+		try {
+			String category = "tileentities.magicalactivator";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+		}
+		catch(Exception e) {
+			return;
+		}
 	}
 }

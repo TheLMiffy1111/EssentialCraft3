@@ -48,6 +48,19 @@ public class MRUTileCrossDimStorage extends MRUTileStorage {
 		}
 	}
 
+	@Override
+	public void spawnMRUParticles(BlockPos pos, World world, ItemStack boundGem) {
+		if(world.isRemote) {
+			if(boundGem.getItem() instanceof ItemBoundGem && boundGem.getTagCompound() != null) {
+				if(getDimension(boundGem) == world.provider.getDimension()) {
+					int[] o = ItemBoundGem.getCoords(boundGem);
+					BlockPos pos1 = new BlockPos(o[0], o[1], o[2]);
+					doSpawnMRUParticles(pos, pos1, world);
+				}
+			}
+		}
+	}
+
 	static int getDimension(ItemStack stack) {
 		return MiscUtils.getStackTag(stack).getInteger("dim");
 	}

@@ -1,7 +1,5 @@
 package essentialcraft.common.tile;
 
-import DummyCore.Utils.DataStorage;
-import DummyCore.Utils.DummyData;
 import essentialcraft.api.ApiCore;
 import essentialcraft.common.item.ItemsCore;
 import net.minecraft.item.ItemStack;
@@ -17,8 +15,7 @@ public class TileCrystalExtractor extends TileMRUGeneric {
 	public static int requiredTime = 1000;
 
 	public TileCrystalExtractor() {
-		super();
-		mruStorage.setMaxMRU(cfgMaxMRU);
+		super(cfgMaxMRU);
 		setSlotsNum(13);
 	}
 
@@ -48,12 +45,12 @@ public class TileCrystalExtractor extends TileMRUGeneric {
 
 	public void createItems() {
 		TileElementalCrystal t = getCrystal();
-		float f = t.fire;
-		float w = t.water;
-		float e = t.earth;
-		float a = t.air;
-		float s = t.size * 3000;
-		float[] baseChance = {f, w, e, a};
+		double f = t.fire;
+		double w = t.water;
+		double e = t.earth;
+		double a = t.air;
+		double s = t.size * 3000;
+		double[] baseChance = {f, w, e, a};
 		int[] essenceChance = {37500, 50000, 75000, 150000};
 		int[] getChance = new int[16];
 		for(int i = 0; i < 16; ++i) {
@@ -95,70 +92,57 @@ public class TileCrystalExtractor extends TileMRUGeneric {
 	public void spawnParticles() {
 		if(world.isRemote && canWork() && mruStorage.getMRU() > 0) {
 			TileElementalCrystal t = getCrystal();
-			if(t != null)
+			if(t != null) {
 				for(int o = 0; o < 10; ++o) {
 					getWorld().spawnParticle(EnumParticleTypes.PORTAL, pos.getX() + getWorld().rand.nextDouble(), t.getPos().getY() + getWorld().rand.nextDouble(), pos.getZ() + getWorld().rand.nextDouble(), t.getPos().getX()-pos.getX(), 0.0D, t.getPos().getZ()-pos.getZ());
 				}
+			}
 		}
 	}
 
 	public TileElementalCrystal getCrystal() {
 		TileElementalCrystal t = null;
-		if(hasCrystalOnFront()) {
+		if(hasCrystalOnEast()) {
 			t = (TileElementalCrystal)getWorld().getTileEntity(pos.east());
 		}
-		if(hasCrystalOnBack()) {
+		if(hasCrystalOnWest()) {
 			t = (TileElementalCrystal)getWorld().getTileEntity(pos.west());
 		}
-		if(hasCrystalOnLeft()) {
+		if(hasCrystalOnSouth()) {
 			t = (TileElementalCrystal)getWorld().getTileEntity(pos.south());
 		}
-		if(hasCrystalOnRight()) {
+		if(hasCrystalOnNorth()) {
 			t = (TileElementalCrystal)getWorld().getTileEntity(pos.north());
 		}
 		return t;
 	}
 
-	public boolean hasCrystalOnFront() {
+	public boolean hasCrystalOnEast() {
 		TileEntity t = getWorld().getTileEntity(pos.east());
-		return t != null && t instanceof TileElementalCrystal;
+		return t instanceof TileElementalCrystal;
 	}
 
-	public boolean hasCrystalOnBack() {
+	public boolean hasCrystalOnWest() {
 		TileEntity t = getWorld().getTileEntity(pos.west());
-		return t != null && t instanceof TileElementalCrystal;
+		return t instanceof TileElementalCrystal;
 	}
 
-	public boolean hasCrystalOnLeft() {
+	public boolean hasCrystalOnSouth() {
 		TileEntity t = getWorld().getTileEntity(pos.south());
-		return t != null && t instanceof TileElementalCrystal;
+		return t instanceof TileElementalCrystal;
 	}
 
-	public boolean hasCrystalOnRight() {
+	public boolean hasCrystalOnNorth() {
 		TileEntity t = getWorld().getTileEntity(pos.north());
-		return t != null && t instanceof TileElementalCrystal;
+		return t instanceof TileElementalCrystal;
 	}
 
 	public static void setupConfig(Configuration cfg) {
 		try {
-			cfg.load();
-			String[] cfgArrayString = cfg.getStringList("CrystalExtractorSettings", "tileentities", new String[] {
-					"Max MRU:" + ApiCore.DEVICE_MAX_MRU_GENERIC,
-					"MRU Usage:100",
-					"Ticks required to get an essence:1000"
-			}, "");
-			String dataString = "";
-
-			for(int i = 0; i < cfgArrayString.length; ++i)
-				dataString += "||" + cfgArrayString[i];
-
-			DummyData[] data = DataStorage.parseData(dataString);
-
-			mruUsage = Integer.parseInt(data[1].fieldValue);
-			requiredTime = Integer.parseInt(data[2].fieldValue);
-			cfgMaxMRU = Integer.parseInt(data[0].fieldValue);
-
-			cfg.save();
+			String category = "tileentities.crystalextractor";
+			cfgMaxMRU = cfg.get(category, "MaxMRU", ApiCore.DEVICE_MAX_MRU_GENERIC).setMinValue(1).getInt();
+			mruUsage = cfg.get(category, "MRUUsage", 100).setMinValue(0).setMaxValue(cfgMaxMRU).getInt();
+			requiredTime = cfg.get(category, "RequiredTicks", 1000, "Ticks required to get an essence").setMinValue(0).getInt();
 		}
 		catch(Exception e) {
 			return;
@@ -171,7 +155,7 @@ public class TileCrystalExtractor extends TileMRUGeneric {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return p_94041_1_ == 0 && isBoundGem(p_94041_2_);
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return slot == 0 && isBoundGem(stack);
 	}
 }

@@ -11,33 +11,30 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderMatrixAbsorber extends TileEntitySpecialRenderer<TileMatrixAbsorber> {
 
-	public void doRender(TileMatrixAbsorber p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
-	{
+	public void doRender(TileMatrixAbsorber tile, double x, double y, double z, float partialTicks) {
 		RenderHelper.disableStandardItemLighting();
 
-		TileMatrixAbsorber tile = p_76986_1_;
-		float rotation = (tile.getWorld().getWorldTime()+p_76986_8_) % 360;
-		float upperIndex = (tile.getWorld().getWorldTime()+p_76986_8_) % 360;
+		float rotation = (tile.getWorld().getWorldTime()+partialTicks) % 360;
+		float upperIndex = (tile.getWorld().getWorldTime()+partialTicks) % 360;
 
-		if(upperIndex < 180)
-		{
+		if(upperIndex < 180) {
 			upperIndex = 180 - upperIndex;
-		}else
-		{
+		}
+		else {
 			upperIndex -= 180;
 		}
 
-		rotation = rotation + 360F/(tile.getWorld().getWorldTime()+p_76986_8_) % 360;
+		rotation = rotation + 360F/(tile.getWorld().getWorldTime()+partialTicks) % 360;
 
 		GlStateManager.pushMatrix();
-		DrawUtils.renderItemStack_Full(tile.getStackInSlot(0), p_76986_2_, p_76986_4_, p_76986_6_, rotation,0F, 1, 1, 1, 0.5F, 0.25F+upperIndex/500F, 0.5F);
+		DrawUtils.renderItemStack_Full(tile.getStackInSlot(0), x, y, z, rotation,0F, 1, 1, 1, 0.5F, 0.25F+upperIndex/500F, 0.5F);
 		GlStateManager.popMatrix();
 		RenderHelper.enableStandardItemLighting();
 	}
 
 	@Override
-	public void render(TileMatrixAbsorber p_147500_1_, double p_147500_2_, double p_147500_4_, double p_147500_6_, float p_147500_8_, int destroyStage, float alpha) {
-		if(p_147500_1_.getBlockMetadata() == 0)
-			this.doRender(p_147500_1_, p_147500_2_, p_147500_4_, p_147500_6_, p_147500_8_, 0);
+	public void render(TileMatrixAbsorber tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		if(tile.getBlockMetadata() == 0)
+			this.doRender(tile, x, y, z, partialTicks);
 	}
 }

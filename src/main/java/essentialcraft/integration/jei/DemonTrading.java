@@ -43,7 +43,7 @@ public class DemonTrading {
 		public void getIngredients(IIngredients arg0) {
 			ItemStack ret;
 			if(rec.entityType != null)
-				ret = new ItemStack(ItemsCore.soul, 1, DemonTrade.allMobs.indexOf(rec));
+				ret = new ItemStack(ItemsCore.soul, 1, DemonTrade.allMobs.indexOf(rec.entityType));
 			else
 				ret = rec.desiredItem;
 			arg0.setInputs(ItemStack.class, Lists.newArrayList(ret, new ItemStack(BlocksCore.demonicPentacle)));

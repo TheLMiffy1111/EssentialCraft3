@@ -6,13 +6,13 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class SlotBoundEssence extends Slot {
-	public SlotBoundEssence(IInventory par2IInventory, int par3, int par4, int par5) {
-		super(par2IInventory, par3, par4, par5);
+	public SlotBoundEssence(IInventory inventory, int index, int x, int y) {
+		super(inventory, index, x, y);
 		setBackgroundName("essentialcraft:items/elemental/drop_air");
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack par1ItemStack) {
-		return par1ItemStack.getItem() instanceof ItemBoundGem;
+	public boolean isItemValid(ItemStack stack) {
+		return stack.getItem() instanceof ItemBoundGem;
 	}
 }

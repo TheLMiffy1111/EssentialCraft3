@@ -1,5 +1,4 @@
 {
-    "__comment": "model generated using mrcrayfish's model creator (http://mrcrayfish.com/modelcreator/)",
     "parent": "minecraft:block/block",
     "textures": {
         "particle": "#base"

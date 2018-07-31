@@ -106,7 +106,7 @@ public class EntityPoisonFume extends EntityMob {
 				this.setDead();
 		}
 		EssentialCraftCore.proxy.spawnParticle("fogFX", (float)posX, (float)posY+2, (float)posZ, 0.0F, 1.0F, 0.0F);
-		List<EntityPlayer> players = this.getEntityWorld().<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(posX-1, posY-1, posZ-1, posX+1, posY+1, posZ+1).expand(6, 3, 6));
+		List<EntityPlayer> players = this.getEntityWorld().<EntityPlayer>getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(posX-1, posY-1, posZ-1, posX+1, posY+1, posZ+1).grow(6, 3, 6));
 		for(int i = 0; i < players.size(); ++i)
 		{
 			EntityPlayer p = players.get(i);
