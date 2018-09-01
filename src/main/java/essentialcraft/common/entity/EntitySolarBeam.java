@@ -83,13 +83,13 @@ public class EntitySolarBeam extends EntityWeatherEffect {
 	protected void entityInit() {}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {}
+	protected void readEntityFromNBT(NBTTagCompound nbt) {}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {}
+	protected void writeEntityToNBT(NBTTagCompound nbt) {}
 
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
-		return new ItemStack(ItemsCore.entityEgg,1,EntitiesCore.registeredEntities.indexOf(ForgeRegistries.ENTITIES.getValue(EntityList.getKey(this.getClass()))));
+		return new ItemStack(ItemsCore.entityEgg,1,EntitiesCore.REGISTERED_ENTITIES.indexOf(ForgeRegistries.ENTITIES.getValue(EntityList.getKey(this.getClass()))));
 	}
 }

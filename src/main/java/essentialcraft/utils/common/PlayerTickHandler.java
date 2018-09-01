@@ -149,7 +149,7 @@ public class PlayerTickHandler {
 									if(GuiResearchBook.currentCategory == null) {
 										GuiResearchBook.currentCategory = ResearchRegistry.basic;
 									}
-									GuiResearchBook.currentPage_discovery = 0;
+									GuiResearchBook.currentDiscoveryPage = 0;
 									GuiResearchBook.currentDiscovery = switchTo;
 									if(switchTo != null) {
 										f:for(int i = 0; i < switchTo.pages.size(); ++i) {
@@ -199,7 +199,7 @@ public class PlayerTickHandler {
 								if(GuiResearchBook.currentCategory == null) {
 									GuiResearchBook.currentCategory = ResearchRegistry.basic;
 								}
-								GuiResearchBook.currentPage_discovery = 0;
+								GuiResearchBook.currentDiscoveryPage = 0;
 								GuiResearchBook.currentDiscovery = switchTo;
 								if(switchTo != null) {
 									f:for(int i = 0; i < switchTo.pages.size(); ++i) {

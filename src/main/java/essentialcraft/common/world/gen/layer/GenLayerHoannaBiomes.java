@@ -136,7 +136,7 @@ public class GenLayerHoannaBiomes extends GenLayer {
 		int weight = BiomeManager.isTypeListModded(type)?nextInt(totalWeight):nextInt(totalWeight / 10) * 10;
 		return WeightedRandom.getRandomItem(biomeList, weight);
 	}
-	
+
 	protected static boolean biomehasAnyType(Biome biome, Type... types) {
 		return !Sets.intersection(BiomeDictionary.getTypes(biome), ImmutableSet.copyOf(types)).isEmpty();
 	}

@@ -15,12 +15,12 @@ import net.minecraftforge.registries.IForgeRegistryEntry.Impl;
 public class RecipeArmorDyes extends Impl<IRecipe> implements IRecipe {
 
 	@Override
-	public boolean matches(InventoryCrafting p_77569_1_, World p_77569_2_) {
+	public boolean matches(InventoryCrafting invCrafting, World world) {
 		ItemStack itemstack = ItemStack.EMPTY;
 		ArrayList<ItemStack> arraylist = new ArrayList<ItemStack>();
 
-		for(int i = 0; i < p_77569_1_.getSizeInventory(); ++i) {
-			ItemStack itemstack1 = p_77569_1_.getStackInSlot(i);
+		for(int i = 0; i < invCrafting.getSizeInventory(); ++i) {
+			ItemStack itemstack1 = invCrafting.getStackInSlot(i);
 
 			if(!itemstack1.isEmpty()) {
 				if(itemstack1.getItem() instanceof ItemGenericArmor) {

@@ -28,6 +28,9 @@
             },
             "adult_separator": {
                 "textures": { "all": "essentialcraft:blocks/adultseparator" }
+            },
+            "creative_espe_storage": {
+                "textures": { "all": "essentialcraft:blocks/creativeespestorage" }
             }
         }
     }

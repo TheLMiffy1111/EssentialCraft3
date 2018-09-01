@@ -44,10 +44,9 @@ public class TileMagicianTable extends TileMRUGeneric {
 			craftMatrix[2] = getStackInSlot(3);
 			craftMatrix[3] = getStackInSlot(4);
 			craftMatrix[4] = getStackInSlot(5);
-			MagicianTableRecipe rec = MagicianTableRecipes.getRecipeByCP(craftMatrix);
+			MagicianTableRecipe rec = MagicianTableRecipes.getRecipeByInput(craftMatrix);
 			if(currentRecipe == null && rec != null && progressRequired == rec.mruRequired && progressLevel != 0) {
-				if(canFunction(rec))
-				{
+				if(canFunction(rec)) {
 					progressRequired = rec.mruRequired;
 					currentRecipe = rec;
 				}

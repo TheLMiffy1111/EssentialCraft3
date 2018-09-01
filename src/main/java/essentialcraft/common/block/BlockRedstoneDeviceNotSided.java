@@ -11,6 +11,7 @@ import DummyCore.Utils.MathUtils;
 import essentialcraft.common.mod.EssentialCraftCore;
 import essentialcraft.common.tile.TileAnimalSeparator;
 import essentialcraft.common.tile.TileCrafter;
+import essentialcraft.common.tile.TileCreativeESPESource;
 import essentialcraft.common.tile.TileCreativeMRUSource;
 import essentialcraft.utils.cfg.Config;
 import net.minecraft.block.Block;
@@ -51,7 +52,7 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 
 	public static final PropertyEnum<DeviceType> TYPE = PropertyEnum.<DeviceType>create("type", DeviceType.class);
 
-	public static final String[] names = {
+	public static final String[] NAMES = {
 			"replanter",
 			"itemShuffler",
 			"crafter",
@@ -59,7 +60,8 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 			"creativeMRUStorage",
 			"shearingStation",
 			"childSeparator",
-			"adultSeparator"
+			"adultSeparator",
+			"creativeESPEStorage",
 	};
 
 	public BlockRedstoneDeviceNotSided() {
@@ -73,7 +75,7 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 
 	@Override
 	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
-		for(int i = 0; i < 8; ++i) {
+		for(int i = 0; i < 9; ++i) {
 			list.add(new ItemStack(this, 1, i));
 		}
 	}
@@ -162,7 +164,8 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 		return false;
 	}
 
-	public boolean canProvidePower() {
+	@Override
+	public boolean canProvidePower(IBlockState s) {
 		return true;
 	}
 
@@ -179,36 +182,28 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 				}
 			}
 		}
-		if(s.getValue(TYPE).getIndex() == 1)
-		{
-			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0)
-			{
+		if(s.getValue(TYPE).getIndex() == 1) {
+			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0) {
 				AxisAlignedBB aabb = new AxisAlignedBB(p).grow(12, 12, 12);
 				List<EntityItem> items = w.getEntitiesWithinAABB(EntityItem.class, aabb);
-				for(EntityItem itm : items)
-				{
+				for(EntityItem itm : items) {
 					if(!itm.isDead)
 						shuffle(itm);
 				}
 			}
 		}
-		if(s.getValue(TYPE).getIndex() == 3)
-		{
-			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0)
-			{
+		if(s.getValue(TYPE).getIndex() == 3) {
+			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0) {
 				AxisAlignedBB aabb = new AxisAlignedBB(p).grow(12, 12, 12);
 				List<EntityItem> items = w.getEntitiesWithinAABB(EntityItem.class, aabb);
-				for(EntityItem itm : items)
-				{
+				for(EntityItem itm : items) {
 					if(!itm.isDead)
 						breed(itm);
 				}
 			}
 		}
-		if(s.getValue(TYPE).getIndex() == 5)
-		{
-			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0)
-			{
+		if(s.getValue(TYPE).getIndex() == 5) {
+			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0) {
 				AxisAlignedBB aabb = new AxisAlignedBB(p).grow(12, 12, 12);
 				List<Entity> entities = w.getEntitiesWithinAABB(Entity.class, aabb);
 				List<IShearable> sheep = new ArrayList<IShearable>();
@@ -217,16 +212,13 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 						sheep.add((IShearable)e);
 					}
 				}
-				for(IShearable sh : sheep)
-				{
-					shear((Entity)sh,sh);
+				for(IShearable sh : sheep) {
+					shear((Entity)sh, sh);
 				}
 			}
 		}
-		if(s.getValue(TYPE).getIndex() == 6 || s.getValue(TYPE).getIndex() == 7)
-		{
-			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0)
-			{
+		if(s.getValue(TYPE).getIndex() == 6 || s.getValue(TYPE).getIndex() == 7) {
+			if(w.isBlockIndirectlyGettingPowered(p) > 0 || w.getStrongPower(p) > 0) {
 				((TileAnimalSeparator)w.getTileEntity(p)).separate(s.getValue(TYPE).getIndex() == 6);
 			}
 		}
@@ -236,13 +228,20 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 	public static GameProfile breederFakePlayerProfile = new GameProfile(UUID.fromString("5cd89d0b-e9ba-0000-89f4-badbb05964ad"), "[EC3]Breeder");
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int meta) {
-		return meta == 2 ? new TileCrafter() : meta == 4 ? new TileCreativeMRUSource() : meta == 6 || meta == 7 ? new TileAnimalSeparator() : null;
+	public TileEntity createNewTileEntity(World world, int meta) {
+		switch(meta) {
+		case 2: return new TileCrafter();
+		case 4: return new TileCreativeMRUSource();
+		case 6:
+		case 7: return new TileAnimalSeparator();
+		case 8: return new TileCreativeESPESource();
+		default: return null;
+		}
 	}
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos par2, IBlockState par3, EntityPlayer player, EnumHand par5, EnumFacing par7, float par8, float par9, float par10) {
-		if(world.getTileEntity(par2) == null || par3.getValue(TYPE).getIndex() == 4) {
+		if(world.getTileEntity(par2) == null || par3.getValue(TYPE).getIndex() == 4|| par3.getValue(TYPE).getIndex() == 8) {
 			return false;
 		}
 		if(player.isSneaking()) {
@@ -257,7 +256,7 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(TYPE, DeviceType.fromIndex(meta%8));
+		return getDefaultState().withProperty(TYPE, DeviceType.fromIndex(meta%9));
 	}
 
 	@Override
@@ -273,8 +272,11 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState blockstate) {
 		if(world.getTileEntity(pos) != null) {
-			IInventory inv = (IInventory)world.getTileEntity(pos);
-			InventoryHelper.dropInventoryItems(world, pos, inv);
+			TileEntity tile = world.getTileEntity(pos);
+			if(tile instanceof IInventory) {
+				IInventory inv = (IInventory)tile;
+				InventoryHelper.dropInventoryItems(world, pos, inv);
+			}
 		}
 		super.breakBlock(world, pos, blockstate);
 	}
@@ -288,13 +290,14 @@ public class BlockRedstoneDeviceNotSided extends BlockContainer implements IMode
 
 	public static enum DeviceType implements IStringSerializable {
 		REPLANTER("replanter"),
-		ITEMSHUFFLER("item_shuffler"),
+		ITEM_SHUFFLER("item_shuffler"),
 		CRAFTER("crafter"),
 		BREEDER("breeder"),
-		CREATIVEMRUSTORAGE("creative_mru_storage"),
-		SHEARINGSTATION("shearing_station"),
-		CHILDSEPARATOR("child_separator"),
-		ADULTSEPARATOR("adult_separator");
+		CREATIVE_MRU_STORAGE("creative_mru_storage"),
+		SHEARING_STATION("shearing_station"),
+		CHILD_SEPARATOR("child_separator"),
+		ADULT_SEPARATOR("adult_separator"),
+		CREATIVE_ESPE_STORAGE("creative_espe_storage");
 
 		private int index;
 		private String name;

@@ -27,7 +27,7 @@ import net.minecraftforge.client.model.ModelLoader;
 
 public class BlockDrops extends Block implements IModelRegisterer {
 
-	public static final PropertyEnum<EnumDropType> TYPE = PropertyEnum.<EnumDropType>create("type", EnumDropType.class, EnumDropType.CANBEFARMED);
+	public static final PropertyEnum<EnumDropType> TYPE = PropertyEnum.<EnumDropType>create("type", EnumDropType.class, EnumDropType.CAN_BE_FARMED);
 	public static final AxisAlignedBB BLOCK_AABB = new AxisAlignedBB(0,0,0,1,0.1F,1);
 
 	protected BlockDrops() {
@@ -122,8 +122,8 @@ public class BlockDrops extends Block implements IModelRegisterer {
 
 	@Override
 	public void registerModels() {
-		for(int i = 0; i < EnumDropType.CANBEFARMED.length; i++) {
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation("essentialcraft:drops", "type=" + EnumDropType.CANBEFARMED[i].getName()));
+		for(int i = 0; i < EnumDropType.CAN_BE_FARMED.length; i++) {
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, new ModelResourceLocation("essentialcraft:drops", "type=" + EnumDropType.CAN_BE_FARMED[i].getName()));
 		}
 	}
 }

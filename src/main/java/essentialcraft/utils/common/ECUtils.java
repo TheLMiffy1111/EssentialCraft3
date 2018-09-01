@@ -457,7 +457,7 @@ public class ECUtils {
 	{
 		if(WorldEventRegistry.currentEvent == null)
 		{
-			IWorldEvent event = WorldEventRegistry.selectRandomEffect(w);
+			IWorldEvent event = WorldEventRegistry.selectRandomEvent(w);
 			if(event != null && WorldEventRegistry.currentEvent == null)
 			{
 				WorldEventRegistry.currentEvent = event;

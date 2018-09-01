@@ -236,7 +236,7 @@ public class WorldGenMerge {
 		EnumGenerationType(int weight) {
 			this.weight = weight;
 		}
-		
+
 		public static List<WeightedEnum<EnumGenerationType>> getWeightedList() {
 			ArrayList<WeightedEnum<EnumGenerationType>> ret = Lists.<WeightedEnum<EnumGenerationType>>newArrayList();
 			for(EnumGenerationType type : values()) {

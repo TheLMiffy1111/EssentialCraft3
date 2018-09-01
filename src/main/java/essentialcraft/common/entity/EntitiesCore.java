@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class EntitiesCore {
-	public static final List<EntityEntry> registeredEntities = new ArrayList<EntityEntry>();
+	public static final List<EntityEntry> REGISTERED_ENTITIES = new ArrayList<EntityEntry>();
 
 	public static void registerEntities() {
 		registerEntity(EntityMRUPresence.class, 64, 1, true);
@@ -41,9 +41,9 @@ public class EntitiesCore {
 	}
 
 	public static void registerEntity(Class<? extends Entity> entityClass, int trackingRange, int tickDelay, boolean trackRotation) {
-		ResourceLocation rl = new ResourceLocation("essentialcraft:"+entityClass.getName().toLowerCase(Locale.US));
+		ResourceLocation rl = new ResourceLocation("essentialcraft:"+entityClass.getSimpleName().toLowerCase(Locale.US));
 		EntityRegistry.registerModEntity(rl, entityClass, entityClass.getName(), nextID(), EssentialCraftCore.core, trackingRange, tickDelay, trackRotation);
-		registeredEntities.add(ForgeRegistries.ENTITIES.getValue(rl));
+		REGISTERED_ENTITIES.add(ForgeRegistries.ENTITIES.getValue(rl));
 	}
 
 	public static int id = -1;
@@ -60,5 +60,9 @@ public class EntitiesCore {
 				!biome.getSpawnableList(EnumCreatureType.MONSTER).isEmpty() &&
 				!BiomeDictionary.hasType(biome, Type.END) &&
 				!BiomeDictionary.hasType(biome, Type.NETHER)).<Biome>toArray(size->new Biome[size]);
+	}
+
+	public static void fixMappings() {
+
 	}
 }

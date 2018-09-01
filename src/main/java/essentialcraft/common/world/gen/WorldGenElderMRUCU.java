@@ -37,35 +37,34 @@ public class WorldGenElderMRUCU extends WorldGenerator {
 
 	@Override
 	public boolean generate(World world, Random rand, BlockPos pos) {
-		if(type == 0 && canGenerateAt(pos.getX()-2,pos.getZ()-2,pos.getX()+2,pos.getZ()+2,pos.getY(),true,world)) {
-			for(int x = -2; x<= 2; ++x) {
-				for(int z = -2; z<= 2; ++z) {
+		if(type == 0 && canGenerateAt(pos.getX(), pos.getZ(), pos.getX()+4, pos.getZ()+4, pos.getY(), true, world)) {
+			for(int x = 0; x <= 4; ++x) {
+				for(int z = 0; z <= 4; ++z) {
 					world.setBlockState(pos.add(x, 0, z), Blocks.STONEBRICK.getDefaultState(), 2);
-					if(x == -2 || x == 2||z == -2 || z == 2) {
+					if(x == 0 || x == 4 || z == 0 || z == 4) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.COBBLESTONE_WALL.getDefaultState(), 2);
 					}
-					if(x == 0 && z == 0) {
+					if(x == 2 && z == 2) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.STONEBRICK.getStateFromMeta(3), 2);
 						ECUtils.createMRUCUAt(world, new Coord3D(pos.getX()+x+0.5F,pos.getY()+1.5F,pos.getZ()+z+0.5F), 5000+rand.nextInt(5000), MathUtils.randomFloat(rand)+1.0F, false, false);
 					}
 				}
 			}
 		}
-		if(type == 1 && canGenerateAt(pos.getX()-4,pos.getZ()-4,pos.getX()+4,pos.getZ()+4,pos.getY(),true,world)) {
-			for(int x = -4; x<= 4; ++x) {
-				for(int z = -4; z<= 4; ++z) {
+		if(type == 1 && canGenerateAt(pos.getX(), pos.getZ(), pos.getX()+8, pos.getZ()+8, pos.getY(), true, world)) {
+			for(int x = 0; x <= 8; ++x) {
+				for(int z = 0; z <= 8; ++z) {
 					world.setBlockState(pos.add(x, 0, z), Blocks.STONEBRICK.getStateFromMeta(rand.nextInt(3)), 2);
-					if(x == -4 || x == 4||z == -4 || z == 4) {
+					if(x == 0 || x == 8 || z == 0 || z == 8) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.COBBLESTONE_WALL.getDefaultState(), 2);
 					}
-					if(x == 0 && z == 0) {
+					if(x == 4 && z == 4) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.STONEBRICK.getStateFromMeta(3), 2);
 						ECUtils.createMRUCUAt(world, new Coord3D(pos.getX()+x+0.5F,pos.getY()+1.5F,pos.getZ()+z+0.5F), 5000+rand.nextInt(5000), MathUtils.randomFloat(rand)+1.0F, false, false);
 					}
-					if(x == -3 && z == -3 || x == 3 && z == -3 || x == 3 && z == 3 || x == -3 && z == 3) {
+					if(x == 1 && z == 1 || x == 7 && z == 1 || x == 7 && z == 7 || x == 1 && z == 7) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.CHEST.getStateFromMeta(4), 2);
 						TileEntityChest tileentitychest = (TileEntityChest)world.getTileEntity(pos.add(x, 1, z));
-
 						if(tileentitychest != null) {
 							tileentitychest.setLootTable(LootTableList.CHESTS_SIMPLE_DUNGEON, rand.nextLong());
 						}
@@ -73,57 +72,55 @@ public class WorldGenElderMRUCU extends WorldGenerator {
 				}
 			}
 		}
-		if(type == 2 && canGenerateAt(pos.getX()-4,pos.getZ()-4,pos.getX()+4,pos.getZ()+4,pos.getY(),true,world)) {
-			for(int x = -4; x<= 4; ++x) {
-				for(int z = -4; z<= 4; ++z) {
+		if(type == 2 && canGenerateAt(pos.getX(), pos.getZ(), pos.getX()+8, pos.getZ()+8, pos.getY(), true, world)) {
+			for(int x = 0; x <= 8; ++x) {
+				for(int z = 0; z <= 8; ++z) {
 					world.setBlockState(pos.add(x, 0, z), Blocks.STONEBRICK.getStateFromMeta(rand.nextInt(3)), 2);
 					world.setBlockState(pos.add(x, 1, z), Blocks.STONEBRICK.getStateFromMeta(rand.nextInt(3)), 2);
-					if(x == -4 || x == 4||z == -4 || z == 4) {
+					if(x == 0 || x == 8 || z == 0 || z == 8) {
 						world.setBlockState(pos.add(x, 2, z), Blocks.COBBLESTONE_WALL.getDefaultState(), 2);
 					}
 					if(x == 0 && z == 0) {
 						world.setBlockState(pos.add(x, 2, z), Blocks.STONEBRICK.getStateFromMeta(3), 2);
-						ECUtils.createMRUCUAt(world, new Coord3D(pos.getX()+x+0.5F,pos.getY()+1.5F,pos.getZ()+z+0.5F), 5000+rand.nextInt(5000), MathUtils.randomFloat(rand)+1.0F, false, false);
+						ECUtils.createMRUCUAt(world, new Coord3D(pos.getX()+x+0.5F, pos.getY()+1.5F, pos.getZ()+z+0.5F), 5000+rand.nextInt(5000), MathUtils.randomFloat(rand)+1.0F, false, false);
 					}
-					if(x != 3 && x != -3 && z != 3 && z != -3 && (x == -2 || x == 2 || z == -2 || z == 2)) {
+					if(x != 7 && x != 1 && z != 7 && z != 1 && (x == 2 || x == 6 || z == 2 || z == 6)) {
 						world.setBlockState(pos.add(x, 2, z), Blocks.COBBLESTONE_WALL.getDefaultState(), 2);
 					}
-					if(x != 4 && x != -4 && z != 4 && z != -4 && (x == -3 || x == 3 || z == -3 || z == 3)) {
+					if(x != 8 && x != 0 && z != 8 && z != 0 && (x == 1 || x == 7 || z == 1 || z == 7)) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.LAVA.getDefaultState(), 2);
 					}
 				}
 			}
 		}
-		if(type == 3 && canGenerateAt(pos.getX()-4,pos.getZ()-4,pos.getX()+4,pos.getZ()+4,pos.getY(),false,world)) {
-			for(int x = -4; x<= 4; ++x) {
-				for(int z = -4; z<= 4; ++z) {
+		if(type == 3 && canGenerateAt(pos.getX(), pos.getZ(), pos.getX()+8, pos.getZ()+8, pos.getY(), false, world)) {
+			for(int x = 0; x <= 8; ++x) {
+				for(int z = 0; z <= 8; ++z) {
 					world.setBlockState(pos.add(x, 0, z), Blocks.STONEBRICK.getStateFromMeta(rand.nextInt(3)), 2);
 					world.setBlockState(pos.add(x, 4, z), Blocks.STONEBRICK.getStateFromMeta(rand.nextInt(3)), 2);
-					if(x == -4 || x == 4||z == -4 || z == 4) {
+					if(x == 0 || x == 8 || z == 0 || z == 8) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.IRON_BARS.getDefaultState(), 2);
 						world.setBlockState(pos.add(x, 2, z), Blocks.STONEBRICK.getStateFromMeta(rand.nextInt(3)), 2);
 						world.setBlockState(pos.add(x, 3, z), Blocks.IRON_BARS.getDefaultState(), 2);
 					}
-					if(x == -4 && z == -4 || x == 4 && z == -4 || x == 4 && z == 4 || x == -4 && z == 4) {
+					if(x == 0 && z == 0 || x == 8 && z == 0 || x == 8 && z == 8 || x == 0 && z == 8) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.STONEBRICK.getStateFromMeta(rand.nextInt(3)), 2);
 						world.setBlockState(pos.add(x, 3, z), Blocks.STONEBRICK.getStateFromMeta(rand.nextInt(3)), 2);
 					}
-					if(x == 0 && z == 0) {
+					if(x == 4 && z == 4) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.STONEBRICK.getStateFromMeta(3), 2);
-						ECUtils.createMRUCUAt(world, new Coord3D(pos.getX()+x+0.5F,pos.getY()+1.5F,pos.getZ()+z+0.5F), 5000+rand.nextInt(5000), MathUtils.randomFloat(rand)+1.0F, false, false);
+						ECUtils.createMRUCUAt(world, new Coord3D(pos.getX()+x+0.5F, pos.getY()+1.5F, pos.getZ()+z+0.5F), 5000+rand.nextInt(5000), MathUtils.randomFloat(rand)+1.0F, false, false);
 					}
-					if(x == -3 && z == -3 || x == 3 && z == -3 || x == 3 && z == 3 || x == -3 && z == 3) {
+					if(x == 1 && z == 1 || x == 7 && z == 1 || x == 7 && z == 7 || x == 1 && z == 7) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.CHEST.getStateFromMeta(rand.nextInt(4)), 2);
 						TileEntityChest tileentitychest = (TileEntityChest)world.getTileEntity(pos.add(x, 1, z));
-
 						if(tileentitychest != null) {
 							tileentitychest.setLootTable(LootTableList.CHESTS_SIMPLE_DUNGEON, rand.nextLong());
 						}
 					}
-					if(x == -1 && z == 0 || x == 1 && z == 0 || x == 0 && z == 1 || x == 0 && z == -1) {
+					if(x == 3 && z == 4 || x == 5 && z == 4 || x == 4 && z == 5 || x == 4 && z == 3) {
 						world.setBlockState(pos.add(x, 1, z), Blocks.MOB_SPAWNER.getDefaultState(), 2);
 						TileEntityMobSpawner tileentitymobspawner = (TileEntityMobSpawner)world.getTileEntity(pos.add(x, 1, z));
-
 						if(tileentitymobspawner != null) {
 							tileentitymobspawner.getSpawnerBaseLogic().setEntityId(DungeonHooks.getRandomDungeonMob(rand));
 						}

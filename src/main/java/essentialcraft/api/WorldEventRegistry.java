@@ -17,7 +17,7 @@ public class WorldEventRegistry {
 		EVENTS.add(event);
 	}
 
-	public static IWorldEvent selectRandomEffect(World w) {
+	public static IWorldEvent selectRandomEvent(World w) {
 		IWorldEvent event = EVENTS.get(w.rand.nextInt(EVENTS.size()));
 		if(w.rand.nextFloat() <= event.getEventProbability(w) && event.possibleToApply(w) && event.getEventDuration(w) > 0) {
 			return event;
@@ -25,7 +25,7 @@ public class WorldEventRegistry {
 		return null;
 	}
 
-	public static IWorldEvent gettEffectByID(String id) {
+	public static IWorldEvent getEventByID(String id) {
 		for(IWorldEvent event : EVENTS) {
 			if(event.getEventID().equals(id)) {
 				return event;

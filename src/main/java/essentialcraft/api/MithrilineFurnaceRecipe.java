@@ -1,20 +1,19 @@
 package essentialcraft.api;
 
-import DummyCore.Utils.UnformedItemStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 
 public class MithrilineFurnaceRecipe {
 
-	public final UnformedItemStack smelted;
+	public final Ingredient input;
 	public final ItemStack result;
-	public final float enderStarPulsesRequired;
-	public final int requiredRecipeSize;
+	public final float energy;
+	public final int stackSize;
 
-	public MithrilineFurnaceRecipe(UnformedItemStack is, ItemStack is_1, float f1, int reqStack)
-	{
-		smelted = is;
-		result = is_1;
-		enderStarPulsesRequired = f1;
-		requiredRecipeSize = reqStack;
+	public MithrilineFurnaceRecipe(Ingredient input, ItemStack result, float energy, int stackSize) {
+		this.input = input;
+		this.result = result;
+		this.energy = energy;
+		this.stackSize = stackSize;
 	}
 }

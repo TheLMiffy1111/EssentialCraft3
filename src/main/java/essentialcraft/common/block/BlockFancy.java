@@ -48,7 +48,7 @@ public class BlockFancy extends Block implements IColdBlock, IModelRegisterer {
 			this.setSoundType(SoundType.WOOD);
 		if(material == Material.GLASS)
 			this.setSoundType(SoundType.GLASS);
-		setDefaultState(blockState.getBaseState().withProperty(TYPE, FancyBlockType.ANCIENTTILE));
+		setDefaultState(blockState.getBaseState().withProperty(TYPE, FancyBlockType.ANCIENT_TILE));
 	}
 
 	@Override
@@ -105,21 +105,21 @@ public class BlockFancy extends Block implements IColdBlock, IModelRegisterer {
 	}
 
 	public static enum FancyBlockType implements IStringSerializable {
-		ANCIENTTILE("ancient_tile"),
-		BIGTILE("big_tile"),
+		ANCIENT_TILE("ancient_tile"),
+		BIG_TILE("big_tile"),
 		BRICK("brick"),
-		FANCYTILE("fancy_tile"),
-		PRESSUREDTILE("pressured_tile"),
-		SMALLTILES("small_tiles"),
+		FANCY_TILE("fancy_tile"),
+		PRESSURED_TILE("pressured_tile"),
+		SMALL_TILES("small_tiles"),
 		TEMPLE("temple"),
 		TILES("tiles"),
-		FUTURISTICTILE("futuristic_tile"),
+		FUTURISTIC_TILE("futuristic_tile"),
 		MACHINE("machine"),
 		RUNIC("runic"),
-		NETHERSTAR("nether_star"),
+		NETHER_STAR("nether_star"),
 		PLATE("plate"),
-		PACKEDPLATE("packed_plate"),
-		DOUBLEPLATE("double_plate"),
+		PACKED_PLATE("packed_plate"),
+		DOUBLE_PLATE("double_plate"),
 		GEM("gem");
 
 		private int index;

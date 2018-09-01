@@ -94,13 +94,11 @@ public class PlayerGenericData implements IPlayerData {
 		windbound = tag.getBoolean("windbound");
 		effects.clear();
 
-		for(int i = 0; i < tag.getInteger("effectsSize"); ++i)
-		{
+		for(int i = 0; i < tag.getInteger("effectsSize"); ++i) {
 			CorruptionEffectECNBTBased effect = new CorruptionEffectECNBTBased();
 			effect.readFromNBTTagCompound(tag, i);
 			effects.add(effect);
 		}
-
 	}
 
 	@Override
@@ -112,8 +110,9 @@ public class PlayerGenericData implements IPlayerData {
 		tag.setInteger("matrixid", matrixid);
 		tag.setBoolean("windbound", windbound);
 		tag.setInteger("effectsSize", effects.size());
-		for(int i = 0; i < effects.size(); ++i)
-			effects.get(i).writeToNBTTagCompound(tag,i);
+		for(int i = 0; i < effects.size(); ++i) {
+			effects.get(i).writeToNBTTagCompound(tag, i);
+		}
 		return tag;
 	}
 

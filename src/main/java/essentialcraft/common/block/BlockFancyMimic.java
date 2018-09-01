@@ -30,7 +30,7 @@ public class BlockFancyMimic extends BlockMimic {
 
 	public BlockFancyMimic() {
 		super();
-		setDefaultState(blockState.getBaseState().withProperty(TYPE, FancyBlockType.ANCIENTTILE));
+		setDefaultState(blockState.getBaseState().withProperty(TYPE, FancyBlockType.ANCIENT_TILE));
 	}
 
 	@Override

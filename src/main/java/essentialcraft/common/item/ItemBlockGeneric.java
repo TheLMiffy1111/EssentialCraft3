@@ -5,8 +5,8 @@ import net.minecraft.item.ItemBlock;
 
 public class ItemBlockGeneric extends ItemBlock {
 
-	public ItemBlockGeneric(Block p_i45328_1_) {
-		super(p_i45328_1_);
+	public ItemBlockGeneric(Block block) {
+		super(block);
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 	}

@@ -17,7 +17,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class OreSmeltingRecipe {
 
 	public static final ArrayList<OreSmeltingRecipe> RECIPES = Lists.<OreSmeltingRecipe>newArrayList();
-	public static final HashMap<String,OreSmeltingRecipe> RECIPE_MAP = Maps.<String,OreSmeltingRecipe>newHashMap();
+	public static final HashMap<String, OreSmeltingRecipe> RECIPE_MAP = Maps.<String,OreSmeltingRecipe>newHashMap();
 
 	public String oreName;
 	public String outputName;
@@ -32,15 +32,15 @@ public class OreSmeltingRecipe {
 		this(i,"",j,k);
 	}
 
-	public OreSmeltingRecipe(String i,String s, int j, int k) {
+	public OreSmeltingRecipe(String i, String s, int j, int k) {
 		oreName = i;
 		color = j;
 		dropAmount = k;
 		outputName = s;
 	}
 
-	public OreSmeltingRecipe(String i ,String s, int j) {
-		this(i,s,j,1);
+	public OreSmeltingRecipe(String i, String s, int j) {
+		this(i, s, j, 1);
 	}
 
 	public OreSmeltingRecipe register() {
@@ -56,19 +56,19 @@ public class OreSmeltingRecipe {
 	}
 
 	public static OreSmeltingRecipe addRecipe(String i, int j) {
-		return new OreSmeltingRecipe(i,j).register();
+		return new OreSmeltingRecipe(i, j).register();
 	}
 
 	public static OreSmeltingRecipe addRecipe(String i, int j, int k) {
-		return new OreSmeltingRecipe(i,j,k).register();
+		return new OreSmeltingRecipe(i, j, k).register();
 	}
 
 	public static OreSmeltingRecipe addRecipe(String i, String s, int j, int k) {
-		return new OreSmeltingRecipe(i,s,j,k).register();
+		return new OreSmeltingRecipe(i, s, j, k).register();
 	}
 
 	public static OreSmeltingRecipe addRecipe(String i, String s, int j) {
-		return new OreSmeltingRecipe(i,s,j).register();
+		return new OreSmeltingRecipe(i, s, j).register();
 	}
 
 	public static boolean removeRecipe(OreSmeltingRecipe rec) {

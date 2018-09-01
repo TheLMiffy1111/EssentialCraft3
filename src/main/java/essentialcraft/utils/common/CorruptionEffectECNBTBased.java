@@ -154,28 +154,28 @@ public class CorruptionEffectECNBTBased implements ICorruptionEffect {
 			switch(this.meta) {
 			case 0: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.001F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,400,1,true,true));
 				}
 				break;
 			}
 			case 1: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.001F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS,400,1,true,true));
 				}
 				break;
 			}
 			case 2: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.01F && player.isSwingInProgress) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.attackEntityFrom(DamageSource.CACTUS, 3);
 				}
 				break;
 			}
 			case 3: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.001F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,400,1,true,true));
 				}
 				break;
@@ -188,20 +188,20 @@ public class CorruptionEffectECNBTBased implements ICorruptionEffect {
 			}
 			case 5: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.001F && !player.isPotionActive(PotionRegistry.paradox)) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.addPotionEffect(new PotionEffect(PotionRegistry.paradox,2000,1,true,true));
 				}
 				break;
 			}
 			case 6: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.0008F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 				}
 				break;
 			}
 			case 7: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.001F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 				}
 				break;
 			}
@@ -227,20 +227,21 @@ public class CorruptionEffectECNBTBased implements ICorruptionEffect {
 					}
 					messedItems.clear();
 					playerItems.clear();
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 				}
 				break;
 			}
 			case 9: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.00007F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.inventory.dropAllItems();
+					player.inventory.clear();
 				}
 				break;
 			}
 			case 10: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.001F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					if(!player.inventory.getCurrentItem().isEmpty()) {
 						player.inventory.getCurrentItem().useItemRightClick(player.getEntityWorld(), player, EnumHand.MAIN_HAND);
 					}
@@ -249,7 +250,7 @@ public class CorruptionEffectECNBTBased implements ICorruptionEffect {
 			}
 			case 11: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.03F && player.hurtTime > 0) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.hurtTime = 0;
 					player.hurtResistantTime = 0;
 				}
@@ -257,28 +258,28 @@ public class CorruptionEffectECNBTBased implements ICorruptionEffect {
 			}
 			case 12: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.003F && player.dimension == 1) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.attackEntityFrom(DamageSource.DROWN, 1);
 				}
 				break;
 			}
 			case 13: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.0006F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.getEntityWorld().createExplosion(null, player.posX, player.posY, player.posZ, 3, true);
 				}
 				break;
 			}
 			case 14: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.001F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.setFire(8);
 				}
 				break;
 			}
 			case 15: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.0007F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					EntityLightningBolt bolt = new EntityLightningBolt(player.getEntityWorld(),player.posX,player.posY,player.posZ, false);
 					player.getEntityWorld().spawnEntity(bolt);
 					player.getEntityWorld().addWeatherEffect(bolt);
@@ -305,7 +306,7 @@ public class CorruptionEffectECNBTBased implements ICorruptionEffect {
 					if(moonPhase == 3 || moonPhase == 5)
 						damage = 1;
 
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.attackEntityFrom(DamageSource.MAGIC, damage);
 				}
 				break;
@@ -318,40 +319,40 @@ public class CorruptionEffectECNBTBased implements ICorruptionEffect {
 			}
 			case 19: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.003F && player.dimension == -1) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.attackEntityFrom(DamageSource.DROWN, 1);
 				}
 				break;
 			}
 			case 20: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.003F && player.dimension == 0) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.attackEntityFrom(DamageSource.DROWN, 1);
 				}
 				break;
 			}
 			case 21: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.1F && player.getEntityWorld().isRaining() && player.getEntityWorld().isDaytime() && player.getEntityWorld().canBlockSeeSky(new BlockPos(MathHelper.floor(player.posX), MathHelper.floor(player.posY+player.eyeHeight), MathHelper.floor(player.posZ)))) {
-					//message(player,"essentialcraft.effect.desc_"+meta);
+					//message(player, "essentialcraft.effect.desc_"+meta);
 					player.attackEntityFrom(DamageSource.WITHER, 1);
 				}break;
 			}
 			case 22: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.003F && player.getEntityWorld().isDaytime() && !player.getEntityWorld().isRaining() && player.getEntityWorld().canBlockSeeSky(new BlockPos(MathHelper.floor(player.posX), MathHelper.floor(player.posY+player.eyeHeight), MathHelper.floor(player.posZ)))) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.attackEntityFrom(DamageSource.WITHER, 1);
 				}break;
 			}
 			case 23: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.03F && player.isInsideOfMaterial(Material.WATER)) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.attackEntityFrom(DamageSource.WITHER, 3);
 				}
 				break;
 			}
 			case 24: {
 				if(player.getEntityWorld().rand.nextFloat() <= 0.005F) {
-					message(player,"essentialcraft.effect.desc_"+meta);
+					message(player, "essentialcraft.effect.desc_"+meta);
 					player.attackEntityFrom(DamageSource.WITHER, 1);
 				}
 				break;
@@ -395,7 +396,7 @@ public class CorruptionEffectECNBTBased implements ICorruptionEffect {
 
 	@Override
 	public boolean effectEquals(ICorruptionEffect effect) {
-		return effect.getClass() == this.getClass() ? ((CorruptionEffectECNBTBased)effect).cost == this.cost && ((CorruptionEffectECNBTBased)effect).meta == this.meta && ((CorruptionEffectECNBTBased)effect).type == this.type : false;
+		return effect.getClass() == this.getClass() && ((CorruptionEffectECNBTBased)effect).cost == this.cost && ((CorruptionEffectECNBTBased)effect).meta == this.meta && ((CorruptionEffectECNBTBased)effect).type == this.type;
 	}
 
 	@Override

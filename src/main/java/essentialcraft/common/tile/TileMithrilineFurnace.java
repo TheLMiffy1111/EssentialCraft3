@@ -7,13 +7,11 @@ import DummyCore.Utils.TileStatTracker;
 import essentialcraft.api.IESPEHandler;
 import essentialcraft.api.MithrilineFurnaceRecipe;
 import essentialcraft.api.MithrilineFurnaceRecipes;
-import essentialcraft.common.block.BlockMithrilineCrystal;
 import essentialcraft.common.block.BlocksCore;
 import essentialcraft.common.capabilities.espe.CapabilityESPEHandler;
 import essentialcraft.common.capabilities.espe.ESPEStorage;
 import essentialcraft.common.mod.EssentialCraftCore;
 import essentialcraft.utils.common.ECUtils;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -93,22 +91,19 @@ public class TileMithrilineFurnace extends TileEntity implements ISidedInventory
 			if(espeStorage.getESPE() < maxEnergy)
 				for(int i = 0; i < possiblePowerSources.length; ++i) {
 					Vec3i c = possiblePowerSources[i];
-					Block b = getWorld().getBlockState(pos.add(c)).getBlock();
-					if(b instanceof BlockMithrilineCrystal) {
-						TileEntity c_tile = getWorld().getTileEntity(pos.add(c));
-						if(c_tile != null && c_tile.hasCapability(CapabilityESPEHandler.ESPE_HANDLER_CAPABILITY, null)) {
-							IESPEHandler otherStorage = c_tile.getCapability(CapabilityESPEHandler.ESPE_HANDLER_CAPABILITY, null);
-							double req = espeStorage.getMaxESPE() - espeStorage.getESPE();
-							double extracted = otherStorage.extractESPE(req, true);
-							espeStorage.addESPE(extracted, true);
+					TileEntity c_tile = getWorld().getTileEntity(pos.add(c));
+					if(c_tile != null && c_tile.hasCapability(CapabilityESPEHandler.ESPE_HANDLER_CAPABILITY, null)) {
+						IESPEHandler otherStorage = c_tile.getCapability(CapabilityESPEHandler.ESPE_HANDLER_CAPABILITY, null);
+						double req = espeStorage.getMaxESPE() - espeStorage.getESPE();
+						double extracted = otherStorage.extractESPE(req, true);
+						espeStorage.addESPE(extracted, true);
 
-							if(getWorld().isRemote && c_tile instanceof TileMithrilineCrystal) {
-								int movement = (int)(getWorld().getWorldTime() % 60);
-								if(movement > 30)
-									movement = 60 - movement;
-								getWorld().spawnParticle(EnumParticleTypes.REDSTONE, pos.getX()+c.getX()+0.5F, pos.getY()+c.getY()+movement/30D, pos.getZ()+c.getZ()+0.5F, -1, 1, 0);
-								getWorld().spawnParticle(EnumParticleTypes.REDSTONE, pos.getX()+c.getX()+0.5F, pos.getY()+c.getY()+2+movement/30D, pos.getZ()+c.getZ()+0.5F, -1, 1, 0);
-							}
+						if(getWorld().isRemote && c_tile instanceof TileMithrilineCrystal) {
+							int movement = (int)(getWorld().getWorldTime() % 60);
+							if(movement > 30)
+								movement = 60 - movement;
+							getWorld().spawnParticle(EnumParticleTypes.REDSTONE, pos.getX()+c.getX()+0.5F, pos.getY()+c.getY()+movement/30D, pos.getZ()+c.getZ()+0.5F, -1, 1, 0);
+							getWorld().spawnParticle(EnumParticleTypes.REDSTONE, pos.getX()+c.getX()+0.5F, pos.getY()+c.getY()+2+movement/30D, pos.getZ()+c.getZ()+0.5F, -1, 1, 0);
 						}
 					}
 					if(espeStorage.getESPE() >= maxEnergy) {
@@ -117,14 +112,14 @@ public class TileMithrilineFurnace extends TileEntity implements ISidedInventory
 				}
 
 			if(!getStackInSlot(0).isEmpty()) {
-				MithrilineFurnaceRecipe rec = MithrilineFurnaceRecipes.findRecipeByComponent(getStackInSlot(0));
-				if(rec != null && getStackInSlot(0).getCount() >= rec.requiredRecipeSize) {
-					reqProgress = rec.enderStarPulsesRequired;
+				MithrilineFurnaceRecipe rec = MithrilineFurnaceRecipes.getRecipeByInput(getStackInSlot(0));
+				if(rec != null && getStackInSlot(0).getCount() >= rec.stackSize) {
+					reqProgress = rec.energy;
 					if(getStackInSlot(1).isEmpty() || getStackInSlot(1).isItemEqual(rec.result) && getStackInSlot(1).getCount()+rec.result.getCount() <= getStackInSlot(1).getMaxStackSize()) {
 						double req = reqProgress - progress;
 						progress += espeStorage.extractESPE(req, true);
 						if(progress >= reqProgress) {
-							decrStackSize(0, rec.requiredRecipeSize);
+							decrStackSize(0, rec.stackSize);
 							if(getStackInSlot(1).isEmpty())
 								setInventorySlotContents(1, rec.result.copy());
 							else

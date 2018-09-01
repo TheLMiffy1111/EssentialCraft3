@@ -10,7 +10,7 @@ public class TileMRUDimensionalTransciever extends TileMRUGeneric {
 
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
 	public static boolean allowDimensionalTransfer = true;
-	
+
 	public TileMRUDimensionalTransciever() {
 		super(cfgMaxMRU);
 		mruStorage = allowDimensionalTransfer ? new MRUTileCrossDimStorage(cfgMaxMRU) : new MRUTileRangelessStorage(cfgMaxMRU);
@@ -32,7 +32,7 @@ public class TileMRUDimensionalTransciever extends TileMRUGeneric {
 	public int[] getOutputSlots() {
 		return new int[0];
 	}
-	
+
 	public static void setupConfig(Configuration cfg) {
 		try {
 			String category = "tileentities.mrudimensionaltransciever";

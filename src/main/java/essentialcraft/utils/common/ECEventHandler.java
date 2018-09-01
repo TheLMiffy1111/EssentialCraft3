@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ import essentialcraft.api.IWorldEvent;
 import essentialcraft.api.WorldEventRegistry;
 import essentialcraft.client.gui.GuiResearchBook;
 import essentialcraft.common.capabilities.mru.CapabilityMRUHandler;
+import essentialcraft.common.entity.EntitiesCore;
 import essentialcraft.common.item.ItemBaublesSpecial;
 import essentialcraft.common.item.ItemGun;
 import essentialcraft.common.item.ItemShadeSword;
@@ -99,6 +101,8 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.RegistryEvent.MissingMappings;
+import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -123,28 +127,16 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ECEventHandler {
 
 	public String lastTickLanguage;
-	public static boolean shouldLoadLoot;
 
 	@SubscribeEvent
-	public void lootTableEvent(LootTableLoadEvent event) {
-		if(shouldLoadLoot && event.getName().equals(LootTableList.CHESTS_SIMPLE_DUNGEON)) {
-			LootPool main = event.getTable().getPool("main");
-			for(int i = 0; i < ItemBaublesSpecial.names.length-1; ++i) {
-				main.addEntry(new LootEntryItem(ItemsCore.baublesCore, 3, 0, new LootFunction[] {new SetMetadata(new LootCondition[0], new RandomValueRange(i))}, new LootCondition[0], "essentialcraft:baublesCore"+i));
-			}
-			shouldLoadLoot = false;
-		}
-	}
-
-	@SubscribeEvent
-	public void serverTickEvent(ServerTickEvent event)
-	{
+	public void serverTickEvent(ServerTickEvent event) {
 		ECUtils.actionsTick();
 	}
 
@@ -897,7 +889,7 @@ public class ECEventHandler {
 			{
 				if(WorldEventRegistry.currentEvent == null)
 				{
-					WorldEventRegistry.currentEvent = WorldEventRegistry.gettEffectByID(ECUtils.getActiveEvent());
+					WorldEventRegistry.currentEvent = WorldEventRegistry.getEventByID(ECUtils.getActiveEvent());
 					WorldEventRegistry.currentEventDuration = ECUtils.getActiveEventDuration();
 				}else
 				{
@@ -917,7 +909,7 @@ public class ECEventHandler {
 			{
 				if(event.world.getWorldTime() % 20 == 0)
 				{
-					IWorldEvent wevent = WorldEventRegistry.selectRandomEffect(event.world);
+					IWorldEvent wevent = WorldEventRegistry.selectRandomEvent(event.world);
 					if(wevent != null)
 					{
 						wevent.onEventBeginning(event.world);
@@ -1199,5 +1191,16 @@ public class ECEventHandler {
 			map.registerSprite(rl);
 		map.registerSprite(new ResourceLocation("essentialcraft:blocks/null"));
 		map.registerSprite(new ResourceLocation("essentialcraft:special/whitebox"));
+	}
+
+	@SubscribeEvent
+	public void onMissingMappingsEntity(MissingMappings<EntityEntry> event) {
+		for(Mapping<EntityEntry> mapping : event.getAllMappings()) {
+			for(EntityEntry entry : EntitiesCore.REGISTERED_ENTITIES) {
+				if(mapping.key.getResourcePath().equals(entry.getEntityClass().getName().toLowerCase(Locale.US))) {
+					mapping.remap(entry);
+				}
+			}
+		}
 	}
 }

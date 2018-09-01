@@ -41,7 +41,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 public class TileRightClicker extends TileMRUGeneric {
 
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
-	
+
 	public boolean wasPowered = false;
 	public boolean firstTick = true;
 	public int rotation = 0;

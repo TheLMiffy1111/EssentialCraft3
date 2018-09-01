@@ -9,6 +9,7 @@ import essentialcraft.common.entity.EntityMRUPresence;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
@@ -20,7 +21,7 @@ public class CommandCreateMRUCU extends CommandBase
 	}
 
 	@Override
-	public String getUsage(ICommandSender par1ICommandSender) {
+	public String getUsage(ICommandSender sender) {
 		return "/createmrucu <x> <y> <z> <mruAmount> <balance>";
 	}
 
@@ -33,10 +34,13 @@ public class CommandCreateMRUCU extends CommandBase
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] par2ArrayOfStr) throws CommandException {
-		int var3 = parseInt(par2ArrayOfStr[3], 0);
-		double var4 = parseDouble(par2ArrayOfStr[4], 0, 2);
-		BlockPos p = parseBlockPos(sender, par2ArrayOfStr, 0, true);
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		if(args.length < 5) {
+			throw new WrongUsageException("Usage: /createmrucu <x> <y> <z> <mruAmount> <balance>");
+		}
+		int var3 = parseInt(args[3], 0);
+		double var4 = parseDouble(args[4], 0, 2);
+		BlockPos p = parseBlockPos(sender, args, 0, true);
 		int x = p.getX();
 		int y = p.getY();
 		int z = p.getZ();
@@ -45,6 +49,7 @@ public class CommandCreateMRUCU extends CommandBase
 		mru.mruStorage.setMRU(var3);
 		mru.mruStorage.setBalance((float)var4);
 		sender.getEntityWorld().spawnEntity(mru);
+		notifyCommandListener(sender, this, "Sucessfully created MRUCU");
 	}
 
 	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {

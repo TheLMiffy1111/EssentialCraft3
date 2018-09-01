@@ -179,7 +179,7 @@ public class ItemComputerArmor extends ItemArmor implements IVisDiscountGear, IR
 			return new ArmorProperties(0, aarmor.damageReduceAmount/10D, Integer.MAX_VALUE);
 		}
 		else
-			return new ArmorProperties(0,0,1);
+			return new ArmorProperties(0, 0, 1);
 	}
 
 	@Override

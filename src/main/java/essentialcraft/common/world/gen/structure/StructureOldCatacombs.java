@@ -7,7 +7,7 @@ import DummyCore.Utils.MathUtils;
 import DummyCore.Utils.WeightedRandomChestContent;
 import essentialcraft.common.block.BlocksCore;
 import essentialcraft.common.item.ItemBaublesResistance;
-import essentialcraft.common.item.ItemsCore;
+import essentialcraft.common.registry.LootTableRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -25,35 +26,9 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureStart;
 import net.minecraft.world.gen.structure.template.TemplateManager;
+import net.minecraft.world.storage.loot.LootTableList;
 
 public class StructureOldCatacombs {
-
-	public static final WeightedRandomChestContent[] generatedItems = {
-			new WeightedRandomChestContent(ItemsCore.titanite, 0, 8, 32, 20),
-			new WeightedRandomChestContent(ItemsCore.twinkling_titanite, 0, 2, 16, 10),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 5, 1, 16, 15),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 6, 1, 16, 15),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 7, 1, 16, 15),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 8, 1, 16, 15),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 9, 1, 16, 15),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 10, 1, 16, 15),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 11, 1, 16, 15),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 20, 1, 12, 10),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 3, 1, 16, 15),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 35, 1, 1, 6),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 36, 1, 1, 6),
-			new WeightedRandomChestContent(ItemsCore.genericItem, 37, 1, 1, 6),
-			new WeightedRandomChestContent(ItemsCore.magicalSlag, 0, 1, 16, 70),
-			new WeightedRandomChestContent(ItemsCore.ember, 0, 1, 16, 10),
-			new WeightedRandomChestContent(ItemsCore.ember, 1, 1, 16, 10),
-			new WeightedRandomChestContent(ItemsCore.ember, 2, 1, 16, 10),
-			new WeightedRandomChestContent(ItemsCore.ember, 3, 1, 16, 10),
-			new WeightedRandomChestContent(ItemsCore.ember, 4, 1, 16, 10),
-			new WeightedRandomChestContent(ItemsCore.ember, 5, 1, 16, 10),
-			new WeightedRandomChestContent(ItemsCore.ember, 7, 1, 16, 10),
-			new WeightedRandomChestContent(ItemsCore.ember, 6, 1, 16, 10),
-			new WeightedRandomChestContent(ItemsCore.bauble, 0, 1, 1, 15)
-	};
 
 	public static class Start extends StructureStart {
 
@@ -245,19 +220,8 @@ public class StructureOldCatacombs {
 				this.fillWithAir(world, structureBB, 1, i, 1, 3, i, 3);
 				this.fillWithBlocks(world, structureBB, 1, 4, 2, 1, i, 2, Blocks.LADDER.getStateFromMeta(5), Blocks.AIR.getDefaultState(), false);
 
-				this.setBlockState(world, Blocks.CHEST.getDefaultState(), 2, 2, 2, structureBB);
+				this.generateChest(world, structureBB, rand, 2, 2, 2, LootTableRegistry.CHEST_CATACOMBS);
 				this.setBlockState(world, BlocksCore.voidStone.getDefaultState(), 2, 1, 2, structureBB);
-				TileEntityChest chest = (TileEntityChest)world.getTileEntity(new BlockPos(this.boundingBox.minX+2, this.boundingBox.minY+2, this.boundingBox.minZ+2));
-				if(chest != null) {
-					WeightedRandomChestContent.generateChestContents(rand, generatedItems, chest, rand.nextInt(12)+6);
-					IInventory inv = chest;
-					for(int j = 0; j < inv.getSizeInventory(); ++j) {
-						ItemStack stk = inv.getStackInSlot(j);
-						if(stk.getItem() instanceof ItemBaublesResistance) {
-							ItemBaublesResistance.initRandomTag(stk, rand);
-						}
-					}
-				}
 			}
 
 			if(this.broken) {

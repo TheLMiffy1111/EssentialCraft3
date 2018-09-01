@@ -15,7 +15,7 @@ public class RenderWorldMerger extends TileEntitySpecialRenderer<TileWorldMerger
 
 	static final float HALF_SQRT_3 = 0.8660254F;
 	static final float TWO_OVER_THREE = 0.6666667F;
-	
+
 	@Override
 	public void render(TileWorldMerger te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		x += 0.5D;

@@ -199,8 +199,8 @@ public class ItemBaublesSpecial extends Item implements IBauble, IUBMRUGainModif
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack p_77667_1_) {
-		return getUnlocalizedName() + "." + names[Math.min(p_77667_1_.getItemDamage(), names.length-1)];
+	public String getUnlocalizedName(ItemStack stack) {
+		return getUnlocalizedName() + "." + names[Math.min(stack.getItemDamage(), names.length-1)];
 	}
 
 	@Override

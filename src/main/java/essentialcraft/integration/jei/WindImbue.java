@@ -1,9 +1,7 @@
 package essentialcraft.integration.jei;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.collect.Lists;
+import java.util.Arrays;
+import java.util.Collections;
 
 import essentialcraft.api.WindImbueRecipe;
 import essentialcraft.common.block.BlocksCore;
@@ -13,7 +11,6 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -24,14 +21,6 @@ import net.minecraft.util.text.translation.I18n;
 public class WindImbue {
 
 	public static final String UID = "essentialcraft:windImbue";
-
-	public static List<WindImbue.Wrapper> getRecipes() {
-		ArrayList<WindImbue.Wrapper> ret = Lists.<WindImbue.Wrapper>newArrayList();
-		for(WindImbueRecipe rec : WindImbueRecipe.RECIPES) {
-			ret.add(new WindImbue.Wrapper(rec));
-		}
-		return ret;
-	}
 
 	public static class Wrapper implements IRecipeWrapper {
 
@@ -50,31 +39,8 @@ public class WindImbue {
 
 		@Override
 		public void getIngredients(IIngredients paramIIngredients) {
-			paramIIngredients.setInputs(ItemStack.class, Lists.<ItemStack>newArrayList(rec.transforming, new ItemStack(BlocksCore.windRune)));
+			paramIIngredients.setInputLists(ItemStack.class, Arrays.asList(Arrays.asList(rec.input.getMatchingStacks()), Collections.singletonList(new ItemStack(BlocksCore.windRune))));
 			paramIIngredients.setOutput(ItemStack.class, rec.result);
-		}
-	}
-
-	public static class Handler implements IRecipeHandler<WindImbue.Wrapper> {
-
-		@Override
-		public String getRecipeCategoryUid(WindImbue.Wrapper arg0) {
-			return UID;
-		}
-
-		@Override
-		public Class<WindImbue.Wrapper> getRecipeClass() {
-			return WindImbue.Wrapper.class;
-		}
-
-		@Override
-		public IRecipeWrapper getRecipeWrapper(WindImbue.Wrapper arg0) {
-			return arg0;
-		}
-
-		@Override
-		public boolean isRecipeValid(WindImbue.Wrapper arg0) {
-			return !arg0.rec.transforming.isEmpty() && !arg0.rec.result.isEmpty();
 		}
 	}
 

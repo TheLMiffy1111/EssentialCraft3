@@ -1,6 +1,7 @@
 package essentialcraft.integration.jei;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,34 +9,24 @@ import com.google.common.collect.Lists;
 
 import DummyCore.Utils.DrawUtils;
 import DummyCore.Utils.MathUtils;
-import DummyCore.Utils.UnformedItemStack;
 import essentialcraft.api.MagicianTableRecipe;
-import essentialcraft.api.MagicianTableRecipes;
 import essentialcraft.common.mod.EssentialCraftCore;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 
 public class MagicianTable {
 
 	public static final String UID = "essentialcraft:magicianTable";
-
-	public static List<MagicianTable.Wrapper> getRecipes() {
-		ArrayList<MagicianTable.Wrapper> ret = Lists.<MagicianTable.Wrapper>newArrayList();
-		for(MagicianTableRecipe rec : MagicianTableRecipes.RECIPES.values()) {
-			ret.add(new MagicianTable.Wrapper(rec));
-		}
-		return ret;
-	}
 
 	public static class Wrapper implements IRecipeWrapper {
 
@@ -58,38 +49,14 @@ public class MagicianTable {
 		@Override
 		public void getIngredients(IIngredients arg0) {
 			ArrayList<List<ItemStack>> ret = Lists.<List<ItemStack>>newArrayList();
-			for(UnformedItemStack stk : rec.requiredItems) {
-				if(stk.isEmpty())
+			for(Ingredient ing : rec.requiredItems) {
+				if(ing == Ingredient.EMPTY)
 					ret.add(Collections.emptyList());
 				else
-					ret.add(stk.possibleStacks);
+					ret.add(Arrays.asList(ing.getMatchingStacks()));
 			}
 			arg0.setInputLists(ItemStack.class, ret);
 			arg0.setOutput(ItemStack.class, rec.result);
-		}
-	}
-
-	public static class Handler implements IRecipeHandler<MagicianTable.Wrapper> {
-
-
-		@Override
-		public String getRecipeCategoryUid(MagicianTable.Wrapper arg0) {
-			return UID;
-		}
-
-		@Override
-		public Class<MagicianTable.Wrapper> getRecipeClass() {
-			return MagicianTable.Wrapper.class;
-		}
-
-		@Override
-		public MagicianTable.Wrapper getRecipeWrapper(MagicianTable.Wrapper arg0) {
-			return arg0;
-		}
-
-		@Override
-		public boolean isRecipeValid(MagicianTable.Wrapper arg0) {
-			return arg0.rec.requiredItems.length>0 && !arg0.rec.result.isEmpty();
 		}
 	}
 

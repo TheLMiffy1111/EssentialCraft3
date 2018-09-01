@@ -181,7 +181,7 @@ public class GuiPlayerPentacle extends GuiScreen {
 	}
 
 	@Override
-	public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_) {
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		renderTime = (int)(Minecraft.getMinecraft().world.getTotalWorldTime() - this.timeOpened);
 		int k = (this.width - this.xSize) / 2;
 		int l = (this.height - this.ySize) / 2;
@@ -200,7 +200,7 @@ public class GuiPlayerPentacle extends GuiScreen {
 		ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
 
 		Minecraft.getMinecraft().renderEngine.bindTexture(field_147529_c);
-		drawTexturedModalRect(0, 0, p_73863_1_, p_73863_2_, res.getScaledWidth(), res.getScaledHeight());
+		drawTexturedModalRect(0, 0, mouseX, mouseY, res.getScaledWidth(), res.getScaledHeight());
 
 		GlStateManager.popMatrix();
 
@@ -261,7 +261,7 @@ public class GuiPlayerPentacle extends GuiScreen {
 			}
 		}
 		if(opacityIndex==1) {
-			super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
+			super.drawScreen(mouseX, mouseY, partialTicks);
 		}
 	}
 }

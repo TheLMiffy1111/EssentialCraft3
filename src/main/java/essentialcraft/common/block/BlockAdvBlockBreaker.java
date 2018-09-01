@@ -23,7 +23,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 
@@ -43,7 +42,7 @@ public class BlockAdvBlockBreaker extends BlockContainer implements IModelRegist
 
 	@Override
 	public void neighborChanged(IBlockState s, World w, BlockPos p, Block n, BlockPos fp) {
-		if(w instanceof World && ((World)w).isBlockIndirectlyGettingPowered(p) > 0) {
+		if(w instanceof World && w.isBlockIndirectlyGettingPowered(p) > 0) {
 			((TileAdvancedBlockBreaker)w.getTileEntity(p)).breakBlocks();
 		}
 	}
@@ -68,7 +67,7 @@ public class BlockAdvBlockBreaker extends BlockContainer implements IModelRegist
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+	public TileEntity createNewTileEntity(World world, int p_149915_2_) {
 		return new TileAdvancedBlockBreaker();
 	}
 

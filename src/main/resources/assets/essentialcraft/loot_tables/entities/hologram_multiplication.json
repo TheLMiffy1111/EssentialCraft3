@@ -1,0 +1,72 @@
+{
+    "pools": [
+        {
+            "name": "core",
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 72
+                        }
+                    ],
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "name": "remote",
+            "conditions": [
+                {
+                    "condition": "random_chance",
+                    "chance": 0.1
+                }
+            ],
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "essentialcraft:orbitalremote",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "name": "gun",
+            "conditions": [
+                {
+                    "condition": "random_chance",
+                    "chance": 0.1
+                }
+            ],
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "essentialcraft:dividergun",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "name": "record",
+            "conditions": [
+                {
+                    "condition": "random_chance",
+                    "chance": 0.3
+                }
+            ],
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "essentialcraft:robocalypse",
+                    "weight": 1
+                }
+            ]
+        }
+    ]
+}

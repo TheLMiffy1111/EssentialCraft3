@@ -14,8 +14,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBlockFancy extends ItemBlock {
 
-	public ItemBlockFancy(Block p_i45328_1_) {
-		super(p_i45328_1_);
+	public ItemBlockFancy(Block block) {
+		super(block);
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 	}

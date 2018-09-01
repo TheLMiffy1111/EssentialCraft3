@@ -93,7 +93,7 @@ public class BlockRedstoneTransmitter extends BlockContainer implements IModelRe
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int metadata) {
+	public TileEntity createNewTileEntity(World world, int metadata) {
 		return new TileRedstoneTransmitter();
 	}
 

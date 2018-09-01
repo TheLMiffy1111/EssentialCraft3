@@ -66,29 +66,29 @@ public class TileUltraHeatGenerator extends TileMRUGeneric {
 						mruFactor*=0.5D;
 				}
 
-				double scaledHeatFactor = 0F;
+				double scaledHeatFactor = 0;
 				if(heat < 1000) {
-					scaledHeatFactor = 0.1D + heat/1000;
-					currentBurnTime -= 2.5F/scaledHeatFactor;
+					scaledHeatFactor = 0.1D + heat*0.0009D;
+					currentBurnTime -= (scaledHeatFactor-0.1D)*80/3+25;
 				}
 				else if(heat > 10000) {
-					scaledHeatFactor = 0.001D + 10000/heat;
-					currentBurnTime -= 1F*scaledHeatFactor;
+					scaledHeatFactor = 0.001D + 9990/heat;
+					--currentBurnTime;
 				}
 				else {
-					scaledHeatFactor = 1D;
+					scaledHeatFactor = 1;
 					--currentBurnTime;
 				}
 				heat += mruFactor*scaledHeatFactor;
 				double mruGenerated;
 				if(heat < 1000) {
-					mruGenerated = heat/100;
+					mruGenerated = heat*0.01D;
 				}
 				else if(heat > 10000) {
-					mruGenerated = 80 + heat/1000;
+					mruGenerated = 72 + heat*0.001D;
 				}
 				else {
-					mruGenerated = heat/124;
+					mruGenerated = 2 + heat*0.008D;
 				}
 				if(mruGenerated >= 1) {
 					mruStorage.addMRU((int)mruGenerated, true);

@@ -45,9 +45,9 @@ public class EntityDivider extends Entity {
 	public double delay = 2;
 	public double damage = 1;
 	public static final double RANGE = 3;
+
 	@Override
-	protected void entityInit()
-	{
+	protected void entityInit() {
 		this.getDataManager().register(DATA, "||null:null");
 	}
 
@@ -64,8 +64,7 @@ public class EntityDivider extends Entity {
 	}
 
 	@Override
-	public void onUpdate()
-	{
+	public void onUpdate() {
 		delay -= 0.05D;
 
 		if(this.ticksExisted % 10 == 0)
@@ -73,8 +72,7 @@ public class EntityDivider extends Entity {
 
 		this.getEntityWorld().spawnParticle(EnumParticleTypes.REDSTONE, posX, posY, posZ, 1, 0, 1);
 
-		if(delay <= 0 && !this.isDead)
-		{
+		if(delay <= 0 && !this.isDead) {
 			List<EntityLivingBase> allEntities = this.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).grow(3, 3, 3));
 			for(int i = 0; i < allEntities.size(); ++i) {
 
@@ -106,7 +104,6 @@ public class EntityDivider extends Entity {
 				elb.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,200,4,true,true));
 				elb.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE,200,4,true,true));
 				elb.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS,100,0,true,true));
-
 			}
 			this.setDead();
 
@@ -115,6 +112,6 @@ public class EntityDivider extends Entity {
 
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
-		return new ItemStack(ItemsCore.entityEgg,1,EntitiesCore.registeredEntities.indexOf(ForgeRegistries.ENTITIES.getValue(EntityList.getKey(this.getClass()))));
+		return new ItemStack(ItemsCore.entityEgg,1,EntitiesCore.REGISTERED_ENTITIES.indexOf(ForgeRegistries.ENTITIES.getValue(EntityList.getKey(this.getClass()))));
 	}
 }

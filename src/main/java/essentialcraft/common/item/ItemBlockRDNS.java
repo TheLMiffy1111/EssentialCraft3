@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBlockRDNS extends ItemBlock{
 
-	public ItemBlockRDNS(Block p_i45328_1_) {
-		super(p_i45328_1_);
+	public ItemBlockRDNS(Block block) {
+		super(block);
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 	}
@@ -19,7 +19,7 @@ public class ItemBlockRDNS extends ItemBlock{
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack p_77667_1_) {
-		return super.getUnlocalizedName(p_77667_1_)+"."+BlockRedstoneDeviceNotSided.names[p_77667_1_.getItemDamage()];
+	public String getUnlocalizedName(ItemStack stack) {
+		return super.getUnlocalizedName(stack)+"."+BlockRedstoneDeviceNotSided.NAMES[stack.getItemDamage()];
 	}
 }

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import DummyCore.Utils.UnformedItemStack;
+import com.google.common.collect.Lists;
+
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.annotations.ZenRegister;
@@ -13,6 +14,7 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import essentialcraft.api.MagicianTableRecipe;
 import essentialcraft.api.MagicianTableRecipes;
+import net.minecraft.item.crafting.Ingredient;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -20,6 +22,9 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 @ZenClass("mods.essentialcraft.MagicianTable")
 public class MagicianTable {
+
+	public static List<IAction> addActions = Lists.newArrayList();
+	public static List<IAction> removeActions = Lists.newArrayList();
 
 	@ZenMethod
 	public static void addRecipe(IIngredient[] ingredients, IItemStack output, int mru) {
@@ -29,11 +34,11 @@ public class MagicianTable {
 		}
 
 		boolean allNull = true;
-		UnformedItemStack[] input = new UnformedItemStack[ingredients.length];
+		Ingredient[] input = new Ingredient[ingredients.length];
 		for(int i = 0; i < ingredients.length; i++) {
 			if(ingredients[i] != null)
 				allNull = false;
-			input[i] = CraftTweakerUtils.toUnformedIS(ingredients[i]);
+			input[i] = CraftTweakerUtils.toIngredient(ingredients[i]);
 		}
 
 		if(allNull) {
@@ -41,10 +46,7 @@ public class MagicianTable {
 			return;
 		}
 
-		if(MagicianTableRecipes.CRAFT_MATRIX_LIST.contains(Arrays.asList(input)))
-			CraftTweakerAPI.logWarning("Recipe already exists!");
-		else
-			CraftTweakerAPI.apply(new AddRecipeAction(new MagicianTableRecipe(input, CraftTweakerMC.getItemStack(output), mru)));
+		addActions.add(new ActionAddMagicianTableRecipe(new MagicianTableRecipe(input, CraftTweakerMC.getItemStack(output), mru)));
 	}
 
 	@ZenMethod
@@ -64,37 +66,13 @@ public class MagicianTable {
 			CraftTweakerAPI.logError("Cannot remove "+Arrays.toString(ingredients)+" from Magician Table Recipes");
 			return;
 		}
-
-		ArrayList<MagicianTableRecipe> toRemove = new ArrayList<MagicianTableRecipe>();
-
-		for(MagicianTableRecipe entry : MagicianTableRecipes.RECIPES.values()) {
-			if(entry.requiredItems.length <= ingredients.length) {
-				boolean flag = true;
-				for(int i = 0; i < entry.requiredItems.length; i++) {
-					if(entry.requiredItems[i] == null || entry.requiredItems[i].possibleStacks.isEmpty())
-						continue;
-					if(!ingredients[i].matches(CraftTweakerUtils.getIItemStack(entry.requiredItems[i])))
-						flag = false;
-				}
-				if(flag) {
-					if(output == null || output.matches(CraftTweakerMC.getIItemStack(entry.result)))
-						toRemove.add(entry);
-				}
-			}
-		}
-
-		if(toRemove.isEmpty())
-			CraftTweakerAPI.logWarning("No recipe for "+Arrays.toString(ingredients));
-		else
-			CraftTweakerAPI.apply(new RemoveRecipeAction(toRemove));
+		removeActions.add(new ActionRemoveMagicianTableRecipe(ingredients, output));
 	}
 
-
-
-	private static class AddRecipeAction implements IAction {
+	private static class ActionAddMagicianTableRecipe implements IAction {
 		MagicianTableRecipe rec;
 
-		public AddRecipeAction(MagicianTableRecipe rec) {
+		public ActionAddMagicianTableRecipe(MagicianTableRecipe rec) {
 			this.rec = rec;
 		}
 
@@ -109,23 +87,47 @@ public class MagicianTable {
 		}
 	}
 
-	private static class RemoveRecipeAction implements IAction {
-		List<MagicianTableRecipe> rec;
+	private static class ActionRemoveMagicianTableRecipe implements IAction {
+		IIngredient[] ingredients;
+		IIngredient output;
 
-		public RemoveRecipeAction(List<MagicianTableRecipe> rec) {
-			this.rec = rec;
+		public ActionRemoveMagicianTableRecipe(IIngredient[] ingredients, IIngredient output) {
+			this.ingredients = ingredients;
+			this.output = output;
 		}
 
 		@Override
 		public void apply() {
-			for(MagicianTableRecipe entry : rec) {
-				MagicianTableRecipes.removeRecipe(entry);
+			ArrayList<MagicianTableRecipe> toRemove = new ArrayList<MagicianTableRecipe>();
+
+			for(MagicianTableRecipe entry : MagicianTableRecipes.RECIPES) {
+				if(entry.requiredItems.length <= ingredients.length) {
+					boolean flag = true;
+					for(int i = 0; i < entry.requiredItems.length; i++) {
+						if(entry.requiredItems[i] == null || entry.requiredItems[i] == Ingredient.EMPTY)
+							continue;
+						if(!ingredients[i].contains(CraftTweakerMC.getIIngredient(entry.requiredItems[i])))
+							flag = false;
+					}
+					if(flag) {
+						if(output == null || output.matches(CraftTweakerMC.getIItemStack(entry.result)))
+							toRemove.add(entry);
+					}
+				}
+			}
+
+			if(toRemove.isEmpty())
+				CraftTweakerAPI.logWarning("No recipe for "+Arrays.toString(ingredients));
+			else {
+				for(MagicianTableRecipe entry : toRemove) {
+					MagicianTableRecipes.removeRecipe(entry);
+				}
 			}
 		}
 
 		@Override
 		public String describe() {
-			return "Removing "+rec.size()+" Magician Table Recipe(s)";
+			return "Removing Magician Table Recipes for "+Arrays.toString(ingredients);
 		}
 	}
 }

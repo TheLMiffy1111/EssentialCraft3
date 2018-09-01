@@ -24,7 +24,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
-public class TileMagicalChest extends TileEntity implements IInventory, ISidedInventory, ITickable {
+public class TileMagicalChest extends TileEntity implements ISidedInventory, ITickable {
 	public float lidAngle;
 	public float prevLidAngle;
 	public int numUsingPlayers;
@@ -32,7 +32,6 @@ public class TileMagicalChest extends TileEntity implements IInventory, ISidedIn
 
 	private ItemStack[] inventory = {};
 
-	public String ownerName = "none";
 	public int syncTick = 10;
 	public int rotation;
 	private TileStatTracker tracker;
@@ -61,7 +60,6 @@ public class TileMagicalChest extends TileEntity implements IInventory, ISidedIn
 		metadata = i.getInteger("metadata");
 		setSlotsNum(metadata);
 		rotation = i.getInteger("rotation");
-		ownerName = i.getString("ownerName");
 		MiscUtils.loadInventory(this, i);
 	}
 
@@ -70,7 +68,6 @@ public class TileMagicalChest extends TileEntity implements IInventory, ISidedIn
 		super.writeToNBT(i);
 		i.setInteger("metadata", metadata);
 		i.setInteger("rotation", rotation);
-		i.setString("ownerName", ownerName);
 		MiscUtils.saveInventory(this, i);
 		return i;
 	}

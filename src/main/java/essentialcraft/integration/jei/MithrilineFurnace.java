@@ -7,13 +7,11 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import essentialcraft.api.MithrilineFurnaceRecipe;
-import essentialcraft.api.MithrilineFurnaceRecipes;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -25,14 +23,6 @@ public class MithrilineFurnace {
 
 	public static final String UID = "essentialcraft:mithrilineFurnace";
 
-	public static List<MithrilineFurnace.Wrapper> getRecipes() {
-		ArrayList<MithrilineFurnace.Wrapper> ret = Lists.<MithrilineFurnace.Wrapper>newArrayList();
-		for(MithrilineFurnaceRecipe rec : MithrilineFurnaceRecipes.RECIPES) {
-			ret.add(new MithrilineFurnace.Wrapper(rec));
-		}
-		return ret;
-	}
-
 	public static class Wrapper implements IRecipeWrapper {
 
 		private MithrilineFurnaceRecipe rec;
@@ -43,44 +33,21 @@ public class MithrilineFurnace {
 
 		@Override
 		public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
-			minecraft.fontRenderer.drawString(MathHelper.floor(rec.enderStarPulsesRequired)+" ESPE", 2, 19, 0x000000, false);
+			minecraft.fontRenderer.drawString(MathHelper.floor(rec.energy)+" ESPE", 2, 19, 0x000000, false);
 		}
 
 		@Override
 		public void getIngredients(IIngredients arg0) {
-			ArrayList<ItemStack> get = Lists.<ItemStack>newArrayList(rec.smelted.possibleStacks);
+			ArrayList<ItemStack> get = Lists.<ItemStack>newArrayList(rec.input.getMatchingStacks());
 			ArrayList<ItemStack> ret = Lists.<ItemStack>newArrayList();
 			for(ItemStack stk : get) {
 				ret.add(stk.copy());
 			}
 			for(ItemStack stk : ret) {
-				stk.setCount(rec.requiredRecipeSize);
+				stk.setCount(rec.stackSize);
 			}
 			arg0.setInputLists(ItemStack.class, Collections.<List<ItemStack>>singletonList(ret));
-			arg0.setOutput(ItemStack.class, rec.result);
-		}
-	}
-
-	public static class Handler implements IRecipeHandler<MithrilineFurnace.Wrapper> {
-
-		@Override
-		public String getRecipeCategoryUid(MithrilineFurnace.Wrapper arg0) {
-			return UID;
-		}
-
-		@Override
-		public Class<MithrilineFurnace.Wrapper> getRecipeClass() {
-			return MithrilineFurnace.Wrapper.class;
-		}
-
-		@Override
-		public MithrilineFurnace.Wrapper getRecipeWrapper(MithrilineFurnace.Wrapper arg0) {
-			return arg0;
-		}
-
-		@Override
-		public boolean isRecipeValid(MithrilineFurnace.Wrapper arg0) {
-			return !arg0.rec.smelted.possibleStacks.isEmpty() && !arg0.rec.result.isEmpty();
+			arg0.setOutput(ItemStack.class, rec.result.copy());
 		}
 	}
 

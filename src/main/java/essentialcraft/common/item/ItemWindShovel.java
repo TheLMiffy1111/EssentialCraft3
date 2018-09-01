@@ -29,9 +29,9 @@ public class ItemWindShovel extends ItemShovelEC{
 	}
 
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer p_77648_2_, World p_77648_3_, BlockPos p_77648_4_, EnumHand p_77648_6_, EnumFacing p_77648_7_, float p_77648_8_, float p_77648_9_, float p_77648_10_)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand p_77648_6_, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
-		return ItemsCore.wind_elemental_hoe.onItemUse(p_77648_2_, p_77648_3_, p_77648_4_, p_77648_6_, p_77648_7_, p_77648_8_, p_77648_9_, p_77648_10_);
+		return ItemsCore.wind_elemental_hoe.onItemUse(player, world, pos, p_77648_6_, facing, hitX, hitY, hitZ);
 	}
 
 	@Override

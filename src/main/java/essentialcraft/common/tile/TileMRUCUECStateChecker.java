@@ -31,7 +31,7 @@ public class TileMRUCUECStateChecker extends TileEntity implements IStructurePie
 	public IMRUHandler getMRUHandler() {
 		return mruStorageWrapper;
 	}
-	
+
 	public class ControllerMRUStorageReadOnlyWrapper implements IMRUHandler {
 
 		@Override

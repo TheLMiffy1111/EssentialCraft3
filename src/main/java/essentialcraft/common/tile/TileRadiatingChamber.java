@@ -29,7 +29,7 @@ public class TileRadiatingChamber extends TileMRUGeneric {
 			ItemStack[] craftMatrix = new ItemStack[2];
 			craftMatrix[0] = getStackInSlot(1);
 			craftMatrix[1] = getStackInSlot(2);
-			RadiatingChamberRecipe rec = RadiatingChamberRecipes.getRecipeByCPAndBalance(craftMatrix, mruStorage.getBalance());
+			RadiatingChamberRecipe rec = RadiatingChamberRecipes.getRecipeByInputAndBalance(craftMatrix, mruStorage.getBalance());
 			if(currentRecipe == null && rec != null && progressLevel != 0) {
 				if(canFunction(rec))
 					currentRecipe = rec;

@@ -1,74 +1,46 @@
 package essentialcraft.api;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import DummyCore.Utils.IngredientUtils;
 import DummyCore.Utils.Notifier;
 import DummyCore.Utils.UnformedItemStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.oredict.OreIngredient;
 
 public class RadiatingChamberRecipes {
 
-	public static final HashMap<List<UnformedItemStack>,List<RadiatingChamberRecipe>> RECIPES = new HashMap<List<UnformedItemStack>, List<RadiatingChamberRecipe>>();
-	public static final List<List<UnformedItemStack>> CRAFT_MATRIX_LIST = new ArrayList<List<UnformedItemStack>>();
+	public static final List<RadiatingChamberRecipe> RECIPES = Lists.newArrayList();
 
 	public static RadiatingChamberRecipe getRecipeByResult(ItemStack result) {
-		for(List<RadiatingChamberRecipe> recList : RECIPES.values()) {
-			for(RadiatingChamberRecipe rec : recList) {
-				if(rec.result.isItemEqual(result)) {
-					return rec;
-				}
+		for(RadiatingChamberRecipe rec : RECIPES) {
+			if(rec.result.isItemEqual(result)) {
+				return rec;
 			}
 		}
 		return null;
 	}
 
-	public static List<UnformedItemStack> getUnformedStkByItemStacks(ItemStack[] pair) {
-		if(pair == null)
-			return new ArrayList<UnformedItemStack>();
-
-		List<ItemStack> l = Lists.<ItemStack>newArrayList(pair);
-		l.removeIf(is->is==null||is.isEmpty());
-		pair = l.toArray(new ItemStack[0]);
-
-		if(pair.length<=0)
-			return new ArrayList<UnformedItemStack>();
-
-		ForLST:for(List<UnformedItemStack> lst : CRAFT_MATRIX_LIST) {
-			if(lst != null && lst.size() == pair.length) {
-				for(int i = 0; i < lst.size(); ++i) {
-					UnformedItemStack stack = lst.get(i);
-					if(stack.isEmpty() && pair[i].isEmpty()) {
-						continue;
-					}
-					if(!stack.isEmpty() && !stack.itemStackMatches(pair[i])) {
-						continue ForLST;
-					}
-				}
-				return lst;
+	public static List<RadiatingChamberRecipe> getRecipesByInput(ItemStack[] input) {
+		List<RadiatingChamberRecipe> ret = Lists.newArrayList();
+		for(RadiatingChamberRecipe rec : RECIPES) {
+			if(rec.matches(input)) {
+				ret.add(rec);
 			}
 		}
-		return new ArrayList<UnformedItemStack>();
+		return ret;
 	}
 
-	public static List<RadiatingChamberRecipe> getRecipeByCP(ItemStack[] craftingPair) {
-		List<UnformedItemStack> lst = getUnformedStkByItemStacks(craftingPair);
-		return RECIPES.get(lst);
-	}
-
-	public static RadiatingChamberRecipe getRecipeByCPAndBalance(ItemStack[] craftingPair, float balance) {
-		List<RadiatingChamberRecipe> lst = getRecipeByCP(craftingPair);
-		if(lst != null) {
-			for(RadiatingChamberRecipe rec : lst) {
-				if(balance < rec.upperBalanceLine && balance > rec.lowerBalanceLine) {
-					return rec;
-				}
+	public static RadiatingChamberRecipe getRecipeByInputAndBalance(ItemStack[] input, float balance) {
+		for(RadiatingChamberRecipe rec : RECIPES) {
+			if(rec.matches(input, balance)) {
+				return rec;
 			}
 		}
 		return null;
@@ -76,21 +48,7 @@ public class RadiatingChamberRecipes {
 
 	public static boolean addRecipe(RadiatingChamberRecipe rec) {
 		try {
-			UnformedItemStack[] req = new UnformedItemStack[rec.recipeItems.length];
-			for(int i = 0; i < req.length;++i) {
-				if(!rec.recipeItems[i].isEmpty())
-					req[i] = rec.recipeItems[i].copy();
-				else
-					req[i] = UnformedItemStack.EMPTY;
-			}
-			List<RadiatingChamberRecipe> lst = null;
-			if(RECIPES.keySet().stream().anyMatch(l->l.toString().equals(Arrays.asList(req).toString())))
-				lst = RECIPES.entrySet().stream().filter(e->e.getKey().toString().equals(Arrays.asList(req).toString())).findAny().get().getValue();
-			else
-				lst = new ArrayList<RadiatingChamberRecipe>();
-			lst.add(rec);
-			RECIPES.put(Arrays.asList(req), lst);
-			CRAFT_MATRIX_LIST.add(Arrays.asList(req));
+			RECIPES.add(rec);
 			return true;
 		}
 		catch(Exception e) {
@@ -100,143 +58,161 @@ public class RadiatingChamberRecipes {
 		}
 	}
 
-	public static boolean addRecipe(ItemStack[] craftingPair, ItemStack result, int mruRequired, float[] balanceBounds) {
+	public static boolean addRecipe(Ingredient[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2) {
 		try {
-			UnformedItemStack[] unformedStacks = new UnformedItemStack[craftingPair.length];
-			for(int i = 0; i < craftingPair.length; ++i) {
-				unformedStacks[i] = new UnformedItemStack(craftingPair[i]);
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(input, result, mruRequired, balanceBound1, balanceBound2);
+			return addRecipe(addedRecipe);
+		}
+		catch(Exception e) {
+			Side side = FMLCommonHandler.instance().getEffectiveSide();
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
+			return false;
+		}
+	}
+
+	public static boolean addRecipe(Ingredient[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2, float modifier) {
+		try {
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(input, result, mruRequired, balanceBound1, balanceBound2, modifier);
+			return addRecipe(addedRecipe);
+		}
+		catch(Exception e) {
+			Side side = FMLCommonHandler.instance().getEffectiveSide();
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
+			return false;
+		}
+	}
+
+	public static boolean addRecipe(ItemStack[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2) {
+		try {
+			Ingredient[] ingredients = new Ingredient[input.length];
+			for(int i = 0; i < input.length; ++i) {
+				ingredients[i] = Ingredient.fromStacks(input[i].copy());
 			}
-			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(unformedStacks, result, mruRequired, balanceBounds);
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(ingredients, result, mruRequired, balanceBound1, balanceBound2);
 			return addRecipe(addedRecipe);
 		}
 		catch(Exception e) {
 			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(craftingPair)+" with the result "+result+" on side "+side);
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
 			return false;
 		}
 	}
 
-	public static boolean addRecipe(ItemStack[] craftingPair, ItemStack result, int mruRequired, float[] balanceBounds, float modifier) {
+	public static boolean addRecipe(ItemStack[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2, float modifier) {
 		try {
-			UnformedItemStack[] unformedStacks = new UnformedItemStack[craftingPair.length];
-			for(int i = 0; i < craftingPair.length; ++i) {
-				unformedStacks[i] = new UnformedItemStack(craftingPair[i]);
+			Ingredient[] ingredients = new Ingredient[input.length];
+			for(int i = 0; i < input.length; ++i) {
+				ingredients[i] = Ingredient.fromStacks(input[i].copy());
 			}
-			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(unformedStacks, result, mruRequired, balanceBounds, modifier);
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(ingredients, result, mruRequired, balanceBound1, balanceBound2, modifier);
 			return addRecipe(addedRecipe);
 		}
 		catch(Exception e) {
 			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(craftingPair)+" with the result "+result+" on side "+side);
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
 			return false;
 		}
 	}
 
-	public static boolean addRecipe(UnformedItemStack[] craftingPair, ItemStack result, int mruRequired, float[] balanceBounds) {
+	public static boolean addRecipe(UnformedItemStack[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2) {
 		try {
-			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(craftingPair, result, mruRequired, balanceBounds);
-			return addRecipe(addedRecipe);
-		}
-		catch(Exception e) {
-			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(craftingPair)+" with the result "+result+" on side "+side);
-			return false;
-		}
-	}
-
-	public static boolean addRecipe(UnformedItemStack[] craftingPair, ItemStack result, int mruRequired, float[] balanceBounds, float modifier) {
-		try {
-			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(craftingPair, result, mruRequired, balanceBounds, modifier);
-			return addRecipe(addedRecipe);
-		}
-		catch(Exception e) {
-			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(craftingPair)+" with the result "+result+" on side "+side);
-			return false;
-		}
-	}
-
-	public static boolean addRecipe(String[] craftingPair, ItemStack result, int mruRequired, float[] balanceBounds) {
-		try {
-			UnformedItemStack[] unformedStacks = new UnformedItemStack[craftingPair.length];
-			for(int i = 0; i < craftingPair.length; ++i) {
-				unformedStacks[i] = new UnformedItemStack(craftingPair[i]);
+			Ingredient[] ingredients = new Ingredient[input.length];
+			for(int i = 0; i < input.length; ++i) {
+				ingredients[i] = IngredientUtils.getIngredient(input[i]);
 			}
-			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(unformedStacks, result, mruRequired, balanceBounds);
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(ingredients, result, mruRequired, balanceBound1, balanceBound2);
 			return addRecipe(addedRecipe);
 		}
 		catch(Exception e) {
 			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(craftingPair)+" with the result "+result+" on side "+side);
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
 			return false;
 		}
 	}
 
-	public static boolean addRecipe(String[] craftingPair, ItemStack result, int mruRequired, float[] balanceBounds, float modifier) {
+	public static boolean addRecipe(UnformedItemStack[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2, float modifier) {
 		try {
-			UnformedItemStack[] unformedStacks = new UnformedItemStack[craftingPair.length];
-			for(int i = 0; i < craftingPair.length; ++i) {
-				unformedStacks[i] = new UnformedItemStack(craftingPair[i]);
+			Ingredient[] ingredients = new Ingredient[input.length];
+			for(int i = 0; i < input.length; ++i) {
+				ingredients[i] = IngredientUtils.getIngredient(input[i]);
 			}
-			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(unformedStacks, result, mruRequired, balanceBounds, modifier);
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(ingredients, result, mruRequired, balanceBound1, balanceBound2, modifier);
 			return addRecipe(addedRecipe);
 		}
 		catch(Exception e) {
 			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(craftingPair)+" with the result "+result+" on side "+side);
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
 			return false;
 		}
 	}
 
-	public static boolean addRecipe(Object[] craftingPair, ItemStack result, int mruRequired, float[] balanceBounds) {
+	public static boolean addRecipe(String[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2) {
 		try {
-			UnformedItemStack[] unformedStacks = new UnformedItemStack[craftingPair.length];
-			for(int i = 0; i < unformedStacks.length; ++i) {
-				if(craftingPair[i] instanceof UnformedItemStack)
-					unformedStacks[i] = (UnformedItemStack)craftingPair[i];
-				else
-					unformedStacks[i] = new UnformedItemStack(craftingPair[i]);
+			Ingredient[] ingredients = new Ingredient[input.length];
+			for(int i = 0; i < input.length; ++i) {
+				ingredients[i] = new OreIngredient(input[i]);
 			}
-			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(unformedStacks, result, mruRequired, balanceBounds);
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(ingredients, result, mruRequired, balanceBound1, balanceBound2);
 			return addRecipe(addedRecipe);
 		}
 		catch(Exception e) {
 			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(craftingPair)+" with the result "+result+" on side "+side);
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
 			return false;
 		}
 	}
 
-	public static boolean addRecipe(Object[] craftingPair, ItemStack result, int mruRequired, float[] balanceBounds, float modifier) {
+	public static boolean addRecipe(String[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2, float modifier) {
 		try {
-			UnformedItemStack[] unformedStacks = new UnformedItemStack[craftingPair.length];
-			for(int i = 0; i < unformedStacks.length; ++i) {
-				if(craftingPair[i] instanceof UnformedItemStack)
-					unformedStacks[i] = (UnformedItemStack)craftingPair[i];
-				else
-					unformedStacks[i] = new UnformedItemStack(craftingPair[i]);
+			Ingredient[] ingredients = new Ingredient[input.length];
+			for(int i = 0; i < input.length; ++i) {
+				ingredients[i] = new OreIngredient(input[i]);
 			}
-			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(unformedStacks, result, mruRequired, balanceBounds, modifier);
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(ingredients, result, mruRequired, balanceBound1, balanceBound2, modifier);
 			return addRecipe(addedRecipe);
 		}
 		catch(Exception e) {
 			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(craftingPair)+" with the result "+result+" on side "+side);
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
+			return false;
+		}
+	}
+
+	public static boolean addRecipe(Object[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2) {
+		try {
+			Ingredient[] ingredients = new Ingredient[input.length];
+			for(int i = 0; i < input.length; ++i) {
+				ingredients[i] = IngredientUtils.getIngredient(input[i]);
+			}
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(ingredients, result, mruRequired, balanceBound1, balanceBound2);
+			return addRecipe(addedRecipe);
+		}
+		catch(Exception e) {
+			Side side = FMLCommonHandler.instance().getEffectiveSide();
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
+			return false;
+		}
+	}
+
+	public static boolean addRecipe(Object[] input, ItemStack result, int mruRequired, float balanceBound1, float balanceBound2, float modifier) {
+		try {
+			Ingredient[] ingredients = new Ingredient[input.length];
+			for(int i = 0; i < input.length; ++i) {
+				ingredients[i] = IngredientUtils.getIngredient(input[i]);
+			}
+			RadiatingChamberRecipe addedRecipe = new RadiatingChamberRecipe(ingredients, result, mruRequired, balanceBound1, balanceBound2, modifier);
+			return addRecipe(addedRecipe);
+		}
+		catch(Exception e) {
+			Side side = FMLCommonHandler.instance().getEffectiveSide();
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to add recipe "+Arrays.toString(input)+" with the result "+result+" on side "+side);
 			return false;
 		}
 	}
 
 	public static boolean removeRecipe(RadiatingChamberRecipe rec) {
 		try {
-			UnformedItemStack[] req = new UnformedItemStack[rec.recipeItems.length];
-			for(int i = 0; i < req.length;++i) {
-				if(rec.recipeItems[i] != null)
-					req[i] = rec.recipeItems[i].copy();
-				else
-					req[i] = null;
-			}
-			RECIPES.remove(Arrays.<UnformedItemStack>asList(req));
-			CRAFT_MATRIX_LIST.remove(Arrays.<UnformedItemStack>asList(req));
+			RECIPES.remove(rec);
 			return true;
 		}
 		catch(Exception e) {
@@ -246,33 +222,33 @@ public class RadiatingChamberRecipes {
 		}
 	}
 
-	public static boolean removeRecipeCP(ItemStack[] craftingPair) {
+	public static boolean removeRecipeByInput(ItemStack[] input) {
 		try {
-			for(RadiatingChamberRecipe removedRecipe : getRecipeByCP(craftingPair)) {
+			for(RadiatingChamberRecipe removedRecipe : getRecipesByInput(input)) {
 				removeRecipe(removedRecipe);
 			}
 			return true;
 		}
 		catch(Exception e) {
 			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to remove recipe "+Arrays.toString(craftingPair)+" on side "+side);
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to remove recipe "+Arrays.toString(input)+" on side "+side);
 			return false;
 		}
 	}
 
-	public static boolean removeRecipeCP(ItemStack[] craftingPair, float balance) {
+	public static boolean removeRecipeByInput(ItemStack[] input, float balance) {
 		try {
-			RadiatingChamberRecipe removedRecipe = getRecipeByCPAndBalance(craftingPair, balance);
+			RadiatingChamberRecipe removedRecipe = getRecipeByInputAndBalance(input, balance);
 			return removeRecipe(removedRecipe);
 		}
 		catch(Exception e) {
 			Side side = FMLCommonHandler.instance().getEffectiveSide();
-			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to remove recipe "+Arrays.toString(craftingPair)+" on side "+side);
+			Notifier.notifyCustomMod("EssentialCraftAPI","Unable to remove recipe "+Arrays.toString(input)+" on side "+side);
 			return false;
 		}
 	}
 
-	public static boolean removeRecipeIS(ItemStack result) {
+	public static boolean removeRecipeByResult(ItemStack result) {
 		try {
 			RadiatingChamberRecipe removedRecipe = getRecipeByResult(result);
 			return removeRecipe(removedRecipe);

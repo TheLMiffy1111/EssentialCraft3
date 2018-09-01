@@ -1180,6 +1180,7 @@ tile.essentialcraft.device.creativeMRUStorage.name=Creative MRU Source
 tile.essentialcraft.device.shearingStation.name=Magical Shearing Station
 tile.essentialcraft.device.childSeparator.name=Magical Animal Separator: Child
 tile.essentialcraft.device.adultSeparator.name=Magical Animal Separator: Adult
+tile.essentialcraft.device.creativeESPEStorage.name=Creative ESPE Source
 tile.essentialcraft.advBreaker.name=Advanced Magical Breaker
 item.essentialcraft.craftingFrame.name=Crafting Frame
 item.essentialcraft.inventoryGem.name=Inventory Gem

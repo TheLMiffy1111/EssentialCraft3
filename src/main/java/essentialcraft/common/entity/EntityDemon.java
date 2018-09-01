@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import DummyCore.Utils.MathUtils;
+import DummyCore.Utils.MiscUtils;
 import essentialcraft.api.DemonTrade;
 import essentialcraft.common.block.BlockDemonicPentacle;
 import essentialcraft.common.item.ItemsCore;
@@ -45,41 +46,37 @@ public class EntityDemon extends EntityLiving implements IInventory {
 	public static final DataParameter<ItemStack> DESIRED = EntityDataManager.<ItemStack>createKey(EntityDemon.class, DataSerializers.ITEM_STACK);
 
 	@Override
-	protected boolean canDespawn()
-	{
+	protected boolean canDespawn() {
 		return false;
 	}
 
-	public EntityDemon(World w)
-	{
+	public EntityDemon(World w) {
 		super(w);
-		if(w.rand.nextBoolean()) {
-			desiredItem = new ItemStack(ItemsCore.soul,1+w.rand.nextInt(7),w.rand.nextInt(DemonTrade.allMobs.size()));
+		DemonTrade trade = MathUtils.randomElement(DemonTrade.TRADES, w.rand);
+		if(trade.entityType != null) {
+			ItemStack stack = new ItemStack(ItemsCore.soul, w.rand.nextInt(7)+1, 0);
+			MiscUtils.getStackTag(stack).setString("entity", trade.entityType.getRegistryName().toString());
 		}
 		else {
-			desiredItem = DemonTrade.trades.get(DemonTrade.allMobs.size() + w.rand.nextInt(DemonTrade.trades.size() - DemonTrade.allMobs.size())).desiredItem;
+			this.desiredItem = trade.desiredItem;
 		}
 	}
 
 	@Override
-	protected SoundEvent getAmbientSound()
-	{
+	protected SoundEvent getAmbientSound() {
 		return this.getEntityWorld().rand.nextBoolean() ? SoundRegistry.entityDemonSay : SoundRegistry.entityDemonSummon;
 	}
 
 	@Override
-	protected SoundEvent getHurtSound(DamageSource s)
-	{
+	protected SoundEvent getHurtSound(DamageSource s) {
 		return SoundRegistry.entityDemonDepart;
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_)
-	{
-		this.playSound(getHurtSound(p_70097_1_), 1, 1);
+	public boolean attackEntityFrom(DamageSource damageSource, float amount) {
+		this.playSound(getHurtSound(damageSource), 1, 1);
 		this.setDead();
-		for (int i = 0; i < 400; ++i)
-		{
+		for(int i = 0; i < 400; ++i) {
 			double d2 = this.rand.nextGaussian() * 0.02D;
 			double d0 = this.rand.nextGaussian() * 0.02D;
 			double d1 = this.rand.nextGaussian() * 0.02D;
@@ -89,20 +86,16 @@ public class EntityDemon extends EntityLiving implements IInventory {
 	}
 
 	@Override
-	public void onUpdate()
-	{
+	public void onUpdate() {
 		if(!this.getEntityWorld().isRemote)
 			this.getDataManager().set(DESIRED,desiredItem);
 
 		super.onUpdate();
 
-		if(!this.getStackInSlot(0).isEmpty() && !this.desiredItem.isEmpty())
-		{
-			if(this.desiredItem.getItemDamage() != OreDictionary.WILDCARD_VALUE && this.getStackInSlot(0).isItemEqual(desiredItem) && this.getStackInSlot(0).getCount() >= this.desiredItem.getCount() || this.desiredItem.getItemDamage() == OreDictionary.WILDCARD_VALUE && this.getStackInSlot(0).getItem() == this.desiredItem.getItem() && this.getStackInSlot(0).getCount() >= this.desiredItem.getCount())
-			{
+		if(!this.getStackInSlot(0).isEmpty() && !this.desiredItem.isEmpty()) {
+			if(this.desiredItem.getItemDamage() != OreDictionary.WILDCARD_VALUE && this.getStackInSlot(0).isItemEqual(desiredItem) && ItemStack.areItemStackTagsEqual(this.getStackInSlot(0), desiredItem) && this.getStackInSlot(0).getCount() >= this.desiredItem.getCount() || this.desiredItem.getItemDamage() == OreDictionary.WILDCARD_VALUE && this.getStackInSlot(0).getItem() == this.desiredItem.getItem() && this.getStackInSlot(0).getCount() >= this.desiredItem.getCount()) {
 				this.setDead();
-				for (int i = 0; i < 400; ++i)
-				{
+				for(int i = 0; i < 400; ++i) {
 					double d2 = this.rand.nextGaussian() * 0.02D;
 					double d0 = this.rand.nextGaussian() * 0.02D;
 					double d1 = this.rand.nextGaussian() * 0.02D;
@@ -116,20 +109,15 @@ public class EntityDemon extends EntityLiving implements IInventory {
 			}
 		}
 
-		if(this.getEntityWorld().isRaining() && this.getEntityWorld().canBlockSeeSky(new BlockPos(MathHelper.floor(posX), MathHelper.floor(posY+1), MathHelper.floor(posZ))))
-		{
+		if(this.getEntityWorld().isRaining() && this.getEntityWorld().canBlockSeeSky(new BlockPos(MathHelper.floor(posX), MathHelper.floor(posY+1), MathHelper.floor(posZ)))) {
 			for(int i = 0; i < 20; ++i)
 				this.getEntityWorld().spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX+MathUtils.randomDouble(getRNG()), posY+1.3D+MathUtils.randomDouble(getRNG())*2, posZ+MathUtils.randomDouble(getRNG()), 0, 0.1D, 0);
 		}
-		if(this.ticksExisted % 40 == 0)
-		{
-			for(int dx = -1; dx <= 1; ++dx)
-			{
-				for(int dz = -1; dz <= 1; ++dz)
-				{
+		if(this.ticksExisted % 40 == 0) {
+			for(int dx = -1; dx <= 1; ++dx) {
+				for(int dz = -1; dz <= 1; ++dz) {
 					Block b = this.getEntityWorld().getBlockState(new BlockPos(MathHelper.floor(posX)+dx, MathHelper.floor(posY), MathHelper.floor(posZ)+dz)).getBlock();
-					if(b instanceof BlockDemonicPentacle)
-					{
+					if(b instanceof BlockDemonicPentacle) {
 						TileDemonicPentacle tile = (TileDemonicPentacle) this.getEntityWorld().getTileEntity(new BlockPos(MathHelper.floor(posX)+dx, MathHelper.floor(posY), MathHelper.floor(posZ)+dz));
 						if(tile.tier >= 0)
 							return;
@@ -138,14 +126,11 @@ public class EntityDemon extends EntityLiving implements IInventory {
 			}
 			this.attackEntityFrom(DamageSource.OUT_OF_WORLD, 1);
 		}
-		if(this.ticksExisted % 20 == 0)
-		{
+		if(this.ticksExisted % 20 == 0) {
 			List<EntityMob> zombies = this.getEntityWorld().getEntitiesWithinAABB(EntityMob.class, new AxisAlignedBB(posX-0.5D, posY-0.5D, posZ-0.5D, posX+0.5D, posY+0.5D, posZ+0.5D).grow(12, 12, 12));
-			if(!zombies.isEmpty())
-			{
+			if(!zombies.isEmpty()) {
 				EntityMob z = zombies.get(getRNG().nextInt(zombies.size()));
-				if(z.isEntityAlive())
-				{
+				if(z.isEntityAlive()) {
 					this.swingArm(EnumHand.MAIN_HAND);
 					z.attackEntityFrom(DamageSource.causeMobDamage(this), z.getMaxHealth()*1.6F);
 					this.getEntityWorld().createExplosion(this, z.posX, z.posY, z.posZ, 2, false);
@@ -201,20 +186,17 @@ public class EntityDemon extends EntityLiving implements IInventory {
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stk)
-	{
+	public void setInventorySlotContents(int slot, ItemStack stk) {
 		this.inventory = stk;
 	}
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return "demon";
 	}
 
 	@Override
-	public boolean hasCustomName()
-	{
+	public boolean hasCustomName() {
 		return false;
 	}
 
@@ -239,27 +221,23 @@ public class EntityDemon extends EntityLiving implements IInventory {
 	public void closeInventory(EntityPlayer p) {}
 
 	@Override
-	public boolean processInteract(EntityPlayer p, EnumHand hand)
-	{
+	public boolean processInteract(EntityPlayer p, EnumHand hand) {
 		this.playSound(SoundRegistry.entityDemonTrade, this.getSoundVolume(), this.getSoundPitch());
 		p.openGui(EssentialCraftCore.core, Config.guiID[1], this.getEntityWorld(), MathHelper.floor(posX), MathHelper.floor(posY), MathHelper.floor(posZ));
 		return true;
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound tag)
-	{
+	public void writeEntityToNBT(NBTTagCompound tag) {
 		super.writeEntityToNBT(tag);
-		if(!this.desiredItem.isEmpty())
-		{
+		if(!this.desiredItem.isEmpty()) {
 			NBTTagCompound itemTag = new NBTTagCompound();
 			this.desiredItem.writeToNBT(itemTag);
 			tag.setTag("desired", itemTag);
 		}
 		else
 			tag.removeTag("desired");
-		if(!this.inventory.isEmpty())
-		{
+		if(!this.inventory.isEmpty()) {
 			NBTTagCompound itemTag = new NBTTagCompound();
 			this.inventory.writeToNBT(itemTag);
 			tag.setTag("inventory", itemTag);
@@ -269,8 +247,7 @@ public class EntityDemon extends EntityLiving implements IInventory {
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound tag)
-	{
+	public void readEntityFromNBT(NBTTagCompound tag) {
 		super.readEntityFromNBT(tag);
 		if(tag.hasKey("desired"))
 			this.desiredItem = new ItemStack(tag.getCompoundTag("desired"));
@@ -279,8 +256,7 @@ public class EntityDemon extends EntityLiving implements IInventory {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stk)
-	{
+	public boolean isItemValidForSlot(int slot, ItemStack stk) {
 		return true;
 	}
 
@@ -311,7 +287,7 @@ public class EntityDemon extends EntityLiving implements IInventory {
 
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
-		return new ItemStack(ItemsCore.entityEgg,1,EntitiesCore.registeredEntities.indexOf(ForgeRegistries.ENTITIES.getValue(EntityList.getKey(this.getClass()))));
+		return new ItemStack(ItemsCore.entityEgg,1,EntitiesCore.REGISTERED_ENTITIES.indexOf(ForgeRegistries.ENTITIES.getValue(EntityList.getKey(this.getClass()))));
 	}
 
 	@Override

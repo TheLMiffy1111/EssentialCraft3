@@ -27,7 +27,6 @@ public class TileCrystalExtractor extends TileMRUGeneric {
 		if(getWorld().isBlockIndirectlyGettingPowered(pos) == 0)
 			doWork();
 		spawnParticles();
-
 	}
 
 	public void doWork() {

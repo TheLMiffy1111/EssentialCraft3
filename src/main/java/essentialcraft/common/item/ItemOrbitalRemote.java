@@ -23,15 +23,13 @@ public class ItemOrbitalRemote extends ItemMRUGeneric implements IModelRegistere
 	}
 
 	@Override
-	public void onUpdate(ItemStack itemStack, World world, Entity entity, int indexInInventory, boolean isCurrentItem)
-	{
+	public void onUpdate(ItemStack itemStack, World world, Entity entity, int indexInInventory, boolean isCurrentItem) {
 		super.onUpdate(itemStack, world, entity, indexInInventory, isCurrentItem);
 		if(entity instanceof EntityPlayer && entity.ticksExisted % 20 == 0) {}
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World w, EntityPlayer p, EnumHand hand)
-	{
+	public ActionResult<ItemStack> onItemRightClick(World w, EntityPlayer p, EnumHand hand) {
 		ItemStack stk = p.getHeldItem(hand);
 		float f = 1;
 		double d0 = p.prevPosX + (p.posX - p.prevPosX) * f;
@@ -50,14 +48,13 @@ public class ItemOrbitalRemote extends ItemMRUGeneric implements IModelRegistere
 		double d3 = 32.0D;
 		Vec3d distanced = lookVec.addVector(f7 * d3, f6 * d3, f8 * d3);
 		RayTraceResult mop = p.getEntityWorld().rayTraceBlocks(lookVec, distanced, true, false, false);
-		if(mop != null && mop.typeOfHit == Type.BLOCK)
-		{
-			if(ECUtils.playerUseMRU(p, stk, 10000))
-			{
+		if(mop != null && mop.typeOfHit == Type.BLOCK) {
+			if(ECUtils.playerUseMRU(p, stk, 10000)) {
 				EntityOrbitalStrike eos = new EntityOrbitalStrike(w,mop.getBlockPos().getX()+0.5D,mop.getBlockPos().getY()+1,mop.getBlockPos().getZ()+0.5D,128,3,p);
 
-				if(!w.isRemote)
+				if(!w.isRemote) {
 					w.spawnEntity(eos);
+				}
 			}
 		}
 

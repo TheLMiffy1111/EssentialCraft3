@@ -15,9 +15,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderWindMage extends RenderLiving<EntityWindMage> {
-	private static final ResourceLocation apprenticeTextures = new ResourceLocation("essentialcraft","textures/entities/windMage_apprentice.png");
-	private static final ResourceLocation normalTextures = new ResourceLocation("essentialcraft","textures/entities/windMage.png");
-	private static final ResourceLocation archmageTextures = new ResourceLocation("essentialcraft","textures/entities/windMage_archmage.png");
+	private static final ResourceLocation APPRENTICE_TEXTURES = new ResourceLocation("essentialcraft","textures/entities/windMage_apprentice.png");
+	private static final ResourceLocation NORMAL_TEXTURES = new ResourceLocation("essentialcraft","textures/entities/windMage.png");
+	private static final ResourceLocation ARCHMAGE_TEXTURES = new ResourceLocation("essentialcraft","textures/entities/windMage_archmage.png");
 
 	protected ModelBiped villagerModel;
 
@@ -34,20 +34,20 @@ public class RenderWindMage extends RenderLiving<EntityWindMage> {
 
 	@Override
 	protected ResourceLocation getEntityTexture(EntityWindMage entity) {
-		switch (entity.getType()) {
-		case 1:
-			return normalTextures;
-		case 2:
-			return archmageTextures;
+		switch(entity.getType()) {
+		case 0:
 		default:
-			return apprenticeTextures;
+			return APPRENTICE_TEXTURES;
+		case 1:
+			return NORMAL_TEXTURES;
+		case 2:
+			return ARCHMAGE_TEXTURES;
 		}
 	}
 
 	@Override
 	protected void preRenderCallback(EntityWindMage entity, float partialTicks) {
 		float f1 = 0.9375F;
-
 		GlStateManager.scale(f1, f1, f1);
 	}
 

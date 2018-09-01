@@ -53,6 +53,6 @@ public enum EnumDropType implements IStringSerializable {
 		return values()[(i+4)%5];
 	}
 
-	public static final EnumDropType[] CANBEFARMED = {FIRE,WATER,EARTH,AIR};
+	public static final EnumDropType[] CAN_BE_FARMED = {FIRE,WATER,EARTH,AIR};
 	public static final EnumDropType[] NORMAL = {FIRE,WATER,EARTH,AIR,ELEMENTAL};
 }

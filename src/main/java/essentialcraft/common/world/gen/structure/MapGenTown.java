@@ -83,8 +83,8 @@ public class MapGenTown extends MapGenStructure {
 	}
 
 	@Override
-	protected StructureStart getStructureStart(int p_75049_1_, int p_75049_2_) {
-		return new MapGenTown.Start(this.world, this.rand, p_75049_1_, p_75049_2_, this.size);
+	protected StructureStart getStructureStart(int chunkX, int chunkZ) {
+		return new MapGenTown.Start(this.world, this.rand, chunkX, chunkZ, this.size);
 	}
 
 	public static class Start extends StructureStart {

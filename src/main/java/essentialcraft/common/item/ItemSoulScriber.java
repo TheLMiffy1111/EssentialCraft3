@@ -3,6 +3,7 @@ package essentialcraft.common.item;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import DummyCore.Utils.MiscUtils;
 import essentialcraft.api.DemonTrade;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 public class ItemSoulScriber extends ItemSwordEC {
@@ -21,8 +23,7 @@ public class ItemSoulScriber extends ItemSwordEC {
 	}
 
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot s,ItemStack stack)
-	{
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot s, ItemStack stack) {
 		Multimap<String, AttributeModifier> mp = HashMultimap.<String, AttributeModifier>create();
 		if(s == EntityEquipmentSlot.MAINHAND) {
 			mp.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", 1, 0));
@@ -34,13 +35,15 @@ public class ItemSoulScriber extends ItemSwordEC {
 	@Override
 	public boolean hitEntity(ItemStack weapon, EntityLivingBase attacked, EntityLivingBase attacker) {
 		if(MathHelper.floor(attacked.getHealth()) <= 2) {
-			boolean createSoul = DemonTrade.allMobs.contains(EntityRegistry.getEntry(attacked.getClass()));
+			EntityEntry e = EntityRegistry.getEntry(attacked.getClass());
+			boolean createSoul = DemonTrade.ALL_MOBS.contains(e);
 			if(createSoul && attacker instanceof EntityPlayer) {
-				ItemStack soul = new ItemStack(ItemsCore.soul,1,DemonTrade.allMobs.indexOf(EntityRegistry.getEntry(attacked.getClass())));
-				EntityItem ei = new EntityItem(attacked.getEntityWorld(),attacked.posX,attacked.posY,attacked.posZ,soul);
-				if(!attacked.getEntityWorld().isRemote)
+				ItemStack soul = new ItemStack(ItemsCore.soul, 1, 0);
+				MiscUtils.getStackTag(soul).setString("entity", e.getRegistryName().toString());
+				EntityItem ei = new EntityItem(attacked.getEntityWorld(), attacked.posX, attacked.posY, attacked.posZ, soul);
+				if(!attacked.getEntityWorld().isRemote) {
 					attacked.getEntityWorld().spawnEntity(ei);
-
+				}
 				attacked.setDead();
 			}
 		}

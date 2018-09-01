@@ -1,0 +1,415 @@
+{
+    "pools": [
+        {
+            "name": "main",
+            "rolls": {
+                "min": 18,
+                "max": 20
+            },
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "essentialcraft:titanite",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 2,
+                                "max": 10
+                            }
+                        }
+                    ],
+                    "weight": 20
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:twinkling_titanite",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 2,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:magicalessence",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 3
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:magicalingot",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 5
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:magicalwater",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 6
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:magicfortifiedplating",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 7
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:magicpurifyedenderscalealloy",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 8
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:magicpurifyedglassalloy",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 9
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:magicpurifyedgoldalloy",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 10
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:magicpurifyedredstonealloy",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 11
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:crystaldust",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 20
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 4
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:voidplating",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 35
+                        }
+                    ],
+                    "weight": 6
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:voidcore",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 36
+                        }
+                    ],
+                    "weight": 6
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:genitem",
+                    "entryName": "essentialcraft:voidmrureactor",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 37
+                        }
+                    ],
+                    "weight": 6
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:magicalslag",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 70
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:ember",
+                    "entryName": "essentialcraft:emberacidic",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:ember",
+                    "entryName": "essentialcraft:emberchaos",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 1
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:ember",
+                    "entryName": "essentialcraft:embercommon",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 2
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:ember",
+                    "entryName": "essentialcraft:embercorrupted",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 3
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:ember",
+                    "entryName": "essentialcraft:embercrystal",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 4
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:ember",
+                    "entryName": "essentialcraft:emberdivine",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 5
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:ember",
+                    "entryName": "essentialcraft:embermagical",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 6
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:ember",
+                    "entryName": "essentialcraft:emberflame",
+                    "functions": [
+                        {
+                            "function": "set_data",
+                            "data": 7
+                        },
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:bauble",
+                    "weight": 15
+                }
+            ]
+        }
+    ]
+}

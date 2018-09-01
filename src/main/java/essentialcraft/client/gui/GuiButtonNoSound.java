@@ -7,13 +7,12 @@ import net.minecraft.client.gui.GuiButton;
 
 public class GuiButtonNoSound extends GuiButton {
 
-	public GuiButtonNoSound(int p_i1021_1_, int p_i1021_2_, int p_i1021_3_, int p_i1021_4_, int p_i1021_5_, String p_i1021_6_) {
-		super(p_i1021_1_, p_i1021_2_, p_i1021_3_, p_i1021_4_, p_i1021_5_, p_i1021_6_);
+	public GuiButtonNoSound(int id, int x, int y, int width, int height, String buttonText) {
+		super(id, x, y, width, height, buttonText);
 	}
 
 	@Override
-	public void playPressSound(SoundHandler p_146113_1_)
-	{
-		p_146113_1_.playSound(PositionedSoundRecord.getMasterRecord(SoundRegistry.bookPageTurn, 1.0F));
+	public void playPressSound(SoundHandler soundHandler) {
+		soundHandler.playSound(PositionedSoundRecord.getMasterRecord(SoundRegistry.bookPageTurn, 1.0F));
 	}
 }

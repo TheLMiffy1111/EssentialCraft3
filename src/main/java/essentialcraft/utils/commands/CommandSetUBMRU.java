@@ -7,6 +7,7 @@ import essentialcraft.utils.common.ECUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -25,14 +26,18 @@ public class CommandSetUBMRU extends CommandBase {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		if(args.length < 1) {
+			throw new WrongUsageException("Usage: /setubmru <player> <amount>");
+		}
 		int var3 = parseInt(args.length == 1 ? args[0] : args[1], 0);
 		EntityPlayerMP player = args.length == 1 ? getCommandSenderAsPlayer(sender) : getPlayer(server, sender, args[0]);
 		ECUtils.getData(player).modifyUBMRU(var3);
+		notifyCommandListener(sender, this, "Successfully set "+player.getName()+"'s UBMRU to "+var3);
 	}
 
 	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
-		return par2ArrayOfStr.length == 1 ? getListOfStringsMatchingLastWord(par2ArrayOfStr, server.getOnlinePlayerNames()) : Collections.<String>emptyList();
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : Collections.<String>emptyList();
 	}
 
 	@Override

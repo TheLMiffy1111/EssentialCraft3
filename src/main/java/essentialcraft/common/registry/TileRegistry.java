@@ -10,6 +10,7 @@ import essentialcraft.common.tile.TileColdDistillator;
 import essentialcraft.common.tile.TileCorruption;
 import essentialcraft.common.tile.TileCorruptionCleaner;
 import essentialcraft.common.tile.TileCrafter;
+import essentialcraft.common.tile.TileCreativeESPESource;
 import essentialcraft.common.tile.TileCreativeMRUSource;
 import essentialcraft.common.tile.TileCrystalController;
 import essentialcraft.common.tile.TileCrystalExtractor;
@@ -78,6 +79,7 @@ import essentialcraft.common.tile.TileWindRune;
 import essentialcraft.common.tile.TileWorldMerger;
 import essentialcraft.utils.cfg.Config;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -159,19 +161,24 @@ public class TileRegistry {
 		addTileToMapping(TileMRUIntersector.class);
 		addTileToMapping(TileWorldMerger.class);
 		addTileToMapping(TileWeatherController.class);
+		addTileToMapping(TileCreativeESPESource.class);
 
 		Config.config.save();
 	}
 
 	public static void addTileToMapping(Class<? extends TileEntity> tile) {
-		GameRegistry.registerTileEntity(tile, "essentialcraft:"+tile.getCanonicalName());
+		GameRegistry.registerTileEntity(tile, new ResourceLocation("essentialcraft:"+tile.getCanonicalName()));
 		try {
 			if(tile.getMethod("setupConfig", Configuration.class) != null) {
 				CONFIG_DEPENDANT.add(tile);
 				tile.getMethod("setupConfig", Configuration.class).invoke(null, Config.config);
 			}
 		}
+		catch(NoSuchMethodException e) {
+			return;
+		}
 		catch(Exception e) {
+			e.printStackTrace();
 			return;
 		}
 	}

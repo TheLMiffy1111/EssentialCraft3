@@ -33,8 +33,8 @@ public class ItemEssentialFuel extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack p_77667_1_) {
-		return getUnlocalizedName()+name[Math.min(p_77667_1_.getItemDamage(), name.length-1)];
+	public String getUnlocalizedName(ItemStack stack) {
+		return getUnlocalizedName()+name[Math.min(stack.getItemDamage(), name.length-1)];
 	}
 
 	@Override

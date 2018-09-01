@@ -1,7 +1,7 @@
 package essentialcraft.proxy;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
@@ -278,7 +278,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
 
-	public static final List<Pair<String, ISound>> playingMusic = new ArrayList<Pair<String, ISound>>();
+	public static List<Pair<String, ISound>> playingMusic = new CopyOnWriteArrayList<Pair<String, ISound>>();
 
 	@Override
 	public void firstMovement(FMLPreInitializationEvent event) {

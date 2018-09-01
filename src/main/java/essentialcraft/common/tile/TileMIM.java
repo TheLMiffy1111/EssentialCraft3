@@ -15,7 +15,7 @@ import net.minecraftforge.common.config.Configuration;
 public class TileMIM extends TileMRUGeneric {
 
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
-	
+
 	public ArrayList<ItemStack> current = new ArrayList<ItemStack>();
 	public ArrayList<CraftingPattern> crafts = new ArrayList<CraftingPattern>();
 	public ArrayList<TileMIMScreen> screens = new ArrayList<TileMIMScreen>();
@@ -330,7 +330,7 @@ public class TileMIM extends TileMRUGeneric {
 			}
 		}
 	}
-	
+
 	public static void setupConfig(Configuration cfg) {
 		try {
 			String category = "tileentities.magicalinventorymanager";

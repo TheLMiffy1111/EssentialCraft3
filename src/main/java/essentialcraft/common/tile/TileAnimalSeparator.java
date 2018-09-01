@@ -14,7 +14,7 @@ public class TileAnimalSeparator extends TileMRUGeneric {
 	public static int mruUsage = 100;
 	public static double radius = 24D;
 	public static double radiusIgnore = 5D;
-	
+
 	public TileAnimalSeparator() {
 		super(cfgMaxMRU);
 		setSlotsNum(1);
@@ -42,7 +42,7 @@ public class TileAnimalSeparator extends TileMRUGeneric {
 			}
 		}
 	}
-	
+
 	public static void setupConfig(Configuration cfg) {
 		try {
 			String category = "tileentities.animalseparator";

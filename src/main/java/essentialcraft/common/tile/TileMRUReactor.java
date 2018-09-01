@@ -88,52 +88,49 @@ public class TileMRUReactor extends TileMRUGeneric {
 			}
 		if(!isStructureCorrect) {
 			isStructureCorrect = true;
-			Cycle:
-				for(int dx = -1; dx <= 1; ++dx) {
-					for(int dz = -2; dz <= 2; ++dz) {
-						for(int dy = -1; dy <= 1; ++dy) {
-							Block b_c = getWorld().getBlockState(pos.add(dx, dy, dz)).getBlock();
-							if(dy == -1) {
-								if(b_c != BlocksCore.magicPlating) {
+			Cycle: for(int dx = -1; dx <= 1; ++dx) {
+				for(int dz = -2; dz <= 2; ++dz) {
+					for(int dy = -1; dy <= 1; ++dy) {
+						Block b_c = getWorld().getBlockState(pos.add(dx, dy, dz)).getBlock();
+						if(dy == -1) {
+							if(b_c != BlocksCore.magicPlating) {
+								isStructureCorrect = false;
+								break Cycle;
+							}
+						}
+						if(dy == 0) {
+							if(dx == 0 && dz == 0) {
+								if(b_c != BlocksCore.reactor) {
 									isStructureCorrect = false;
 									break Cycle;
 								}
 							}
-							if(dy == 0) {
-								if(dx == 0 && dz == 0) {
-									if(b_c != BlocksCore.reactor) {
-										isStructureCorrect = false;
-										break Cycle;
-									}
-								}
-								else if(dx == 0 && dz == 1 || dx == 0 && dz == -1) {
-									if(b_c != BlocksCore.reactorSupport) {
-										isStructureCorrect = false;
-										break Cycle;
-									}
-								}
-								else if(b_c != Blocks.AIR) {
+							else if(dx == 0 && dz == 1 || dx == 0 && dz == -1) {
+								if(b_c != BlocksCore.reactorSupport) {
 									isStructureCorrect = false;
 									break Cycle;
 								}
 							}
-							if(dy == 1) {
-								{
-									if(dx == 0 && dz == 1 || dx == 0 && dz == -1) {
-										if(b_c != BlocksCore.reactorSupport) {
-											isStructureCorrect = false;
-											break Cycle;
-										}
-									}
-									else if(b_c != Blocks.AIR) {
-										isStructureCorrect = false;
-										break Cycle;
-									}
+							else if(b_c != Blocks.AIR) {
+								isStructureCorrect = false;
+								break Cycle;
+							}
+						}
+						if(dy == 1) {
+							if(dx == 0 && dz == 1 || dx == 0 && dz == -1) {
+								if(b_c != BlocksCore.reactorSupport) {
+									isStructureCorrect = false;
+									break Cycle;
 								}
+							}
+							else if(b_c != Blocks.AIR) {
+								isStructureCorrect = false;
+								break Cycle;
 							}
 						}
 					}
 				}
+			}
 		}
 		getWorld().markBlockRangeForRenderUpdate(pos.getX()-1, pos.getY(), pos.getZ()-1, pos.getX()+1, pos.getY(), pos.getZ()+1);
 	}

@@ -101,17 +101,17 @@ public class GuiCraftingFrame extends GuiContainer{
 	}
 
 	@Override
-	protected void drawHoveringText(List<String> p_146283_1_, int p_146283_2_, int p_146283_3_, FontRenderer font)
+	protected void drawHoveringText(List<String> list, int x, int y, FontRenderer font)
 	{
 		GlStateManager.disableLighting();
-		if (!p_146283_1_.isEmpty())
+		if (!list.isEmpty())
 		{
 			GlStateManager.disableRescaleNormal();
 			RenderHelper.disableStandardItemLighting();
 			GlStateManager.disableLighting();
 			GlStateManager.disableDepth();
 			int k = 0;
-			Iterator<String> iterator = p_146283_1_.iterator();
+			Iterator<String> iterator = list.iterator();
 
 			while (iterator.hasNext())
 			{
@@ -124,13 +124,13 @@ public class GuiCraftingFrame extends GuiContainer{
 				}
 			}
 
-			int j2 = p_146283_2_ + 12;
-			int k2 = p_146283_3_ - 12;
+			int j2 = x + 12;
+			int k2 = y - 12;
 			int i1 = 8;
 
-			if (p_146283_1_.size() > 1)
+			if (list.size() > 1)
 			{
-				i1 += 2 + (p_146283_1_.size() - 1) * 10;
+				i1 += 2 + (list.size() - 1) * 10;
 			}
 
 			if (j2 + k > this.width)
@@ -158,9 +158,9 @@ public class GuiCraftingFrame extends GuiContainer{
 			this.drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 - 3 + 1, k1, k1);
 			this.drawGradientRect(j2 - 3, k2 + i1 + 2, j2 + k + 3, k2 + i1 + 3, l1, l1);
 
-			for (int i2 = 0; i2 < p_146283_1_.size(); ++i2)
+			for (int i2 = 0; i2 < list.size(); ++i2)
 			{
-				String s1 = p_146283_1_.get(i2);
+				String s1 = list.get(i2);
 				font.drawStringWithShadow(s1, j2, k2, -1);
 
 				if (i2 == 0)

@@ -1,10 +1,8 @@
 package essentialcraft.integration.jei;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.Lists;
 
+import DummyCore.Utils.MiscUtils;
 import essentialcraft.api.DemonTrade;
 import essentialcraft.common.block.BlocksCore;
 import essentialcraft.common.item.ItemsCore;
@@ -23,14 +21,6 @@ public class DemonTrading {
 
 	public static final String UID = "essentialcraft:demonTrade";
 
-	public static List<DemonTrading.Wrapper> getRecipes() {
-		ArrayList<DemonTrading.Wrapper> ret = Lists.<DemonTrading.Wrapper>newArrayList();
-		for(DemonTrade rec : DemonTrade.trades) {
-			ret.add(new DemonTrading.Wrapper(rec));
-		}
-		return ret;
-	}
-
 	public static class Wrapper implements IRecipeWrapper {
 
 		private DemonTrade rec;
@@ -42,10 +32,13 @@ public class DemonTrading {
 		@Override
 		public void getIngredients(IIngredients arg0) {
 			ItemStack ret;
-			if(rec.entityType != null)
-				ret = new ItemStack(ItemsCore.soul, 1, DemonTrade.allMobs.indexOf(rec.entityType));
-			else
+			if(rec.entityType != null) {
+				ret = new ItemStack(ItemsCore.soul, 1, 0);
+				MiscUtils.getStackTag(ret).setString("entity", rec.entityType.getRegistryName().toString());
+			}
+			else {
 				ret = rec.desiredItem;
+			}
 			arg0.setInputs(ItemStack.class, Lists.newArrayList(ret, new ItemStack(BlocksCore.demonicPentacle)));
 		}
 	}

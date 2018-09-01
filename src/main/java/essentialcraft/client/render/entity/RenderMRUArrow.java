@@ -41,7 +41,7 @@ public class RenderMRUArrow extends Render<EntityMRUArrow> {
 		float f7 = 0.3125F;
 		float f8 = 0.05625F;
 		GlStateManager.enableRescaleNormal();
-		float f9 = (float)entity.arrowShake - partialTicks;
+		float f9 = entity.arrowShake - partialTicks;
 
 		if(f9 > 0.0F) {
 			float f10 = -MathHelper.sin(f9 * 3.0F) * f9;

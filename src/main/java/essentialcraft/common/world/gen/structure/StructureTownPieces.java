@@ -9,6 +9,7 @@ import DummyCore.Utils.WeightedRandomChestContent;
 import essentialcraft.common.block.BlocksCore;
 import essentialcraft.common.item.ItemBaublesResistance;
 import essentialcraft.common.registry.BiomeRegistry;
+import essentialcraft.common.registry.LootTableRegistry;
 import essentialcraft.common.world.gen.ECExplosion;
 import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockStairs;
@@ -79,6 +80,7 @@ public class StructureTownPieces {
 			if(pieceweight.townPiecesLimit > 0 && pieceweight.townPiecesSpawned < pieceweight.townPiecesLimit) {
 				flag = true;
 			}
+			i += pieceweight.townPieceWeight;
 		}
 
 		return flag ? i : -1;
@@ -243,18 +245,7 @@ public class StructureTownPieces {
 							if((dx == rad*2 || dx == 0 || dz == 0 || dz == rad*2) && dy == 8) {
 								this.setBlockState(world, BlocksCore.fortifiedStone.getDefaultState(), i+dx, i*16+dy, i+dz, structureBB);
 								if(rad == 1 && (dx == rad || dz == rad)) {
-									this.setBlockState(world, Blocks.CHEST.getDefaultState(), i+dx, i*16+dy+1, i+dz, structureBB);
-									TileEntityChest chest = (TileEntityChest)world.getTileEntity(new BlockPos(this.getXWithOffset(i+dx, i+dz), this.getYWithOffset(i*16+dy), this.getZWithOffset(i+dx, i+dz)));
-									if(chest != null) {
-										WeightedRandomChestContent.generateChestContents(rand, StructureOldCatacombs.generatedItems, chest, rand.nextInt(12)+6);
-										IInventory inv = chest;
-										for(int j = 0; j < inv.getSizeInventory(); ++j) {
-											ItemStack stk = inv.getStackInSlot(i);
-											if(stk.getItem() instanceof ItemBaublesResistance) {
-												ItemBaublesResistance.initRandomTag(stk, rand);
-											}
-										}
-									}
+									this.generateChest(world, structureBB, rand, i+dx, i*16+dy+1, i+dz, LootTableRegistry.CHEST_TOWN_TOWER);
 								}
 							}
 							if((dx == 0 || dx == rad*2) && (dz == 0 || dz == rad*2)) {

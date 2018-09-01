@@ -1,6 +1,7 @@
 package essentialcraft.integration.jei;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,36 +9,24 @@ import com.google.common.collect.Lists;
 
 import DummyCore.Utils.DrawUtils;
 import DummyCore.Utils.MathUtils;
-import DummyCore.Utils.UnformedItemStack;
 import essentialcraft.api.RadiatingChamberRecipe;
-import essentialcraft.api.RadiatingChamberRecipes;
 import essentialcraft.common.mod.EssentialCraftCore;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 
 public class RadiatingChamber {
 
 	public static final String UID = "essentialcraft:radiatingChamber";
-
-	public static List<RadiatingChamber.Wrapper> getRecipes() {
-		ArrayList<RadiatingChamber.Wrapper> ret = Lists.<RadiatingChamber.Wrapper>newArrayList();
-		for(List<RadiatingChamberRecipe> list : RadiatingChamberRecipes.RECIPES.values()) {
-			for(RadiatingChamberRecipe rec : list) {
-				ret.add(new RadiatingChamber.Wrapper(rec));
-			}
-		}
-		return ret;
-	}
 
 	public static class Wrapper implements IRecipeWrapper {
 
@@ -67,37 +56,14 @@ public class RadiatingChamber {
 		@Override
 		public void getIngredients(IIngredients arg0) {
 			ArrayList<List<ItemStack>> ret = Lists.<List<ItemStack>>newArrayList();
-			for(UnformedItemStack stk : rec.recipeItems) {
-				if(stk.isEmpty())
+			for(Ingredient ing : rec.recipeItems) {
+				if(ing == Ingredient.EMPTY)
 					ret.add(Collections.emptyList());
 				else
-					ret.add(stk.possibleStacks);
+					ret.add(Arrays.asList(ing.getMatchingStacks()));
 			}
 			arg0.setInputLists(ItemStack.class, ret);
 			arg0.setOutput(ItemStack.class, rec.result);
-		}
-	}
-
-	public static class Handler implements IRecipeHandler<RadiatingChamber.Wrapper> {
-
-		@Override
-		public String getRecipeCategoryUid(RadiatingChamber.Wrapper arg0) {
-			return UID;
-		}
-
-		@Override
-		public Class<RadiatingChamber.Wrapper> getRecipeClass() {
-			return RadiatingChamber.Wrapper.class;
-		}
-
-		@Override
-		public RadiatingChamber.Wrapper getRecipeWrapper(RadiatingChamber.Wrapper arg0) {
-			return arg0;
-		}
-
-		@Override
-		public boolean isRecipeValid(RadiatingChamber.Wrapper arg0) {
-			return arg0.rec.recipeItems.length>0 && !arg0.rec.result.isEmpty();
 		}
 	}
 

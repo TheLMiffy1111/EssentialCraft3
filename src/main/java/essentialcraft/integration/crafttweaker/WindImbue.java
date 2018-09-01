@@ -3,13 +3,14 @@ package essentialcraft.integration.crafttweaker;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import essentialcraft.api.WindImbueRecipe;
-import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -18,23 +19,16 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass("mods.essentialcraft.WindImbue")
 public class WindImbue {
 
+	public static List<IAction> addActions = Lists.newArrayList();
+	public static List<IAction> removeActions = Lists.newArrayList();
+
 	@ZenMethod
 	public static void addRecipe(IItemStack input, IItemStack output, int energy) {
 		if(input == null || output == null) {
 			CraftTweakerAPI.logError("Cannot turn "+input+" into a Wind Imbue Recipe");
 			return;
 		}
-
-		boolean flag = true;
-		for(WindImbueRecipe rec : WindImbueRecipe.RECIPES) {
-			if(input.matches(CraftTweakerMC.getIItemStack(rec.transforming)))
-				flag = false;
-		}
-
-		if(flag)
-			CraftTweakerAPI.apply(new AddRecipeAction(CraftTweakerMC.getItemStack(input),CraftTweakerMC.getItemStack(output),energy));
-		else
-			CraftTweakerAPI.logWarning("Recipe already exists!");
+		addActions.add(new ActionAddWindImbueRecipe(input, output, energy));
 	}
 
 	@ZenMethod
@@ -43,25 +37,16 @@ public class WindImbue {
 			CraftTweakerAPI.logError("Cannot remove "+input+" from Wind Imbue Recipes");
 			return;
 		}
-
-		final ArrayList<WindImbueRecipe> toRemove = new ArrayList<WindImbueRecipe>();
-		WindImbueRecipe.RECIPES.stream().
-		filter(entry->input.matches(CraftTweakerMC.getIItemStack(entry.transforming)) && (output == null || output.matches(CraftTweakerMC.getIItemStack(entry.result)))).
-		forEach(entry->toRemove.add(entry));
-
-		if(toRemove.isEmpty())
-			CraftTweakerAPI.logWarning("No recipe for "+input.toString());
-		else
-			CraftTweakerAPI.apply(new RemoveRecipeAction(toRemove));
+		removeActions.add(new ActionRemoveWindImbueRecipe(input, output));
 	}
 
-	private static class AddRecipeAction implements IAction {
-		ItemStack input;
-		ItemStack output;
+	private static class ActionAddWindImbueRecipe implements IAction {
+		IItemStack input;
+		IItemStack output;
 		int energy;
 		WindImbueRecipe rec;
 
-		public AddRecipeAction(ItemStack input, ItemStack output, int energy) {
+		public ActionAddWindImbueRecipe(IItemStack input, IItemStack output, int energy) {
 			this.input = input;
 			this.output = output;
 			this.energy = energy;
@@ -69,7 +54,7 @@ public class WindImbue {
 
 		@Override
 		public void apply() {
-			rec = new WindImbueRecipe(input, output, energy);
+			rec = new WindImbueRecipe(CraftTweakerMC.getItemStack(input), CraftTweakerMC.getItemStack(output), energy);
 		}
 
 		@Override
@@ -78,23 +63,33 @@ public class WindImbue {
 		}
 	}
 
-	private static class RemoveRecipeAction implements IAction {
-		List<WindImbueRecipe> rec;
+	private static class ActionRemoveWindImbueRecipe implements IAction {
+		IItemStack input;
+		IItemStack output;
 
-		public RemoveRecipeAction(List<WindImbueRecipe> rec) {
-			this.rec = rec;
+		public ActionRemoveWindImbueRecipe(IItemStack input, IItemStack output) {
+			this.input = input;
+			this.output = output;
 		}
 
 		@Override
 		public void apply() {
-			for(WindImbueRecipe entry : rec) {
-				WindImbueRecipe.removeRecipe(entry);
+			ArrayList<WindImbueRecipe> toRemove = new ArrayList<WindImbueRecipe>();
+			WindImbueRecipe.RECIPES.stream().
+			filter(entry->input.contains(CraftTweakerMC.getIIngredient(entry.input)) && (output == null || output.matches(CraftTweakerMC.getIItemStack(entry.result)))).
+			forEach(entry->toRemove.add(entry));
+			if(toRemove.isEmpty())
+				CraftTweakerAPI.logWarning("No recipe for "+input.toString());
+			else {
+				for(WindImbueRecipe entry : toRemove) {
+					WindImbueRecipe.removeRecipe(entry);
+				}
 			}
 		}
 
 		@Override
 		public String describe() {
-			return "Removing "+rec.size()+" Wind Imbue Recipes";
+			return "Removing Wind Imbue Recipes for "+input.toString();
 		}
 	}
 }

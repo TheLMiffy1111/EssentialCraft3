@@ -39,8 +39,7 @@ public class BlockChestEC extends BlockContainer implements IModelRegisterer {
 	}
 
 	@Override
-	public boolean isOpaqueCube(IBlockState s)
-	{
+	public boolean isOpaqueCube(IBlockState s) {
 		return false;
 	}
 
@@ -74,7 +73,7 @@ public class BlockChestEC extends BlockContainer implements IModelRegisterer {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int metadata) {
+	public TileEntity createNewTileEntity(World world, int metadata) {
 		return new TileMagicalChest(metadata);
 	}
 
@@ -83,7 +82,6 @@ public class BlockChestEC extends BlockContainer implements IModelRegisterer {
 		int l = placer.getHorizontalFacing().getHorizontalIndex();
 		TileMagicalChest tile = (TileMagicalChest)worldIn.getTileEntity(pos);
 		tile.rotation = l;
-		tile.ownerName = placer.getName();
 	}
 
 	@Override
@@ -99,8 +97,7 @@ public class BlockChestEC extends BlockContainer implements IModelRegisterer {
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState s)
-	{
+	public boolean isFullCube(IBlockState s) {
 		return false;
 	}
 

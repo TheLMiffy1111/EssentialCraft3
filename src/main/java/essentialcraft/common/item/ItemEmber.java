@@ -17,8 +17,8 @@ public class ItemEmber extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack p_77667_1_) {
-		return getUnlocalizedName()+unlocalisedName[Math.min(p_77667_1_.getItemDamage(), unlocalisedName.length-1)];
+	public String getUnlocalizedName(ItemStack stack) {
+		return getUnlocalizedName()+unlocalisedName[Math.min(stack.getItemDamage(), unlocalisedName.length-1)];
 	}
 
 	@Override

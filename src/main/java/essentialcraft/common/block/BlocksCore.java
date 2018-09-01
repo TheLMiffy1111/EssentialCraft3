@@ -187,9 +187,9 @@ public class BlocksCore {
 
 		chunkLoader = registerBlockSimple(new BlockChunkLoader(), "chunkLoader", 1, 1, 0);
 		dimTransciever = registerBlockSimple(new BlockDimensionalTransciever(), "dimTransciever", 1, 1, 0);
-		
-		intersector = registerBlockSimple(new BlockMRUIntersector(), "intersector", 1, 1, 15);		
-		worldMerger = registerBlockSimple(new BlockWorldMerger(), "worldMerger", 1, 1, 0);	
+
+		intersector = registerBlockSimple(new BlockMRUIntersector(), "intersector", 1, 1, 15);
+		worldMerger = registerBlockSimple(new BlockWorldMerger(), "worldMerger", 1, 1, 0);
 		weatherController = registerBlockSimple(new BlockWeatherController(), "weatherController", 1, 1, 15);
 	}
 

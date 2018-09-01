@@ -25,7 +25,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 public class TileMRUIntersector extends TileEntity implements IInventory, ITickable {
 
 	public static int cfgMaxMRU = ApiCore.DEVICE_MAX_MRU_GENERIC;
-	
+
 	public int syncTick;
 	protected MRUTileStorage mruStorage = new MRUTileStorage(cfgMaxMRU);
 	public int innerRotation;
@@ -36,7 +36,7 @@ public class TileMRUIntersector extends TileEntity implements IInventory, ITicka
 		super();
 		tracker = new TileStatTracker(this);
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound i) {
 		super.readFromNBT(i);
@@ -211,7 +211,7 @@ public class TileMRUIntersector extends TileEntity implements IInventory, ITicka
 		}
 		return ret;
 	}
-	
+
 	public static void setupConfig(Configuration cfg) {
 		try {
 			String category = "tileentities.mruintersector";

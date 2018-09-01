@@ -92,7 +92,7 @@ public class BlockRightClicker extends BlockContainer implements IModelRegistere
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int metadata) {
+	public TileEntity createNewTileEntity(World world, int metadata) {
 		return new TileRightClicker();
 	}
 

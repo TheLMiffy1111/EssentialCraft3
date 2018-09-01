@@ -25,8 +25,8 @@ public class ItemEssence extends Item implements IModelRegisterer {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack p_77667_1_) {
-		return getUnlocalizedName()+dropNames[p_77667_1_.getItemDamage()%4];
+	public String getUnlocalizedName(ItemStack stack) {
+		return getUnlocalizedName()+dropNames[stack.getItemDamage()%4];
 	}
 
 	@Override

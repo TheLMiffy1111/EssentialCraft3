@@ -64,7 +64,7 @@ public class BlockDarknessObelisk extends BlockContainer implements IModelRegist
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int metadata) {
+	public TileEntity createNewTileEntity(World world, int metadata) {
 		return new TileDarknessObelisk();
 	}
 

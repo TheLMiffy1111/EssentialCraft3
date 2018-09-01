@@ -13,7 +13,7 @@ public class TConstructRegistry {
 				LogManager.getLogger().trace("Successfully registered TConstruct integration!");
 			}
 			catch(Exception e) {
-				LogManager.getLogger().error("Unable to add TConstruct Integration.");
+				LogManager.getLogger().error("Unable to add TConstruct Integration.", e);
 			}
 		}
 	}

@@ -7,7 +7,7 @@ import essentialcraft.api.IESPEHandler;
 import essentialcraft.api.WindImbueRecipe;
 import essentialcraft.common.block.BlocksCore;
 import essentialcraft.common.capabilities.espe.CapabilityESPEHandler;
-import essentialcraft.common.item.ItemSoulStone;
+import essentialcraft.common.item.ItemsCore;
 import essentialcraft.common.mod.EssentialCraftCore;
 import essentialcraft.utils.common.ECUtils;
 import net.minecraft.block.Block;
@@ -59,7 +59,7 @@ public class TileWindRune extends TileEntity implements ITickable {
 	public boolean action(EntityPlayer player) {
 		if(!player.getHeldItemMainhand().isEmpty()) {
 			ItemStack item = player.getHeldItemMainhand();
-			WindImbueRecipe rec = WindImbueRecipe.findRecipeByComponent(item);
+			WindImbueRecipe rec = WindImbueRecipe.getRecipeByInput(item);
 			if(rec != null) {
 				int energy = getEnderstarEnergy();
 				boolean hasEnergy = energy >= rec.enderEnergy;
@@ -79,7 +79,7 @@ public class TileWindRune extends TileEntity implements ITickable {
 							cenergy += extracted;
 
 							if(cenergy >= rec.enderEnergy || creative) {
-								if(rec.transforming.getItem() instanceof ItemSoulStone && !ECUtils.getData(player).isWindbound()) {
+								if(rec.input.apply(new ItemStack(ItemsCore.soulStone)) && !ECUtils.getData(player).isWindbound()) {
 									ECUtils.getData(player).modifyWindbound(true);
 									if(!player.world.isRemote) {
 										player.sendMessage(new TextComponentTranslation("essentialcraft.txt.windImbue").setStyle(new Style().setColor(TextFormatting.AQUA)));
@@ -198,7 +198,7 @@ public class TileWindRune extends TileEntity implements ITickable {
 			tier = 0;
 		}
 	}
-	
+
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		return new AxisAlignedBB(pos.add(-1, 0, -1), pos.add(2, 1, 2));

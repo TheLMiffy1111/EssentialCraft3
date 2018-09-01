@@ -1,0 +1,48 @@
+{
+    "pools": [
+        {
+            "name": "main",
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "essentialcraft:windkeeper",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "name": "armor",
+            "conditions": [
+                {
+                    "condition": "random_chance_with_looting",
+                    "chance": 0.1,
+                    "looting_multiplier": 0.025
+                }
+            ],
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "essentialcraft:helm_wind",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:chest_wind",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:legs_wind",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "essentialcraft:boots_wind",
+                    "weight": 1
+                }
+            ]
+        }
+    ]
+}

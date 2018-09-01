@@ -1,6 +1,7 @@
 package essentialcraft.common.entity;
 
 import essentialcraft.common.item.ItemsCore;
+import essentialcraft.common.registry.LootTableRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
@@ -27,6 +28,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -34,14 +36,15 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+//TODO split this
 public class EntityWindMage extends EntityMob implements IRangedAttackMob {
 
 	public static final DataParameter<Byte> TYPE = EntityDataManager.<Byte>createKey(EntityWindMage.class, DataSerializers.BYTE);
 	private EntityAIAttackRanged aiArrowAttack = new EntityAIAttackRanged(this, 1.0D, 20, 60, 15.0F);
 	private EntityAIAttackMelee aiAttackOnCollide = new EntityAIAttackMelee(this, 1.2D, false);
-	public EntityWindMage(World p_i1741_1_)
-	{
-		super(p_i1741_1_);
+
+	public EntityWindMage(World world) {
+		super(world);
 		this.tasks.addTask(1, new EntityAISwimming(this));
 		this.tasks.addTask(5, new EntityAIWander(this, 1.0D));
 		this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
@@ -49,240 +52,118 @@ public class EntityWindMage extends EntityMob implements IRangedAttackMob {
 		this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
 		this.targetTasks.addTask(2, new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, 0, true, false, null));
 
-		if (p_i1741_1_ != null && !p_i1741_1_.isRemote)
-		{
+		if(world != null && !world.isRemote) {
 			this.setCombatTask();
 		}
 	}
 
 	@Override
-	protected void applyEntityAttributes()
-	{
+	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
 		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
 	}
 
 	@Override
-	protected void entityInit()
-	{
+	protected void entityInit() {
 		super.entityInit();
 		this.getDataManager().register(TYPE, new Byte((byte)0));
 	}
 
-	/**
-	 * Returns true if the newer Entity AI code should be run
-	 */
-	public boolean isAIEnabled()
-	{
-		return true;
-	}
-
-
 	@Override
-	protected SoundEvent getHurtSound(DamageSource s)
-	{
+	protected SoundEvent getHurtSound(DamageSource s) {
 		return SoundEvents.ENTITY_VILLAGER_HURT;
 	}
 
-	/**
-	 * Returns the sound this mob makes on death.
-	 */
 	@Override
-	protected SoundEvent getDeathSound()
-	{
+	protected SoundEvent getDeathSound() {
 		return SoundEvents.ENTITY_VILLAGER_DEATH;
 	}
 
 	@Override
-	public boolean attackEntityAsMob(Entity p_70652_1_)
-	{
-		if (super.attackEntityAsMob(p_70652_1_))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	/**
-	 * Get this Entity's EnumCreatureAttribute
-	 */
-	@Override
-	public EnumCreatureAttribute getCreatureAttribute()
-	{
+	public EnumCreatureAttribute getCreatureAttribute() {
 		return EnumCreatureAttribute.UNDEFINED;
 	}
 
-	/**
-	 * Called frequently so the entity can update its state every tick as required. For example, zombies and skeletons
-	 * use this to react to sunlight and start to burn.
-	 */
 	@Override
-	public void onLivingUpdate()
-	{
-		super.onLivingUpdate();
-	}
-
-	/**
-	 * Handles updating while being ridden by an entity
-	 */
-	@Override
-	public void updateRidden()
-	{
+	public void updateRidden() {
 		super.updateRidden();
 
-		if (this.getRidingEntity() instanceof EntityCreature)
-		{
+		if(this.getRidingEntity() instanceof EntityCreature) {
 			EntityCreature entitycreature = (EntityCreature)this.getRidingEntity();
 			this.renderYawOffset = entitycreature.renderYawOffset;
 		}
 	}
 
-	/**
-	 * Called when the mob's health reaches 0.
-	 */
 	@Override
-	public void onDeath(DamageSource p_70645_1_)
-	{
-		super.onDeath(p_70645_1_);
-	}
-
-	@Override
-	protected Item getDropItem()
-	{
-		return ItemsCore.bottledWind;
-	}
-
-	/**
-	 * Drop 0-2 items of this living's type. @param par1 - Whether this entity has recently been hit by a player. @param
-	 * par2 - Level of Looting used to kill this mob.
-	 */
-	@Override
-	protected void dropFewItems(boolean p_70628_1_, int p_70628_2_)
-	{
-		if(this.getType() == 0)
-			this.dropItem(getDropItem(), 1);
-		if(this.getType() == 1)
-			this.dropItem(ItemsCore.imprisonedWind, 1);
-		if(this.getType() == 2)
-		{
-			this.dropItem(ItemsCore.windKeeper, 1);
-			if(this.getEntityWorld().rand.nextFloat() < 0.1F)
-			{
-				int i = this.getEntityWorld().rand.nextInt(4);
-				switch(i)
-				{
-				case 0:
-				{
-					this.dropItem(ItemsCore.magicArmorItems[12], 1);
-					return;
-				}
-				case 1:
-				{
-					this.dropItem(ItemsCore.magicArmorItems[13], 1);
-					return;
-				}
-				case 2:
-				{
-					this.dropItem(ItemsCore.magicArmorItems[14], 1);
-					return;
-				}
-				case 3:
-				{
-					this.dropItem(ItemsCore.magicArmorItems[15], 1);
-					return;
-				}
-				}
-			}
+	protected ResourceLocation getLootTable() {
+		switch(this.getType()) {
+		case 0: return LootTableRegistry.ENTITY_WINDMAGE_APPRENTICE;
+		case 1: return LootTableRegistry.ENTITY_WINDMAGE_NORMAL;
+		case 2: return LootTableRegistry.ENTITY_WINDMAGE_ARCHMAGE;
+		default: return null;
 		}
 	}
 
 
-	/**
-	 * sets this entity's combat AI.
-	 */
-	public void setCombatTask()
-	{
+	public void setCombatTask() {
 		this.tasks.removeTask(this.aiAttackOnCollide);
 		this.tasks.removeTask(this.aiArrowAttack);
 		this.tasks.addTask(4, this.aiArrowAttack);
 	}
 
-	/**
-	 * Attack the specified entity using a ranged attack.
-	 */
 	@Override
-	public void attackEntityWithRangedAttack(EntityLivingBase p_82196_1_, float p_82196_2_)
-	{
+	public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
 		EntityMRUArrow entityarrow = new EntityMRUArrow(this.getEntityWorld(), this, 1.6F);
-		double d0 = p_82196_1_.posX - this.posX;
-		double d1 = p_82196_1_.getEntityBoundingBox().minY + p_82196_1_.height / 3.0F - entityarrow.posY;
-		double d2 = p_82196_1_.posZ - this.posZ;
+		double d0 = target.posX - this.posX;
+		double d1 = target.getEntityBoundingBox().minY + target.height / 3.0F - entityarrow.posY;
+		double d2 = target.posZ - this.posZ;
 		double d3 = MathHelper.sqrt(d0 * d0 + d2 * d2);
 		entityarrow.setThrowableHeading(d0, d1 + d3 * 0.2D, d2, 1.6F, 14 - this.getEntityWorld().getDifficulty().getDifficultyId() * 4);
 		entityarrow.setDamage((this.getType()+1)*3);
 		this.getEntityWorld().spawnEntity(entityarrow);
 	}
 
-	public int getType()
-	{
+	public int getType() {
 		return this.getDataManager().get(TYPE);
 	}
 
-	public void setType(int p_82201_1_)
-	{
-		this.getDataManager().set(TYPE, Byte.valueOf((byte)p_82201_1_));
+	public void setType(int type) {
+		this.getDataManager().set(TYPE, Byte.valueOf((byte)type));
 	}
 
-	/**
-	 * (abstract) Protected helper method to read subclass entity data from NBT.
-	 */
 	@Override
-	public void readEntityFromNBT(NBTTagCompound p_70037_1_)
-	{
-		super.readEntityFromNBT(p_70037_1_);
+	public void readEntityFromNBT(NBTTagCompound nbt) {
+		super.readEntityFromNBT(nbt);
 
-		if (p_70037_1_.hasKey("Type", 99))
-		{
-			byte b0 = p_70037_1_.getByte("Type");
+		if(nbt.hasKey("Type")) {
+			byte b0 = nbt.getByte("Type");
 			this.setType(b0);
 		}
 
 		this.setCombatTask();
 	}
 
-	/**
-	 * (abstract) Protected helper method to write subclass entity data to NBT.
-	 */
 	@Override
-	public void writeEntityToNBT(NBTTagCompound p_70014_1_)
-	{
-		super.writeEntityToNBT(p_70014_1_);
-		p_70014_1_.setByte("Type", (byte)this.getType());
+	public void writeEntityToNBT(NBTTagCompound nbt) {
+		super.writeEntityToNBT(nbt);
+		nbt.setByte("Type", (byte)this.getType());
 	}
 
 	@Override
-	public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData p_110161_1_)
-	{
-		p_110161_1_ = super.onInitialSpawn(difficulty, p_110161_1_);
+	public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData livingData) {
+		livingData = super.onInitialSpawn(difficulty, livingData);
 		this.setType(this.getEntityWorld().rand.nextInt(3));
-		return p_110161_1_;
+		return livingData;
 	}
 
-	/**
-	 * Returns the Y Offset of this entity.
-	 */
 	@Override
-	public double getYOffset()
-	{
+	public double getYOffset() {
 		return super.getYOffset() - 0.5D;
 	}
 
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
-		return new ItemStack(ItemsCore.entityEgg,1,EntitiesCore.registeredEntities.indexOf(ForgeRegistries.ENTITIES.getValue(EntityList.getKey(this.getClass()))));
+		return new ItemStack(ItemsCore.entityEgg, 1, EntitiesCore.REGISTERED_ENTITIES.indexOf(ForgeRegistries.ENTITIES.getValue(EntityList.getKey(this.getClass()))));
 	}
 
 	@Override
